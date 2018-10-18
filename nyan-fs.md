@@ -14,6 +14,6 @@
  
  # Technologie
  * jHipster
- ** spring boot - java
- ** angular - typescript
- ** elasticsearch
+  * spring boot - java
+  * angular - typescript
+  * elasticsearch
