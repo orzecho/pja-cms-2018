@@ -12,7 +12,7 @@
 * uprawnienia dla użytkowników
  
  
- # Technologie
+# Technologie
  * jHipster
   * spring boot - java
   * angular - typescript
