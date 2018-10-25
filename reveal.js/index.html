@@ -1,0 +1,145 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>reveal.js</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/sky.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section data-markdown>
+					<textarea data-template>
+						## System wspomagający naukę japońskiego
+						### nyan~
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						## Problemy z nauką japońskiego
+					</textarea>
+				</section>
+				<section data-markdown>
+						<textarea data-template>
+							### Rozproszone informacje
+							* dużo lekcji na osobnych kartkach
+							* ciężko znaleźć interesujące nas informacje np. słówka
+						</textarea>
+				</section>
+				<section data-markdown>
+						<textarea data-template>
+							### Sprawdzanie umiejętności
+							* brak łatwego sposobu na sprawdzenie wiedzy
+							* nie zawsze wiadomo dokładnie jakie informacje są potrzebny w danym zakresie
+						</textarea>
+				</section>
+
+				<section data-markdown>
+					<textarea data-template>
+						## Jak możemy pomóc
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						### Katalogowanie informacji
+						* system ma przechowywać lekcje, w postaci tekstu lub pdfów
+						* do lekcji można przypisać kategorie/tagi, po których można je wyszukiwać
+						* system przechowuje informacje o słówkach i wyrażeniach oraz ich tłumaczeniach
+						* one także są otagowane, a także są skojarzone z lekcjami w których występują
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						### Testowanie wiedzy
+						* testy wielokrotnego wyboru
+						* zadania z uzupełnianiem słów
+						* automatyczne generowanie testów dla zadanych tagów
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						## Stos technologiczny
+						* jHipster
+						* Spring Boot (Java)
+						* Angular 6 (TypeScript)
+						* ElasticSearch ?
+						* Postgresql
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						## Harmonogram pracy
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						### Analiza i projekt
+						* konsultacje z panią Saito (nauczyciel japońskiego w PJATK)
+						* spisanie specyfikacji funkcjonalnej
+						* rozplanowanie zadań i przypisanie ich do członków zespołu
+						* zaplanowanie klas domenowych
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						### Implementacja
+						* bootstrapowanie aplikacji
+						* implementacja klas domenowych
+						* implementacja specyficznych funkcjonalności
+						* napisanie danych testowych
+						* ubranie aplikacji
+						* deployment
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						### Dokumentacja
+						* spisanie specyfikacji funkcjonalnej
+						* stworzenie ostatecznej dokumentacji
+						* stworzenie prezentacji gotowego produktu
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						### Po wdrożeniu
+						* napełnienie aplikacji produkcyjnymi danymi
+						* nauka korzystania z aplikacji dla zainteresowanych
+					</textarea>
+				</section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+		</script>
+	</body>
+</html>
