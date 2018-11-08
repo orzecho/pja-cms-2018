@@ -1,10 +1,18 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
+import { NyanLessonModule } from './lesson/lesson.module';
+import { NyanWordModule } from './word/word.module';
+import { NyanTagModule } from './tag/tag.module';
+import { NyanLessonFileModule } from './lesson-file/lesson-file.module';
 /* jhipster-needle-add-entity-module-import - JHipster will add entity modules imports here */
 
 @NgModule({
     // prettier-ignore
     imports: [
+        NyanLessonModule,
+        NyanWordModule,
+        NyanTagModule,
+        NyanLessonFileModule,
         /* jhipster-needle-add-entity-module - JHipster will add entity modules here */
     ],
     declarations: [],

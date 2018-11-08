@@ -1,0 +1,40 @@
+{
+    "name": "Lesson",
+    "fields": [
+        {
+            "fieldName": "name",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "description",
+            "fieldType": "String"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "lessonFile",
+            "otherEntityName": "lessonFile",
+            "otherEntityRelationshipName": "lesson"
+        },
+        {
+            "relationshipType": "many-to-many",
+            "relationshipName": "tag",
+            "otherEntityName": "tag",
+            "ownerSide": false,
+            "otherEntityRelationshipName": "lesson"
+        }
+    ],
+    "changelogDate": "20181108154457",
+    "entityTableName": "lesson",
+    "dto": "mapstruct",
+    "pagination": "pagination",
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": true,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
+}
