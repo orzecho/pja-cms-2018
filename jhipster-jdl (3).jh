@@ -1,0 +1,29 @@
+entity Lesson {
+		name String required
+        description String
+}
+
+entity Word {
+		translation String required
+        kana String required
+        kanji String
+        note String
+}
+
+entity Tag {
+		name String required
+}
+
+entity LessonFile {
+		name String required
+        content Blob required
+}
+
+relationship ManyToOne {
+		LessonFile{lessonFile(name)} to Lesson{lesson}
+}
+
+relationship ManyToMany {
+        Tag{tag(name)} to Lesson{lesson}
+        Word{word(translation)} to Tag{tag(name)}
+}
