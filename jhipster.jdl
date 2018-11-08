@@ -20,10 +20,15 @@ entity LessonFile {
 }
 
 relationship ManyToOne {
-		LessonFile{lessonFile(name)} to Lesson{lesson}
+		LessonFile{lessonFile(name)} to Lesson{lesson(name)}
 }
 
 relationship ManyToMany {
-        Tag{tag(name)} to Lesson{lesson}
+        Tag{tag(name)} to Lesson{lesson(name)}
         Word{word(translation)} to Tag{tag(name)}
 }
+
+service all with serviceClass
+paginate all with pagination
+dto all with mapstruct
+filter all
