@@ -61,7 +61,7 @@ public class TagResourceIntTest {
 
     @Autowired
     private TagMapper tagMapper;
-    
+
     @Mock
     private TagService tagServiceMock;
 
@@ -186,7 +186,7 @@ public class TagResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(tag.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())));
     }
-    
+
     public void getAllTagsWithEagerRelationshipsIsEnabled() throws Exception {
         TagResource tagResource = new TagResource(tagServiceMock, tagQueryService);
         when(tagServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
@@ -374,7 +374,7 @@ public class TagResourceIntTest {
         // Create the Tag
         TagDTO tagDTO = tagMapper.toDto(tag);
 
-        // If the entity doesn't have an ID, it will throw BadRequestAlertException 
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restTagMockMvc.perform(put("/api/tags")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(tagDTO)))
@@ -432,12 +432,5 @@ public class TagResourceIntTest {
         assertThat(tagDTO1).isNotEqualTo(tagDTO2);
         tagDTO1.setId(null);
         assertThat(tagDTO1).isNotEqualTo(tagDTO2);
-    }
-
-    @Test
-    @Transactional
-    public void testEntityFromId() {
-        assertThat(tagMapper.fromId(42L).getId()).isEqualTo(42);
-        assertThat(tagMapper.fromId(null)).isNull();
     }
 }

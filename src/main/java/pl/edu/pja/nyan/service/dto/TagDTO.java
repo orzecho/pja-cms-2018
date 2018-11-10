@@ -2,45 +2,29 @@ package pl.edu.pja.nyan.service.dto;
 
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.Objects;
 
-/**
- * A DTO for the Tag entity.
- */
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@Builder
 public class TagDTO implements Serializable {
 
     private Long id;
 
     @NotNull
     private String name;
-
-    private Set<LessonDTO> lessons = new HashSet<>();
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Set<LessonDTO> getLessons() {
-        return lessons;
-    }
-
-    public void setLessons(Set<LessonDTO> lessons) {
-        this.lessons = lessons;
-    }
 
     @Override
     public boolean equals(Object o) {

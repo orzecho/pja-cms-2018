@@ -3,6 +3,7 @@ package pl.edu.pja.nyan.service;
 import pl.edu.pja.nyan.domain.LessonFile;
 import pl.edu.pja.nyan.repository.LessonFileRepository;
 import pl.edu.pja.nyan.service.dto.LessonFileDTO;
+import pl.edu.pja.nyan.service.dto.LessonFileShortDTO;
 import pl.edu.pja.nyan.service.mapper.LessonFileMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,10 +53,10 @@ public class LessonFileService {
      * @return the list of entities
      */
     @Transactional(readOnly = true)
-    public Page<LessonFileDTO> findAll(Pageable pageable) {
+    public Page<LessonFileShortDTO> findAll(Pageable pageable) {
         log.debug("Request to get all LessonFiles");
         return lessonFileRepository.findAll(pageable)
-            .map(lessonFileMapper::toDto);
+            .map(lessonFileMapper::toShortDto);
     }
 
 

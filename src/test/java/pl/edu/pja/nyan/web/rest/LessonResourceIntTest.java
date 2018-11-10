@@ -58,7 +58,7 @@ public class LessonResourceIntTest {
 
     @Autowired
     private LessonMapper lessonMapper;
-    
+
 
     @Autowired
     private LessonService lessonService;
@@ -117,7 +117,10 @@ public class LessonResourceIntTest {
         int databaseSizeBeforeCreate = lessonRepository.findAll().size();
 
         // Create the Lesson
-        LessonDTO lessonDTO = lessonMapper.toDto(lesson);
+        LessonDTO lessonDTO = LessonDTO.builder()
+            .name(DEFAULT_NAME)
+            .description(DEFAULT_DESCRIPTION)
+            .build();
         restLessonMockMvc.perform(post("/api/lessons")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(lessonDTO)))
@@ -155,11 +158,7 @@ public class LessonResourceIntTest {
     @Transactional
     public void checkNameIsRequired() throws Exception {
         int databaseSizeBeforeTest = lessonRepository.findAll().size();
-        // set the field null
-        lesson.setName(null);
-
-        // Create the Lesson, which fails.
-        LessonDTO lessonDTO = lessonMapper.toDto(lesson);
+        LessonDTO lessonDTO = LessonDTO.builder().build();
 
         restLessonMockMvc.perform(post("/api/lessons")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -184,7 +183,7 @@ public class LessonResourceIntTest {
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())));
     }
-    
+
 
     @Test
     @Transactional
@@ -383,9 +382,9 @@ public class LessonResourceIntTest {
         int databaseSizeBeforeUpdate = lessonRepository.findAll().size();
 
         // Create the Lesson
-        LessonDTO lessonDTO = lessonMapper.toDto(lesson);
+        LessonDTO lessonDTO = LessonDTO.builder().name(DEFAULT_NAME).build();
 
-        // If the entity doesn't have an ID, it will throw BadRequestAlertException 
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restLessonMockMvc.perform(put("/api/lessons")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(lessonDTO)))
@@ -443,12 +442,5 @@ public class LessonResourceIntTest {
         assertThat(lessonDTO1).isNotEqualTo(lessonDTO2);
         lessonDTO1.setId(null);
         assertThat(lessonDTO1).isNotEqualTo(lessonDTO2);
-    }
-
-    @Test
-    @Transactional
-    public void testEntityFromId() {
-        assertThat(lessonMapper.fromId(42L).getId()).isEqualTo(42);
-        assertThat(lessonMapper.fromId(null)).isNull();
     }
 }

@@ -1,2 +1,5 @@
 /* after changing this file run 'yarn run webpack:build' */
+@import '~primeng/resources/primeng.min.css';
+@import '~primeicons/primeicons.css';
+@import '~primeng/resources/themes/bootstrap/theme.css';
 @import '~bootstrap/dist/css/bootstrap.min.css';

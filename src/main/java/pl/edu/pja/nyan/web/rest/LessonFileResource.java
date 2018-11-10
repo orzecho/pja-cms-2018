@@ -2,6 +2,7 @@ package pl.edu.pja.nyan.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import pl.edu.pja.nyan.service.LessonFileService;
+import pl.edu.pja.nyan.service.dto.LessonFileShortDTO;
 import pl.edu.pja.nyan.web.rest.errors.BadRequestAlertException;
 import pl.edu.pja.nyan.web.rest.util.HeaderUtil;
 import pl.edu.pja.nyan.web.rest.util.PaginationUtil;
@@ -96,9 +97,9 @@ public class LessonFileResource {
      */
     @GetMapping("/lesson-files")
     @Timed
-    public ResponseEntity<List<LessonFileDTO>> getAllLessonFiles(LessonFileCriteria criteria, Pageable pageable) {
+    public ResponseEntity<List<LessonFileShortDTO>> getAllLessonFiles(LessonFileCriteria criteria, Pageable pageable) {
         log.debug("REST request to get LessonFiles by criteria: {}", criteria);
-        Page<LessonFileDTO> page = lessonFileQueryService.findByCriteria(criteria, pageable);
+        Page<LessonFileShortDTO> page = lessonFileQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/lesson-files");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

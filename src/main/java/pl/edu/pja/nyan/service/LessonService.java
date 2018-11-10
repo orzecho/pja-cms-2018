@@ -1,5 +1,6 @@
 package pl.edu.pja.nyan.service;
 
+import lombok.RequiredArgsConstructor;
 import pl.edu.pja.nyan.domain.Lesson;
 import pl.edu.pja.nyan.repository.LessonRepository;
 import pl.edu.pja.nyan.service.dto.LessonDTO;
@@ -19,6 +20,7 @@ import java.util.Optional;
  */
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class LessonService {
 
     private final Logger log = LoggerFactory.getLogger(LessonService.class);
@@ -27,10 +29,7 @@ public class LessonService {
 
     private final LessonMapper lessonMapper;
 
-    public LessonService(LessonRepository lessonRepository, LessonMapper lessonMapper) {
-        this.lessonRepository = lessonRepository;
-        this.lessonMapper = lessonMapper;
-    }
+    private final TagService tagService;
 
     /**
      * Save a lesson.
@@ -42,6 +41,9 @@ public class LessonService {
         log.debug("Request to save Lesson : {}", lessonDTO);
         Lesson lesson = lessonMapper.toEntity(lessonDTO);
         lesson = lessonRepository.save(lesson);
+        if (lessonDTO.getRawTags() != null) {
+            tagService.parseTags(lessonDTO.getRawTags(), lesson);
+        }
         return lessonMapper.toDto(lesson);
     }
 

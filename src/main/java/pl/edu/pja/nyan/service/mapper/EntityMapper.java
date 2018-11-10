@@ -1,5 +1,6 @@
 package pl.edu.pja.nyan.service.mapper;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -15,7 +16,7 @@ public interface EntityMapper <D, E> {
 
     D toDto(E entity);
 
-    List <E> toEntity(List<D> dtoList);
+    List <E> toEntity(Collection<D> dtoList);
 
-    List <D> toDto(List<E> entityList);
+    List <D> toDto(Collection<E> entityList);
 }

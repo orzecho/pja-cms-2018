@@ -13,6 +13,18 @@
                 <dd>
                     <span>{{lesson.description}}</span>
                 </dd>
+                <dt><span>Tagi</span></dt>
+                <dd>
+                    <a [routerLink]="['/tag', tag?.id, 'view' ]"
+                       class="badge badge-pill badge-primary"
+                       *ngFor="let tag of lesson.tags">{{tag.name}}</a>
+                </dd>
+                <dt><span>Pliki lekcji</span></dt>
+                <dd>
+                    <a [routerLink]="['/lesson-file', lessonFile?.id, 'view' ]"
+                       class="badge badge-pill badge-secondary"
+                       *ngFor="let lessonFile of lesson.lessonFiles">{{lessonFile.name}}</a>
+                </dd>
             </dl>
 
             <button type="submit"

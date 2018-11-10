@@ -27,4 +27,5 @@ public interface TagRepository extends JpaRepository<Tag, Long>, JpaSpecificatio
     @Query("select tag from Tag tag left join fetch tag.lessons where tag.id =:id")
     Optional<Tag> findOneWithEagerRelationships(@Param("id") Long id);
 
+    Optional<Tag> findByName(String token);
 }

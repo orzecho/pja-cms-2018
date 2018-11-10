@@ -1,24 +1,57 @@
 package pl.edu.pja.nyan.service.mapper;
 
-import pl.edu.pja.nyan.domain.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
+import com.google.common.collect.Sets;
+
+import lombok.RequiredArgsConstructor;
+import pl.edu.pja.nyan.domain.Word;
 import pl.edu.pja.nyan.service.dto.WordDTO;
 
-import org.mapstruct.*;
+@Service
+@RequiredArgsConstructor
+public class WordMapper implements EntityMapper<WordDTO, Word> {
 
-/**
- * Mapper for the entity Word and its DTO WordDTO.
- */
-@Mapper(componentModel = "spring", uses = {TagMapper.class})
-public interface WordMapper extends EntityMapper<WordDTO, Word> {
+    private final TagMapper tagMapper;
 
-
-
-    default Word fromId(Long id) {
-        if (id == null) {
-            return null;
-        }
+    @Override
+    public Word toEntity(WordDTO dto) {
         Word word = new Word();
-        word.setId(id);
+        word.setId(dto.getId());
+        word.setKana(dto.getKana());
+        word.setKanji(dto.getKanji());
+        word.setNote(dto.getNote());
+        word.setRomaji(dto.getRomaji());
+        word.setTranslation(dto.getTranslation());
+        word.setTags(Sets.newHashSet(tagMapper.toEntity(dto.getTags())));
+
         return word;
+    }
+
+    @Override
+    public WordDTO toDto(Word entity) {
+        return WordDTO.builder()
+            .id(entity.getId())
+            .romaji(entity.getRomaji())
+            .note(entity.getNote())
+            .kanji(entity.getKanji())
+            .kana(entity.getKana())
+            .translation(entity.getTranslation())
+            .tags(tagMapper.toDto(entity.getTags()))
+            .build();
+    }
+
+    @Override
+    public List<Word> toEntity(Collection<WordDTO> dtoList) {
+        return dtoList.stream().map(this::toEntity).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<WordDTO> toDto(Collection<Word> entityList) {
+        return entityList.stream().map(this::toDto).collect(Collectors.toList());
     }
 }

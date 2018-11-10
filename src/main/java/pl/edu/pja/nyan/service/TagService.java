@@ -1,5 +1,6 @@
 package pl.edu.pja.nyan.service;
 
+import pl.edu.pja.nyan.domain.Lesson;
 import pl.edu.pja.nyan.domain.Tag;
 import pl.edu.pja.nyan.repository.TagRepository;
 import pl.edu.pja.nyan.service.dto.TagDTO;
@@ -12,8 +13,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Scanner;
+import java.util.Set;
+
 /**
  * Service Implementation for managing Tag.
  */
@@ -66,7 +70,7 @@ public class TagService {
     public Page<TagDTO> findAllWithEagerRelationships(Pageable pageable) {
         return tagRepository.findAllWithEagerRelationships(pageable).map(tagMapper::toDto);
     }
-    
+
 
     /**
      * Get one tag by id.
@@ -89,5 +93,21 @@ public class TagService {
     public void delete(Long id) {
         log.debug("Request to delete Tag : {}", id);
         tagRepository.deleteById(id);
+    }
+
+    public Set<Tag> parseTags(String rawTags, Lesson lesson) {
+        Set<Tag> tags = new HashSet<>();
+        try (Scanner scanner = new Scanner(rawTags).useDelimiter(",")) {
+            while (scanner.hasNext()) {
+                String token = scanner.next().trim();
+                Optional<Tag> tag = tagRepository.findByName(token);
+                if (!tag.isPresent()) {
+                    tags.add(tagRepository.save(new Tag(token, lesson)));
+                } else {
+                    tag.get().addLesson(lesson);
+                }
+            }
+        }
+        return tags;
     }
 }
