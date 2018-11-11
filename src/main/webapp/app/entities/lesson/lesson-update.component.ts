@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, forwardRef, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -8,6 +8,9 @@ import { ILesson } from 'app/shared/model/lesson.model';
 import { LessonService } from './lesson.service';
 import { ITag } from 'app/shared/model/tag.model';
 import { TagService } from 'app/entities/tag';
+import { LessonFileService } from 'app/entities/lesson-file';
+import { ILessonFile } from 'app/shared/model/lesson-file.model';
+import { NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
     selector: 'jhi-lesson-update',
@@ -18,12 +21,14 @@ export class LessonUpdateComponent implements OnInit {
     isSaving: boolean;
 
     tags: ITag[];
+    availableFiles: ILessonFile[];
 
     constructor(
         private jhiAlertService: JhiAlertService,
         private lessonService: LessonService,
         private tagService: TagService,
-        private activatedRoute: ActivatedRoute
+        private activatedRoute: ActivatedRoute,
+        private lessonFileService: LessonFileService
     ) {}
 
     ngOnInit() {
@@ -34,6 +39,13 @@ export class LessonUpdateComponent implements OnInit {
         this.tagService.query().subscribe(
             (res: HttpResponse<ITag[]>) => {
                 this.tags = res.body;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+        this.lessonFileService.query({ 'lessonId.specified': false }).subscribe(
+            (res: HttpResponse<ILessonFile[]>) => {
+                this.availableFiles = res.body;
+                this.lesson.lessonFiles.forEach(file => this.availableFiles.push(file));
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );

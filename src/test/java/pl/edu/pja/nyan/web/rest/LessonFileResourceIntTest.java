@@ -60,7 +60,7 @@ public class LessonFileResourceIntTest {
 
     @Autowired
     private LessonFileMapper lessonFileMapper;
-    
+
 
     @Autowired
     private LessonFileService lessonFileService;
@@ -185,11 +185,9 @@ public class LessonFileResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(lessonFile.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].contentContentType").value(hasItem(DEFAULT_CONTENT_CONTENT_TYPE)))
-            .andExpect(jsonPath("$.[*].content").value(hasItem(Base64Utils.encodeToString(DEFAULT_CONTENT))));
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())));
     }
-    
+
 
     @Test
     @Transactional
@@ -272,9 +270,7 @@ public class LessonFileResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(lessonFile.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].contentContentType").value(hasItem(DEFAULT_CONTENT_CONTENT_TYPE)))
-            .andExpect(jsonPath("$.[*].content").value(hasItem(Base64Utils.encodeToString(DEFAULT_CONTENT))));
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())));
     }
 
     /**
@@ -336,7 +332,7 @@ public class LessonFileResourceIntTest {
         // Create the LessonFile
         LessonFileDTO lessonFileDTO = lessonFileMapper.toDto(lessonFile);
 
-        // If the entity doesn't have an ID, it will throw BadRequestAlertException 
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restLessonFileMockMvc.perform(put("/api/lesson-files")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(lessonFileDTO)))
@@ -394,12 +390,5 @@ public class LessonFileResourceIntTest {
         assertThat(lessonFileDTO1).isNotEqualTo(lessonFileDTO2);
         lessonFileDTO1.setId(null);
         assertThat(lessonFileDTO1).isNotEqualTo(lessonFileDTO2);
-    }
-
-    @Test
-    @Transactional
-    public void testEntityFromId() {
-        assertThat(lessonFileMapper.fromId(42L).getId()).isEqualTo(42);
-        assertThat(lessonFileMapper.fromId(null)).isNull();
     }
 }

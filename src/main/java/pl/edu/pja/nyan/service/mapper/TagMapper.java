@@ -1,26 +1,43 @@
 package pl.edu.pja.nyan.service.mapper;
 
-import pl.edu.pja.nyan.domain.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
+import lombok.RequiredArgsConstructor;
+import pl.edu.pja.nyan.domain.Tag;
 import pl.edu.pja.nyan.service.dto.TagDTO;
 
-import org.mapstruct.*;
+@RequiredArgsConstructor
+@Service
+public class TagMapper implements EntityMapper<TagDTO, Tag> {
 
-/**
- * Mapper for the entity Tag and its DTO TagDTO.
- */
-@Mapper(componentModel = "spring", uses = {LessonMapper.class})
-public interface TagMapper extends EntityMapper<TagDTO, Tag> {
-
-
-    @Mapping(target = "words", ignore = true)
-    Tag toEntity(TagDTO tagDTO);
-
-    default Tag fromId(Long id) {
-        if (id == null) {
-            return null;
-        }
+    @Override
+    public Tag toEntity(TagDTO dto) {
         Tag tag = new Tag();
-        tag.setId(id);
+        tag.setId(dto.getId());
+        tag.setName(dto.getName());
+
         return tag;
+    }
+
+    @Override
+    public TagDTO toDto(Tag entity) {
+        return TagDTO.builder()
+            .id(entity.getId())
+            .name(entity.getName())
+            .build();
+    }
+
+    @Override
+    public List<Tag> toEntity(Collection<TagDTO> dtoList) {
+        return dtoList.stream().map(this::toEntity).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<TagDTO> toDto(Collection<Tag> entityList) {
+        return entityList.stream().map(this::toDto).collect(Collectors.toList());
     }
 }

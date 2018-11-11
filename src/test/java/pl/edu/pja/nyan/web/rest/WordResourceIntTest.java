@@ -72,7 +72,7 @@ public class WordResourceIntTest {
 
     @Autowired
     private WordMapper wordMapper;
-    
+
     @Mock
     private WordService wordServiceMock;
 
@@ -228,7 +228,7 @@ public class WordResourceIntTest {
             .andExpect(jsonPath("$.[*].romaji").value(hasItem(DEFAULT_ROMAJI.toString())))
             .andExpect(jsonPath("$.[*].note").value(hasItem(DEFAULT_NOTE.toString())));
     }
-    
+
     public void getAllWordsWithEagerRelationshipsIsEnabled() throws Exception {
         WordResource wordResource = new WordResource(wordServiceMock, wordQueryService);
         when(wordServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
@@ -569,7 +569,7 @@ public class WordResourceIntTest {
         // Create the Word
         WordDTO wordDTO = wordMapper.toDto(word);
 
-        // If the entity doesn't have an ID, it will throw BadRequestAlertException 
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restWordMockMvc.perform(put("/api/words")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(wordDTO)))
@@ -627,12 +627,5 @@ public class WordResourceIntTest {
         assertThat(wordDTO1).isNotEqualTo(wordDTO2);
         wordDTO1.setId(null);
         assertThat(wordDTO1).isNotEqualTo(wordDTO2);
-    }
-
-    @Test
-    @Transactional
-    public void testEntityFromId() {
-        assertThat(wordMapper.fromId(42L).getId()).isEqualTo(42);
-        assertThat(wordMapper.fromId(null)).isNull();
     }
 }

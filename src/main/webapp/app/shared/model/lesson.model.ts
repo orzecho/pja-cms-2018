@@ -6,6 +6,7 @@ export interface ILesson {
     name?: string;
     description?: string;
     lessonFiles?: ILessonFile[];
+    rawTags?: string;
     tags?: ITag[];
 }
 
@@ -15,6 +16,7 @@ export class Lesson implements ILesson {
         public name?: string,
         public description?: string,
         public lessonFiles?: ILessonFile[],
-        public tags?: ITag[]
+        public tags?: ITag[],
+        public rawTags?: string
     ) {}
 }

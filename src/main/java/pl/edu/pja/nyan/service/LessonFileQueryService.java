@@ -18,6 +18,7 @@ import pl.edu.pja.nyan.repository.LessonFileRepository;
 import pl.edu.pja.nyan.service.dto.LessonFileCriteria;
 
 import pl.edu.pja.nyan.service.dto.LessonFileDTO;
+import pl.edu.pja.nyan.service.dto.LessonFileShortDTO;
 import pl.edu.pja.nyan.service.mapper.LessonFileMapper;
 
 /**
@@ -60,11 +61,11 @@ public class LessonFileQueryService extends QueryService<LessonFile> {
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
-    public Page<LessonFileDTO> findByCriteria(LessonFileCriteria criteria, Pageable page) {
+    public Page<LessonFileShortDTO> findByCriteria(LessonFileCriteria criteria, Pageable page) {
         log.debug("find by criteria : {}, page: {}", criteria, page);
         final Specification<LessonFile> specification = createSpecification(criteria);
         return lessonFileRepository.findAll(specification, page)
-            .map(lessonFileMapper::toDto);
+            .map(lessonFileMapper::toShortDto);
     }
 
     /**

@@ -1,14 +1,24 @@
 package pl.edu.pja.nyan.service.dto;
 
-import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import java.util.Objects;
 
-/**
- * A DTO for the Word entity.
- */
+import javax.validation.constraints.NotNull;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Getter
+@Setter
 public class WordDTO implements Serializable {
 
     private Long id;
@@ -25,63 +35,7 @@ public class WordDTO implements Serializable {
 
     private String note;
 
-    private Set<TagDTO> tags = new HashSet<>();
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTranslation() {
-        return translation;
-    }
-
-    public void setTranslation(String translation) {
-        this.translation = translation;
-    }
-
-    public String getKana() {
-        return kana;
-    }
-
-    public void setKana(String kana) {
-        this.kana = kana;
-    }
-
-    public String getKanji() {
-        return kanji;
-    }
-
-    public void setKanji(String kanji) {
-        this.kanji = kanji;
-    }
-
-    public String getRomaji() {
-        return romaji;
-    }
-
-    public void setRomaji(String romaji) {
-        this.romaji = romaji;
-    }
-
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
-    }
-
-    public Set<TagDTO> getTags() {
-        return tags;
-    }
-
-    public void setTags(Set<TagDTO> tags) {
-        this.tags = tags;
-    }
+    private List<TagDTO> tags = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {
