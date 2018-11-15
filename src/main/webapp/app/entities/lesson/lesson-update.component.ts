@@ -11,6 +11,7 @@ import { TagService } from 'app/entities/tag';
 import { LessonFileService } from 'app/entities/lesson-file';
 import { ILessonFile } from 'app/shared/model/lesson-file.model';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
+import { Word } from 'app/shared/model/word.model';
 
 @Component({
     selector: 'jhi-lesson-update',
@@ -22,6 +23,19 @@ export class LessonUpdateComponent implements OnInit {
 
     tags: ITag[];
     availableFiles: ILessonFile[];
+
+    displayDialog: boolean;
+    word = new Word();
+    selectedWord: Word;
+    newWord: boolean;
+    cols: [
+        { field: 'translation'; header: 'Vin' },
+        { field: 'kana'; header: 'Year' },
+        { field: 'kanji'; header: 'Brand' },
+        { field: 'romaji'; header: 'Color' },
+        { field: 'note'; header: 'Color' },
+        { field: 'tags'; header: 'Tagi' }
+    ];
 
     constructor(
         private jhiAlertService: JhiAlertService,
@@ -45,7 +59,9 @@ export class LessonUpdateComponent implements OnInit {
         this.lessonFileService.query({ 'lessonId.specified': false }).subscribe(
             (res: HttpResponse<ILessonFile[]>) => {
                 this.availableFiles = res.body;
-                this.lesson.lessonFiles.forEach(file => this.availableFiles.push(file));
+                if (this.lesson.lessonFiles) {
+                    this.lesson.lessonFiles.forEach(file => this.availableFiles.push(file));
+                }
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
@@ -101,5 +117,48 @@ export class LessonUpdateComponent implements OnInit {
 
     set lesson(lesson: ILesson) {
         this._lesson = lesson;
+    }
+
+    showDialogToAdd() {
+        this.newWord = true;
+        this.word = new Word();
+        this.displayDialog = true;
+    }
+
+    saveWord() {
+        if (!this.lesson.words) {
+            this.lesson.words = [];
+        }
+        if (this.newWord) {
+            this.lesson.words.push(this.word);
+        } else {
+            this.lesson.words[this.lesson.words.indexOf(this.selectedWord)] = this.word;
+        }
+        console.log(this.word);
+        console.log(this.lesson.words);
+
+        this.word = null;
+        this.displayDialog = false;
+    }
+
+    deleteWord() {
+        const index = this.lesson.words.indexOf(this.selectedWord);
+        this.lesson.words = this.lesson.words.filter((val, i) => i !== index);
+        this.word = null;
+        this.displayDialog = false;
+    }
+
+    onRowSelect(event) {
+        this.newWord = false;
+        this.word = this.cloneWord(event.data);
+        this.displayDialog = true;
+    }
+
+    cloneWord(word: Word): Word {
+        return JSON.parse(JSON.stringify(word));
+    }
+
+    clearSelection() {
+        this.selectedWord = null;
     }
 }

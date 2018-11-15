@@ -26,6 +26,7 @@ public class LessonDTO {
     private List<LessonFileShortDTO> lessonFiles;
     private List<TagDTO> tags;
     private String rawTags;
+    private List<WordDTO> words;
 
     @Override
     public boolean equals(Object o) {

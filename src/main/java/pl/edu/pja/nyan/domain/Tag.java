@@ -61,6 +61,15 @@ public class Tag implements Serializable {
         this.addLesson(lesson);
     }
 
+    public Tag(String name, Word word) {
+        this.name = name;
+        this.addWord(word);
+    }
+
+    public Tag(String token) {
+        this.name = token;
+    }
+
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;

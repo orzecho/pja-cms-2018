@@ -37,6 +37,8 @@ public class WordDTO implements Serializable {
 
     private List<TagDTO> tags = new ArrayList<>();
 
+    private String rawTags;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
