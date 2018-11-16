@@ -67,7 +67,7 @@ public class Tag implements Serializable {
     }
 
     public Tag(String name) {
-        this.name = token;
+        this.name = name;
     }
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
