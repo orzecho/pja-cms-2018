@@ -8,6 +8,7 @@ export interface IWord {
     romaji?: string;
     note?: string;
     tags?: ITag[];
+    rawTags?: string;
 }
 
 export class Word implements IWord {
@@ -18,6 +19,7 @@ export class Word implements IWord {
         public kanji?: string,
         public romaji?: string,
         public note?: string,
-        public tags?: ITag[]
+        public tags?: ITag[],
+        public rawTags?: string
     ) {}
 }

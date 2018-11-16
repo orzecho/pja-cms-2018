@@ -46,6 +46,135 @@
                     </div>
                 </div>
 
+                <p-table [value]="lesson.words" selectionMode="single" [(selection)]="selectedWord"
+                         (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="15">
+                    <ng-template pTemplate="caption">
+                        Słownictwo
+                    </ng-template>
+                    <ng-template pTemplate="header" let-columns>
+                        <tr>
+                            <th pSortableColumn="translation">
+                                Tłumaczenie <p-sortIcon field="translation"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="kana">
+                                Kana <p-sortIcon field="kana"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="kanji">
+                                Kanji <p-sortIcon field="kanji"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="romaji">
+                                Romaji <p-sortIcon field="romaji"></p-sortIcon>
+                            </th>
+                            <th>
+                                Tagi
+                            </th>
+                            <th>
+                                Uwagi
+                            </th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-rowData let-columns="columns">
+                        <tr [pSelectableRow]="rowData">
+                            <td>
+                                {{rowData.translation}}
+                            </td>
+                            <td>
+                                {{rowData.kana}}
+                            </td>
+                            <td>
+                                {{rowData.kanji}}
+                            </td>
+                            <td>
+                                {{rowData.romaji}}
+                            </td>
+                            <td>
+                                {{rowData.rawTags}}
+                            </td>
+                            <td>
+                                {{rowData.note}}
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="summary" let-rowData>
+                        <div style="text-align:left">
+                            <button type="button" (click)="showDialogToAdd()" class="btn btn-success">
+                                <fa-icon [icon]="'plus'"></fa-icon>&nbsp;<span>Dodaj słowo</span>
+                            </button>
+                        </div>
+                    </ng-template>
+                </p-table>
+
+                <p-dialog header="Słowo" [(visible)]="displayDialog"
+                          [responsive]="true"
+                          showEffect="fade"
+                          [modal]="true"
+                          [width]="300" (onHide)="clearSelection()">
+                    <div class="ui-g ui-fluid" *ngIf="word">
+                        <div class="ui-g-12">
+                            <div class="ui-g-4">
+                                <label for="translation">Tłumaczenie</label>
+                            </div>
+                            <div class="ui-g-8">
+                                <input pInputText id="translation" [ngModelOptions]="{standalone: true}" [(ngModel)]="word.translation" />
+                            </div>
+                        </div>
+                        <div class="ui-g-12">
+                            <div class="ui-g-4">
+                                <label for="kana">Kana</label>
+                            </div>
+                            <div class="ui-g-8">
+                                <input pInputText id="kana" [ngModelOptions]="{standalone: true}" [(ngModel)]="word.kana" />
+                            </div>
+                        </div>
+                        <div class="ui-g-12">
+                            <div class="ui-g-4">
+                                <label for="kanji">Kanji</label>
+                            </div>
+                            <div class="ui-g-8">
+                                <input pInputText id="kanji" [ngModelOptions]="{standalone: true}"
+                                       [(ngModel)]="word.kanji" />
+                            </div>
+                        </div>
+                        <div class="ui-g-12">
+                            <div class="ui-g-4">
+                                <label for="romaji">Romaji</label>
+                            </div>
+                            <div class="ui-g-8">
+                                <input pInputText id="romaji" [ngModelOptions]="{standalone: true}"
+                                       [(ngModel)]="word.romaji" />
+                            </div>
+                        </div>
+                        <div class="ui-g-12">
+                            <div class="ui-g-4">
+                                <label for="note">Uwagi</label>
+                            </div>
+                            <div class="ui-g-8">
+                                <input pInputText id="note" [ngModelOptions]="{standalone: true}"
+                                       [(ngModel)]="word.note" />
+                            </div>
+                        </div>
+                        <div class="ui-g-12">
+                            <div class="ui-g-4">
+                                <label for="tags">Tagi</label>
+                            </div>
+                            <div class="ui-g-8">
+                                <input pInputText id="tags" [ngModelOptions]="{standalone: true}" [(ngModel)]="word.rawTags" />
+                            </div>
+                        </div>
+                    </div>
+                    <p-footer>
+                        <div class="ui-dialog-buttonpane ui-helper-clearfix">
+                            <button *ngIf="!this.newWord" type="button" icon="fa fa-close" (click)="deleteWord()"
+                                    class="btn btn-secondary">
+                                <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span>Usuń</span>
+                            </button>
+                            <button type="button" icon="fa fa-check" (click)="saveWord()" class="btn btn-primary">
+                                <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span>Zapisz</span>
+                            </button>
+                        </div>
+                    </p-footer>
+                </p-dialog>
+
 
             </div>
             <div>

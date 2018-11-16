@@ -4,12 +4,16 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.stereotype.Service;
 
 import com.google.common.collect.Sets;
 
 import lombok.RequiredArgsConstructor;
+import pl.edu.pja.nyan.domain.Tag;
 import pl.edu.pja.nyan.domain.Word;
+import pl.edu.pja.nyan.repository.WordRepository;
 import pl.edu.pja.nyan.service.dto.WordDTO;
 
 @Service
@@ -18,10 +22,16 @@ public class WordMapper implements EntityMapper<WordDTO, Word> {
 
     private final TagMapper tagMapper;
 
+    private final WordRepository wordRepository;
+
     @Override
     public Word toEntity(WordDTO dto) {
-        Word word = new Word();
-        word.setId(dto.getId());
+        Word word;
+        if (dto.getId() == null) {
+            word = new Word();
+        } else {
+            word = wordRepository.findById(dto.getId()).orElseThrow(EntityNotFoundException::new);
+        }
         word.setKana(dto.getKana());
         word.setKanji(dto.getKanji());
         word.setNote(dto.getNote());
@@ -42,6 +52,7 @@ public class WordMapper implements EntityMapper<WordDTO, Word> {
             .kana(entity.getKana())
             .translation(entity.getTranslation())
             .tags(tagMapper.toDto(entity.getTags()))
+            .rawTags(String.join(",", entity.getTags().stream().map(Tag::getName).collect(Collectors.toList())))
             .build();
     }
 

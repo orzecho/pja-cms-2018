@@ -1,5 +1,6 @@
 import { ILessonFile } from 'app/shared/model//lesson-file.model';
 import { ITag } from 'app/shared/model//tag.model';
+import { IWord } from 'app/shared/model/word.model';
 
 export interface ILesson {
     id?: number;
@@ -8,6 +9,7 @@ export interface ILesson {
     lessonFiles?: ILessonFile[];
     rawTags?: string;
     tags?: ITag[];
+    words?: IWord[];
 }
 
 export class Lesson implements ILesson {
@@ -17,6 +19,7 @@ export class Lesson implements ILesson {
         public description?: string,
         public lessonFiles?: ILessonFile[],
         public tags?: ITag[],
-        public rawTags?: string
+        public rawTags?: string,
+        public words?: IWord[]
     ) {}
 }

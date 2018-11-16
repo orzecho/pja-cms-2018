@@ -1,5 +1,6 @@
 package pl.edu.pja.nyan.service.mapper;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -16,8 +17,11 @@ import pl.edu.pja.nyan.domain.LessonFile;
 import pl.edu.pja.nyan.domain.Tag;
 import pl.edu.pja.nyan.repository.LessonFileRepository;
 import pl.edu.pja.nyan.repository.LessonRepository;
+import pl.edu.pja.nyan.repository.TagRepository;
+import pl.edu.pja.nyan.repository.WordRepository;
 import pl.edu.pja.nyan.service.dto.LessonDTO;
 import pl.edu.pja.nyan.service.dto.LessonFileShortDTO;
+import pl.edu.pja.nyan.service.dto.WordDTO;
 
 @RequiredArgsConstructor
 @Service
@@ -25,8 +29,11 @@ public class LessonMapper implements EntityMapper<LessonDTO,Lesson> {
 
     private final LessonFileMapper lessonFileMapper;
     private final LessonFileRepository lessonFileRepository;
+    private final WordRepository wordRepository;
+    private final WordMapper wordMapper;
     private final LessonRepository lessonRepository;
     private final TagMapper tagMapper;
+    private final TagRepository tagRepository;
 
     @Override
     public Lesson toEntity(LessonDTO dto) {
@@ -36,7 +43,6 @@ public class LessonMapper implements EntityMapper<LessonDTO,Lesson> {
         } else {
             lesson = new Lesson();
         }
-        lesson.setId(dto.getId());
         lesson.setDescription(dto.getDescription());
         lesson.setName(dto.getName());
         Optional.ofNullable(dto.getLessonFiles()).ifPresent(e -> updateFiles(e, lesson));
@@ -45,6 +51,9 @@ public class LessonMapper implements EntityMapper<LessonDTO,Lesson> {
 
     @Override
     public LessonDTO toDto(Lesson entity) {
+        Optional<Tag> lessonTag = tagRepository.findByName(entity.getName());
+        List<WordDTO> words = lessonTag
+            .map(e -> wordMapper.toDto(wordRepository.findByTagsContaining(e))).orElse(new ArrayList<>());
         return LessonDTO.builder()
             .id(entity.getId())
             .description(entity.getDescription())
@@ -52,6 +61,7 @@ public class LessonMapper implements EntityMapper<LessonDTO,Lesson> {
             .lessonFiles(lessonFileMapper.toShortDto(lessonFileRepository.findByLesson(entity)))
             .tags(tagMapper.toDto(entity.getTags()))
             .rawTags(String.join(",", entity.getTags().stream().map(Tag::getName).collect(Collectors.toList())))
+            .words(words)
             .build();
     }
 

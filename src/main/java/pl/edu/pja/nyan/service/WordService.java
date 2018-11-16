@@ -1,5 +1,8 @@
 package pl.edu.pja.nyan.service;
 
+import lombok.RequiredArgsConstructor;
+import pl.edu.pja.nyan.domain.Lesson;
+import pl.edu.pja.nyan.domain.Tag;
 import pl.edu.pja.nyan.domain.Word;
 import pl.edu.pja.nyan.repository.WordRepository;
 import pl.edu.pja.nyan.service.dto.WordDTO;
@@ -12,13 +15,19 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.persistence.EntityNotFoundException;
+
 /**
  * Service Implementation for managing Word.
  */
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class WordService {
 
     private final Logger log = LoggerFactory.getLogger(WordService.class);
@@ -27,10 +36,7 @@ public class WordService {
 
     private final WordMapper wordMapper;
 
-    public WordService(WordRepository wordRepository, WordMapper wordMapper) {
-        this.wordRepository = wordRepository;
-        this.wordMapper = wordMapper;
-    }
+    private final TagService tagService;
 
     /**
      * Save a word.
@@ -66,7 +72,7 @@ public class WordService {
     public Page<WordDTO> findAllWithEagerRelationships(Pageable pageable) {
         return wordRepository.findAllWithEagerRelationships(pageable).map(wordMapper::toDto);
     }
-    
+
 
     /**
      * Get one word by id.
@@ -89,5 +95,43 @@ public class WordService {
     public void delete(Long id) {
         log.debug("Request to delete Word : {}", id);
         wordRepository.deleteById(id);
+    }
+
+    public void saveWordsIfNecessary(List<WordDTO> words, Tag lessonTag) {
+        words.forEach(word -> {
+            Word entity;
+            Set<Tag> parsedTags;
+            if (word.getId() == null) {
+                Optional<Word> optionalWord = wordRepository
+                    .findByTranslationAndKanaAndKanji(word.getTranslation(), word.getKana(), word.getKanji());
+                if (optionalWord.isPresent()) {
+                    entity = optionalWord.get();
+                    entity.setNote(word.getNote());
+                    entity.addTag(lessonTag);
+                    parsedTags = tagService.parseTags(word.getRawTags(), optionalWord.get());
+                } else {
+                    entity = wordRepository.getOne(save(word).getId()).addTag(lessonTag);
+                    parsedTags = tagService.parseTags(word.getRawTags(), entity);
+                }
+            } else {
+                entity = wordMapper.toEntity(word);
+                parsedTags = tagService.parseTags(word.getRawTags(), entity);
+                if (entity.getTags().stream().noneMatch(e -> e.getId().equals(lessonTag.getId()))) {
+                    entity.addTag(lessonTag);
+                    wordRepository.save(entity);
+                }
+            }
+            parsedTags.add(lessonTag);
+            deleteOldTags(entity, parsedTags);
+        });
+    }
+
+    private Word deleteOldTags(Word w, Set<Tag> parsedTags) {
+        Word word = wordRepository.findById(w.getId()).orElseThrow(EntityNotFoundException::new);
+        List<Tag> deletedTags = word.getTags().stream()
+            .filter(tag -> parsedTags.stream().noneMatch(f -> f.getId().equals(tag.getId())))
+            .collect(Collectors.toList());
+        deletedTags.forEach(e -> e.removeWord(word));
+        return word;
     }
 }

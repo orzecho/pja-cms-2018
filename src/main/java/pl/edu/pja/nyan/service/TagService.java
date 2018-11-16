@@ -2,6 +2,7 @@ package pl.edu.pja.nyan.service;
 
 import pl.edu.pja.nyan.domain.Lesson;
 import pl.edu.pja.nyan.domain.Tag;
+import pl.edu.pja.nyan.domain.Word;
 import pl.edu.pja.nyan.repository.TagRepository;
 import pl.edu.pja.nyan.service.dto.TagDTO;
 import pl.edu.pja.nyan.service.mapper.TagMapper;
@@ -95,19 +96,60 @@ public class TagService {
         tagRepository.deleteById(id);
     }
 
-    public Set<Tag> parseTags(String rawTags, Lesson lesson) {
+    public Set<Tag> parseTags(String rawTags) {
         Set<Tag> tags = new HashSet<>();
+        if (rawTags == null) {
+            return tags;
+        }
         try (Scanner scanner = new Scanner(rawTags).useDelimiter(",")) {
             while (scanner.hasNext()) {
                 String token = scanner.next().trim();
                 Optional<Tag> tag = tagRepository.findByName(token);
                 if (!tag.isPresent()) {
-                    tags.add(tagRepository.save(new Tag(token, lesson)));
+                    tags.add(tagRepository.save(new Tag(token)));
                 } else {
-                    tag.get().addLesson(lesson);
+                    tags.add(tag.get());
                 }
             }
         }
         return tags;
+    }
+
+    public Set<Tag> parseTags(String rawTags, Word word) {
+        Set<Tag> tags = new HashSet<>();
+        if (rawTags == null || word == null) {
+            return tags;
+        }
+        try (Scanner scanner = new Scanner(rawTags).useDelimiter(",")) {
+            while (scanner.hasNext()) {
+                String token = scanner.next().trim();
+                Optional<Tag> tag = tagRepository.findByName(token);
+                if (!tag.isPresent()) {
+                    tags.add(tagRepository.save(new Tag(token, word)));
+                } else {
+                    if (tag.get().getWords().stream().noneMatch(e -> e.getId().equals(word.getId()))) {
+                        tag.get().addWord(word);
+                    }
+                    tags.add(tag.get());
+                }
+            }
+        }
+        return tags;
+    }
+
+    public Tag addLessonTag(Lesson lesson) {
+        String lessonName = lesson.getName();
+        Optional<Tag> tagOptional = tagRepository.findByName(lessonName);
+        Tag tag;
+        if (tagOptional.isPresent()) {
+            if (tagOptional.get().getLessons().stream().noneMatch(e -> e.getId().equals(lesson.getId()))) {
+                tag = tagOptional.get().addLesson(lesson);
+            } else {
+                tag = tagOptional.get();
+            }
+        } else {
+            tag = tagRepository.save(new Tag(lessonName, lesson));
+        }
+        return tag;
     }
 }
