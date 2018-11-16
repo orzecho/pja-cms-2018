@@ -66,7 +66,7 @@ public class Tag implements Serializable {
         this.addWord(word);
     }
 
-    public Tag(String token) {
+    public Tag(String name) {
         this.name = token;
     }
 
