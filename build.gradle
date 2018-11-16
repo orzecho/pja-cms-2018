@@ -209,6 +209,8 @@ dependencies {
     testCompile "com.mattbertolini:liquibase-slf4j"
     testCompile "org.hamcrest:hamcrest-library"
     //jhipster-needle-gradle-dependency - JHipster will add additional dependencies here
+
+    apt 'org.projectlombok:lombok:1.18.4'
 }
 
 task cleanResources(type: Delete) {
