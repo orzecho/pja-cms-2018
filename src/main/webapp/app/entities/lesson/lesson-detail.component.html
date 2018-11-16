@@ -27,6 +27,58 @@
                 </dd>
             </dl>
 
+            <p-table [value]="lesson.words" selectionMode="single" [paginator]="true" [rows]="15">
+                <ng-template pTemplate="caption">
+                    Słownictwo
+                </ng-template>
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th pSortableColumn="translation">
+                            Tłumaczenie <p-sortIcon field="translation"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="kana">
+                            Kana <p-sortIcon field="kana"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="kanji">
+                            Kanji <p-sortIcon field="kanji"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="romaji">
+                            Romaji <p-sortIcon field="romaji"></p-sortIcon>
+                        </th>
+                        <th>
+                            Tagi
+                        </th>
+                        <th>
+                            Uwagi
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-columns="columns">
+                    <tr>
+                        <td>
+                            {{rowData.translation}}
+                        </td>
+                        <td>
+                            {{rowData.kana}}
+                        </td>
+                        <td>
+                            {{rowData.kanji}}
+                        </td>
+                        <td>
+                            {{rowData.romaji}}
+                        </td>
+                        <td>
+                            <a [routerLink]="['/tag', tag?.id, 'view' ]"
+                               class="badge badge-pill badge-primary"
+                               *ngFor="let tag of rowData.tags">{{tag.name}}</a>
+                        </td>
+                        <td>
+                            {{rowData.note}}
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+
             <button type="submit"
                     (click)="previousState()"
                     class="btn btn-info">
