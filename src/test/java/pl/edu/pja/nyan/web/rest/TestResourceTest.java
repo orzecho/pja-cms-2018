@@ -40,11 +40,11 @@ public class TestResourceTest {
         word.setKana("qwer");
         word.setKanji("zxcv");
         word = wordRepository.save(word);
-        Tag tag = tagRepository.save(new Tag("tag", word));
+        Tag tag = tagRepository.save(new Tag("tag1", word));
         wordRepository.save(word);
 
         //when
-        ResultActions resultActions = mockMvc.perform(get("/api/test/vocabulary/TRANSLATION/" + tag.getId())
+        ResultActions resultActions = mockMvc.perform(get("/api/test/vocabulary/TRANSLATION/" + tag.getName())
             .with(user("user").roles("USER")));
 
         //then
@@ -69,11 +69,11 @@ public class TestResourceTest {
         word.setKana("qwer");
         word.setKanji("zxcv");
         word = wordRepository.save(word);
-        Tag tag = tagRepository.save(new Tag("tag", word));
+        Tag tag = tagRepository.save(new Tag("tag2", word));
         wordRepository.save(word);
 
         //when
-        ResultActions resultActions = mockMvc.perform(get("/api/test/vocabulary/KANA/" + tag.getId())
+        ResultActions resultActions = mockMvc.perform(get("/api/test/vocabulary/KANA/" + tag.getName())
             .with(user("user").roles("USER")));
 
         //then
@@ -98,11 +98,11 @@ public class TestResourceTest {
         word.setKana("qwer");
         word.setKanji("zxcv");
         word = wordRepository.save(word);
-        Tag tag = tagRepository.save(new Tag("tag", word));
+        Tag tag = tagRepository.save(new Tag("tag3", word));
         wordRepository.save(word);
 
         //when
-        ResultActions resultActions = mockMvc.perform(get("/api/test/vocabulary/KANJI/" + tag.getId())
+        ResultActions resultActions = mockMvc.perform(get("/api/test/vocabulary/KANJI/" + tag.getName())
             .with(user("user").roles("USER")));
 
         //then

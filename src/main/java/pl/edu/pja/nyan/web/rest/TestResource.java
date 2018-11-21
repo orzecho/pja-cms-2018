@@ -19,9 +19,9 @@ public class TestResource {
     private final VocabularyTestService vocabularyTestService;
     private final TagService tagService;
 
-    @GetMapping("/vocabulary/{type}/{tagIds}")
-    public List<VocabularyTestItemDTO> generateVocabularyTest(@PathVariable String type, @PathVariable String tagIds) {
-        return vocabularyTestService.generateTest(tagService.findByIds(tagIds),
+    @GetMapping("/vocabulary/{type}/{tags}")
+    public List<VocabularyTestItemDTO> generateVocabularyTest(@PathVariable String type, @PathVariable String tags) {
+        return vocabularyTestService.generateTest(tagService.findByTagNames(tags),
             VocabularyTestService.VocabularyTestType.valueOf(type));
     }
 }

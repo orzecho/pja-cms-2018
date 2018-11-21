@@ -156,17 +156,16 @@ public class TagService {
         return tag;
     }
 
-    public List<Tag> findByIds(String stringIds) {
-        List<Long> ids = Arrays.stream(stringIds.split(","))
+    public List<Tag> findByTagNames(String stringIds) {
+        List<String> names = Arrays.stream(stringIds.split(","))
             .map(String::trim)
-            .map(Long::valueOf)
             .collect(Collectors.toList());
-        return findByIds(ids);
+        return findByTagNames(names);
     }
 
-    public List<Tag> findByIds(List<Long> ids) {
-        return ids.stream()
-            .map(tagRepository::findById)
+    public List<Tag> findByTagNames(List<String> names) {
+        return names.stream()
+            .map(tagRepository::findByName)
             .filter(Optional::isPresent)
             .map(Optional::get).collect(Collectors.toList());
     }
