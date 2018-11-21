@@ -14,10 +14,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing Tag.
@@ -151,5 +154,19 @@ public class TagService {
             tag = tagRepository.save(new Tag(lessonName, lesson));
         }
         return tag;
+    }
+
+    public List<Tag> findByTagNames(String stringIds) {
+        List<String> names = Arrays.stream(stringIds.split(","))
+            .map(String::trim)
+            .collect(Collectors.toList());
+        return findByTagNames(names);
+    }
+
+    public List<Tag> findByTagNames(List<String> names) {
+        return names.stream()
+            .map(tagRepository::findByName)
+            .filter(Optional::isPresent)
+            .map(Optional::get).collect(Collectors.toList());
     }
 }

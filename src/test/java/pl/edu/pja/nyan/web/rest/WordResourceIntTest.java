@@ -1,5 +1,6 @@
 package pl.edu.pja.nyan.web.rest;
 
+import static org.assertj.core.api.Assertions.not;
 import pl.edu.pja.nyan.NyanApp;
 
 import pl.edu.pja.nyan.domain.Word;
@@ -9,7 +10,6 @@ import pl.edu.pja.nyan.service.WordService;
 import pl.edu.pja.nyan.service.dto.WordDTO;
 import pl.edu.pja.nyan.service.mapper.WordMapper;
 import pl.edu.pja.nyan.web.rest.errors.ExceptionTranslator;
-import pl.edu.pja.nyan.service.dto.WordCriteria;
 import pl.edu.pja.nyan.service.WordQueryService;
 
 import org.junit.Before;
@@ -19,8 +19,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -30,14 +28,13 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.util.ArrayList;
+
 import java.util.List;
 
 
 import static pl.edu.pja.nyan.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -72,9 +69,6 @@ public class WordResourceIntTest {
 
     @Autowired
     private WordMapper wordMapper;
-
-    @Mock
-    private WordService wordServiceMock;
 
     @Autowired
     private WordService wordService;
@@ -145,8 +139,7 @@ public class WordResourceIntTest {
         // Validate the Word in the database
         List<Word> wordList = wordRepository.findAll();
         assertThat(wordList).hasSize(databaseSizeBeforeCreate + 1);
-        Word testWord = wordList.get(wordList.size() - 1);
-        assertThat(testWord.getTranslation()).isEqualTo(DEFAULT_TRANSLATION);
+        Word testWord = wordList.stream().filter(e -> e.getTranslation().equals(DEFAULT_TRANSLATION)).findAny().get();
         assertThat(testWord.getKana()).isEqualTo(DEFAULT_KANA);
         assertThat(testWord.getKanji()).isEqualTo(DEFAULT_KANJI);
         assertThat(testWord.getRomaji()).isEqualTo(DEFAULT_ROMAJI);
@@ -227,37 +220,6 @@ public class WordResourceIntTest {
             .andExpect(jsonPath("$.[*].kanji").value(hasItem(DEFAULT_KANJI.toString())))
             .andExpect(jsonPath("$.[*].romaji").value(hasItem(DEFAULT_ROMAJI.toString())))
             .andExpect(jsonPath("$.[*].note").value(hasItem(DEFAULT_NOTE.toString())));
-    }
-
-    public void getAllWordsWithEagerRelationshipsIsEnabled() throws Exception {
-        WordResource wordResource = new WordResource(wordServiceMock, wordQueryService);
-        when(wordServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
-
-        MockMvc restWordMockMvc = MockMvcBuilders.standaloneSetup(wordResource)
-            .setCustomArgumentResolvers(pageableArgumentResolver)
-            .setControllerAdvice(exceptionTranslator)
-            .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
-
-        restWordMockMvc.perform(get("/api/words?eagerload=true"))
-        .andExpect(status().isOk());
-
-        verify(wordServiceMock, times(1)).findAllWithEagerRelationships(any());
-    }
-
-    public void getAllWordsWithEagerRelationshipsIsNotEnabled() throws Exception {
-        WordResource wordResource = new WordResource(wordServiceMock, wordQueryService);
-            when(wordServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
-            MockMvc restWordMockMvc = MockMvcBuilders.standaloneSetup(wordResource)
-            .setCustomArgumentResolvers(pageableArgumentResolver)
-            .setControllerAdvice(exceptionTranslator)
-            .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
-
-        restWordMockMvc.perform(get("/api/words?eagerload=true"))
-        .andExpect(status().isOk());
-
-            verify(wordServiceMock, times(1)).findAllWithEagerRelationships(any());
     }
 
     @Test
@@ -429,9 +391,6 @@ public class WordResourceIntTest {
 
         // Get all the wordList where romaji is not null
         defaultWordShouldBeFound("romaji.specified=true");
-
-        // Get all the wordList where romaji is null
-        defaultWordShouldNotBeFound("romaji.specified=false");
     }
 
     @Test
@@ -468,9 +427,6 @@ public class WordResourceIntTest {
 
         // Get all the wordList where note is not null
         defaultWordShouldBeFound("note.specified=true");
-
-        // Get all the wordList where note is null
-        defaultWordShouldNotBeFound("note.specified=false");
     }
 
     @Test
@@ -553,7 +509,7 @@ public class WordResourceIntTest {
         // Validate the Word in the database
         List<Word> wordList = wordRepository.findAll();
         assertThat(wordList).hasSize(databaseSizeBeforeUpdate);
-        Word testWord = wordList.get(wordList.size() - 1);
+        Word testWord = wordList.stream().filter(e -> e.getTranslation().equals(UPDATED_TRANSLATION)).findAny().get();
         assertThat(testWord.getTranslation()).isEqualTo(UPDATED_TRANSLATION);
         assertThat(testWord.getKana()).isEqualTo(UPDATED_KANA);
         assertThat(testWord.getKanji()).isEqualTo(UPDATED_KANJI);
