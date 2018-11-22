@@ -1,0 +1,35 @@
+<div>
+    <h2 id="page-heading">
+        <span>Testy</span>
+    </h2>
+    <jhi-alert></jhi-alert>
+    <br/>
+    <div class="row justify-content-center">
+        <div class="col-8">
+            <form name="generateTestForm" role="form" novalidate (ngSubmit)="routeToTestPage()" #generateTestForm="ngForm">
+                <div>
+                    <jhi-alert-error></jhi-alert-error>
+                    <div class="form-group">
+                        <label class="form-control-label" for="field_tags">Tagi dla których ma być wygenerowany
+                            test</label>
+                        <input type="text" class="form-control" name="tags" id="field_tags"
+                               [(ngModel)]="tags" required/>
+                        <div [hidden]="!(generateTestForm.controls.tags?.dirty && generateTestForm.controls.tags?.invalid)">
+                            <small class="form-text text-danger"
+                                   [hidden]="!generateTestForm.controls.tags?.errors?.required">
+                                To pole nie może być puste.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <button type="submit" id="generate-test" [disabled]="generateTestForm.form.invalid || isSaving"
+                            class="btn btn-primary">
+                        <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span>Generuj</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
