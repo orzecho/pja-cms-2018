@@ -16,12 +16,14 @@ import pl.edu.pja.nyan.domain.Tag;
 import pl.edu.pja.nyan.domain.Word;
 import pl.edu.pja.nyan.repository.WordRepository;
 import pl.edu.pja.nyan.service.dto.test.VocabularyTestItemDTO;
+import pl.edu.pja.nyan.service.mapper.WordMapper;
 
 @Service
 @RequiredArgsConstructor
 public class VocabularyTestService {
 
     private final WordRepository wordRepository;
+    private final WordMapper wordMapper;
 
     public enum VocabularyTestType {
         TRANSLATION, KANA, KANJI, MIXED
@@ -66,6 +68,7 @@ public class VocabularyTestService {
             .kanjiFromSystem(word.getKanji())
             .kanjiFromUser("")
             .kanjiCorrect(false)
+            .word(wordMapper.toDto(word))
             .build();
     }
 
@@ -86,6 +89,7 @@ public class VocabularyTestService {
             .kanjiFromSystem(word.getKanji())
             .kanjiFromUser("")
             .kanjiCorrect(false)
+            .word(wordMapper.toDto(word))
             .build();
     }
 
@@ -106,6 +110,7 @@ public class VocabularyTestService {
             .kanjiFromSystem(word.getKanji())
             .kanjiFromUser(word.getKanji())
             .kanjiCorrect(true)
+            .word(wordMapper.toDto(word))
             .build();
     }
 

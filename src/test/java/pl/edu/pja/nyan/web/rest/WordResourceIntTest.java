@@ -131,6 +131,7 @@ public class WordResourceIntTest {
 
         // Create the Word
         WordDTO wordDTO = wordMapper.toDto(word);
+        wordDTO.setTranslation(wordDTO.getTranslation() + "1234");
         restWordMockMvc.perform(post("/api/words")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(wordDTO)))
@@ -139,7 +140,8 @@ public class WordResourceIntTest {
         // Validate the Word in the database
         List<Word> wordList = wordRepository.findAll();
         assertThat(wordList).hasSize(databaseSizeBeforeCreate + 1);
-        Word testWord = wordList.stream().filter(e -> e.getTranslation().equals(DEFAULT_TRANSLATION)).findAny().get();
+        Word testWord = wordList.stream().filter(e -> e.getTranslation().equals(DEFAULT_TRANSLATION + 1234)).findAny()
+            .get();
         assertThat(testWord.getKana()).isEqualTo(DEFAULT_KANA);
         assertThat(testWord.getKanji()).isEqualTo(DEFAULT_KANJI);
         assertThat(testWord.getRomaji()).isEqualTo(DEFAULT_ROMAJI);

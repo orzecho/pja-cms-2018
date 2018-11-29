@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import pl.edu.pja.nyan.service.dto.WordDTO;
 
 @Builder
 @AllArgsConstructor
@@ -21,4 +22,6 @@ public class VocabularyTestItemDTO {
     private String kanjiFromSystem;
     private String kanjiFromUser;
     private Boolean kanjiCorrect;
+
+    private WordDTO word;
 }
