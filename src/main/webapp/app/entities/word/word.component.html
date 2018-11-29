@@ -8,6 +8,13 @@
             </span>
         </button>
     </h2>
+    <div>
+        <p-autoComplete [(ngModel)]="tagsFilter" [suggestions]="foundTags"
+                        (completeMethod)="searchForTags($event)" [multiple]="true"
+                        placeholder="Wyszukaj po tagu" [forceSelection]="true" field="name"
+                        (onSelect)="clear()" (onUnselect)="clear()">
+        </p-autoComplete>
+    </div>
     <jhi-alert></jhi-alert>
     <br/>
     <div class="table-responsive" *ngIf="words">
