@@ -13,8 +13,8 @@ export class TestService {
 
     constructor(private http: HttpClient) {}
 
-    getVocabularyTest(type: string, tags: string[]): Observable<EntityArrayResponseType> {
+    getVocabulary(type: string, tags: string[]): Observable<EntityArrayResponseType> {
         const tagsString = tags.join(',');
-        return this.http.get<IVocabularyTestItem[]>(`${this.resourceUrl}/${type}/${tagsString}`, { observe: 'response' });
+        return this.http.get<IVocabularyTestItem[]>(`${this.resourceUrl}/vocabulary/${type}/${tagsString}`, { observe: 'response' });
     }
 }

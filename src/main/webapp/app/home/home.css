@@ -10,7 +10,7 @@ Main page styles
     background-size: contain;
 }
 
-/* wait autoprefixer update to allow simple generation of high pixel density media getVocabularyTest */
+/* wait autoprefixer update to allow simple generation of high pixel density media getVocabulary */
 @media only screen and (-webkit-min-device-pixel-ratio: 2),
     only screen and (-moz-min-device-pixel-ratio: 2),
     only screen and (-o-min-device-pixel-ratio: 2/1),

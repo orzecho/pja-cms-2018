@@ -14,7 +14,7 @@ export const testRoute: Routes = [
         canActivate: [UserRouteAccessService]
     },
     {
-        path: 'test/vocabulary/:tags',
+        path: 'test/vocabulary/:type/:tags',
         component: VocabularyTestComponent,
         data: {
             authorities: ['ROLE_USER'],

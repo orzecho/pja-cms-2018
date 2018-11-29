@@ -1,19 +1,21 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { JhiAlertService, JhiEventManager, JhiParseLinks } from 'ng-jhipster';
+import { JhiAlertService, JhiParseLinks } from 'ng-jhipster';
 import { Principal } from 'app/core';
+import { TagService } from 'app/entities/tag';
+import { ITag } from 'app/shared/model/tag.model';
 
 @Component({
     selector: 'jhi-tag',
     templateUrl: './test.component.html'
 })
-export class TestComponent implements OnInit, OnDestroy {
+export class TestComponent implements OnInit {
     currentAccount: any;
-    tags: string;
+    tags: ITag[];
+    availableTags: ITag[];
     error: any;
     success: any;
-    eventSubscriber: Subscription;
+    testType = 'TRANSLATION';
 
     constructor(
         private parseLinks: JhiParseLinks,
@@ -21,25 +23,31 @@ export class TestComponent implements OnInit, OnDestroy {
         private principal: Principal,
         private activatedRoute: ActivatedRoute,
         private router: Router,
-        private eventManager: JhiEventManager
+        private tagService: TagService
     ) {}
 
     ngOnInit() {
         this.principal.identity().then(account => {
             this.currentAccount = account;
         });
-        this.registerChangeInTags();
-    }
-
-    ngOnDestroy() {
-        this.eventManager.destroy(this.eventSubscriber);
     }
 
     routeToTestPage() {
-        this.router.navigate([`/vocabulary/${this.tags}`]);
+        const stringTags = this.tags.map(t => t.name).join(',');
+        this.router.navigate([`/test/vocabulary/${this.testType}/${stringTags}`]);
     }
 
     private onError(errorMessage: string) {
         this.jhiAlertService.error(errorMessage, null, null);
+    }
+
+    search(event) {
+        const req = {
+            'name.contains': event.query
+        };
+        this.tagService.query(req).subscribe(response => {
+            this.availableTags = response.body;
+            console.log(this.availableTags);
+        });
     }
 }
