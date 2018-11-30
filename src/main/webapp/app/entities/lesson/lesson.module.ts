@@ -16,6 +16,7 @@ import { MultiSelectModule } from 'primeng/primeng';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TableModule } from 'primeng/table';
 import { DialogModule } from 'primeng/dialog';
+import { AutoCompleteModule } from 'primeng/autocomplete';
 
 const ENTITY_STATES = [...lessonRoute, ...lessonPopupRoute];
 
@@ -27,7 +28,8 @@ const ENTITY_STATES = [...lessonRoute, ...lessonPopupRoute];
         MultiSelectModule,
         BrowserAnimationsModule,
         TableModule,
-        DialogModule
+        DialogModule,
+        AutoCompleteModule
     ],
     declarations: [LessonComponent, LessonDetailComponent, LessonUpdateComponent, LessonDeleteDialogComponent, LessonDeletePopupComponent],
     entryComponents: [LessonComponent, LessonUpdateComponent, LessonDeleteDialogComponent, LessonDeletePopupComponent],

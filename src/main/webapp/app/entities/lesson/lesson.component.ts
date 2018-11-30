@@ -5,10 +5,12 @@ import { Subscription } from 'rxjs';
 import { JhiEventManager, JhiParseLinks, JhiAlertService } from 'ng-jhipster';
 
 import { ILesson } from 'app/shared/model/lesson.model';
+import { ITag } from 'app/shared/model/tag.model';
 import { Principal } from 'app/core';
 
 import { ITEMS_PER_PAGE } from 'app/shared';
 import { LessonService } from './lesson.service';
+import { TagService } from 'app/entities/tag';
 
 @Component({
     selector: 'jhi-lesson',
@@ -30,8 +32,13 @@ export class LessonComponent implements OnInit, OnDestroy {
     previousPage: any;
     reverse: any;
 
+    /** filter by tags */
+    foundTags: ITag[];
+    tagsFilter: ITag[];
+
     constructor(
         private lessonService: LessonService,
+        private tagService: TagService,
         private parseLinks: JhiParseLinks,
         private jhiAlertService: JhiAlertService,
         private principal: Principal,
@@ -50,11 +57,7 @@ export class LessonComponent implements OnInit, OnDestroy {
 
     loadAll() {
         this.lessonService
-            .query({
-                page: this.page - 1,
-                size: this.itemsPerPage,
-                sort: this.sort()
-            })
+            .query(this.getRequestParams())
             .subscribe(
                 (res: HttpResponse<ILesson[]>) => this.paginateLessons(res.body, res.headers),
                 (res: HttpErrorResponse) => this.onError(res.message)
@@ -66,6 +69,18 @@ export class LessonComponent implements OnInit, OnDestroy {
             this.previousPage = page;
             this.transition();
         }
+    }
+
+    getRequestParams() {
+        const requestParams: any = {
+            page: this.page - 1,
+            size: this.itemsPerPage,
+            sort: this.sort()
+        };
+        if (this.tagsFilter && this.tagsFilter.length > 0) {
+            requestParams['tagId.in'] = this.tagsFilter.map(tag => tag.id);
+        }
+        return requestParams;
     }
 
     transition() {
@@ -117,6 +132,12 @@ export class LessonComponent implements OnInit, OnDestroy {
             result.push('id');
         }
         return result;
+    }
+
+    searchForTags(event) {
+        this.tagService
+            .query({ 'name.contains': event.query })
+            .subscribe((res: HttpResponse<ITag[]>) => (this.foundTags = res.body), (res: HttpErrorResponse) => this.onError(res.message));
     }
 
     private paginateLessons(data: ILesson[], headers: HttpHeaders) {
