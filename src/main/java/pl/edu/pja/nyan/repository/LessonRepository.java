@@ -1,6 +1,10 @@
 package pl.edu.pja.nyan.repository;
 
+import java.util.List;
+
 import pl.edu.pja.nyan.domain.Lesson;
+import pl.edu.pja.nyan.domain.Tag;
+
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
@@ -11,5 +15,5 @@ import org.springframework.stereotype.Repository;
 @SuppressWarnings("unused")
 @Repository
 public interface LessonRepository extends JpaRepository<Lesson, Long>, JpaSpecificationExecutor<Lesson> {
-
+    List<Lesson> findByTagsContaining(Tag tag);
 }

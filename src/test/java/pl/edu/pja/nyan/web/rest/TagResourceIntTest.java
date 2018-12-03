@@ -121,7 +121,7 @@ public class TagResourceIntTest {
         int databaseSizeBeforeCreate = tagRepository.findAll().size();
 
         // Create the Tag
-        TagDTO tagDTO = tagMapper.toDto(tag);
+        TagDTO tagDTO = TagDTO.builder().name(DEFAULT_NAME).build();
         restTagMockMvc.perform(post("/api/tags")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(tagDTO)))
@@ -158,11 +158,9 @@ public class TagResourceIntTest {
     @Transactional
     public void checkNameIsRequired() throws Exception {
         int databaseSizeBeforeTest = tagRepository.findAll().size();
-        // set the field null
-        tag.setName(null);
 
         // Create the Tag, which fails.
-        TagDTO tagDTO = tagMapper.toDto(tag);
+        TagDTO tagDTO = TagDTO.builder().build();
 
         restTagMockMvc.perform(post("/api/tags")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -372,7 +370,7 @@ public class TagResourceIntTest {
         int databaseSizeBeforeUpdate = tagRepository.findAll().size();
 
         // Create the Tag
-        TagDTO tagDTO = tagMapper.toDto(tag);
+        TagDTO tagDTO = TagDTO.builder().name(DEFAULT_NAME).build();
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restTagMockMvc.perform(put("/api/tags")
