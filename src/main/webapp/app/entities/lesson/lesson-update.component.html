@@ -4,50 +4,68 @@
             <h2 id="jhi-lesson-heading">Create or edit a Lesson</h2>
             <div>
                 <jhi-alert-error></jhi-alert-error>
-                <div class="form-group" [hidden]="!lesson.id">
+                <!-- <div class="form-group" [hidden]="!lesson.id">
+                    ////////////////////////////////////////////////////////////////////
                     <label for="id">ID</label>
-                    <input type="text" class="form-control" id="id" name="id"
-                        [(ngModel)]="lesson.id" readonly />
-                </div>
+                    <input type="text" class="form-control" id="id" name="id" [(ngModel)]="lesson.id" readonly />
+                </div> -->
                 <div class="form-group">
                     <label class="form-control-label" for="field_name">Name</label>
-                    <input type="text" class="form-control" name="name" id="field_name"
-                        [(ngModel)]="lesson.name" required/>
+                    <input type="text" class="form-control" name="name" id="field_name" [(ngModel)]="lesson.name"
+                        required />
                     <div [hidden]="!(editForm.controls.name?.dirty && editForm.controls.name?.invalid)">
-                        <small class="form-text text-danger"
-                        [hidden]="!editForm.controls.name?.errors?.required">
-                        This field is required.
+                        <small class="form-text text-danger" [hidden]="!editForm.controls.name?.errors?.required">
+                            This field is required.
                         </small>
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="form-control-label" for="field_description">Description</label>
-                    <input type="text" class="form-control" name="description" id="field_description"
-                        [(ngModel)]="lesson.description" />
+                    <input type="text" class="form-control" name="description" id="field_description" [(ngModel)]="lesson.description" />
                 </div>
                 <div class="form-group">
                     <label class="form-control-label" for="field_description">Tagi (oddzielane przecinkiem)</label>
-                    <input type="text" class="form-control" name="rawTags" id="field_raw_tags"
-                           [(ngModel)]="lesson.rawTags" />
+                    <input type="text" class="form-control" name="rawTags" id="field_raw_tags" [(ngModel)]="lesson.rawTags" />
                 </div>
+
+                <div class="form-group">
+                    <label class="form-control-label" for="field_description">Nazwa pliku (opcjonalnie)</label>
+                    <input type="text" class="form-control" name="rawTags" id="field_raw_tags" [(ngModel)]="lessonFile.name" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-control-label" for="field_content">Plik (opcjonalnie)</label>
+                    <div>
+                        <div *ngIf="lessonFile.content" class="form-text text-danger clearfix">
+                            <a class="pull-left" (click)="openFile(lessonFile.contentContentType, lessonFile.content)">open</a><br>
+                            <span class="pull-left">{{lessonFile.contentContentType}}, {{byteSize(lessonFile.content)}}</span>
+                            <button type="button" (click)="lessonFile.content=null;lessonFile.contentContentType=null;"
+                                class="btn btn-secondary btn-xs pull-right">
+                                <fa-icon [icon]="'times'"></fa-icon>
+                            </button>
+                        </div>
+                        <input type="file" id="file_content" (change)="setFileData($event, lessonFile, 'content', false)" />
+                    </div>
+                    <input type="hidden" class="form-control" name="content" id="field_content" [(ngModel)]="lessonFile.content"
+                        required />
+                    <input type="hidden" class="form-control" name="contentContentType" id="field_contentContentType"
+                        [(ngModel)]="lessonFile.contentContentType" />
+                    <!-- <div [hidden]="!(editForm.controls.content?.dirty && editForm.controls.content?.invalid)">
+                        <small class="form-text text-danger" [hidden]="!editForm.controls.content?.errors?.required">
+                            This field is required.
+                        </small>
+                    </div> -->
+                </div>
+
                 <div class="form-group">
                     <label class="form-control-label" for="field_lesson_files">Pliki lekcji</label>
                     <div class="row col-sm">
-                        <p-listbox [options]="availableFiles"
-                                   optionLabel="name"
-                                   name="lessonFiles"
-                                   [(ngModel)]="lesson.lessonFiles"
-                                   id="field_lesson_files"
-                                   [filter]="true"
-                                   dataKey="id"
-                                   [checkbox]="true"
-                                   [multiple]="true"
-                        ></p-listbox>
+                        <p-listbox [options]="availableFiles" optionLabel="name" name="lessonFiles" [(ngModel)]="lesson.lessonFiles"
+                            id="field_lesson_files" [filter]="true" dataKey="id" [checkbox]="true" [multiple]="true"></p-listbox>
                     </div>
                 </div>
-
-                <p-table [value]="lesson.words" selectionMode="single" [(selection)]="selectedWord"
-                         (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="15">
+                <p-table [value]="lesson.words" selectionMode="single" [(selection)]="selectedWord" (onRowSelect)="onRowSelect($event)"
+                    [paginator]="true" [rows]="15">
                     <ng-template pTemplate="caption">
                         Słownictwo
                     </ng-template>
@@ -104,11 +122,8 @@
                     </ng-template>
                 </p-table>
 
-                <p-dialog header="Słowo" [(visible)]="displayDialog"
-                          [responsive]="true"
-                          showEffect="fade"
-                          [modal]="true"
-                          [width]="300" (onHide)="clearSelection()">
+                <p-dialog header="Słowo" [(visible)]="displayDialog" [responsive]="true" showEffect="fade" [modal]="true"
+                    [width]="300" (onHide)="clearSelection()">
                     <div class="ui-g ui-fluid" *ngIf="word">
                         <div class="ui-g-12">
                             <div class="ui-g-4">
@@ -131,8 +146,7 @@
                                 <label for="kanji">Kanji</label>
                             </div>
                             <div class="ui-g-8">
-                                <input pInputText id="kanji" [ngModelOptions]="{standalone: true}"
-                                       [(ngModel)]="word.kanji" />
+                                <input pInputText id="kanji" [ngModelOptions]="{standalone: true}" [(ngModel)]="word.kanji" />
                             </div>
                         </div>
                         <div class="ui-g-12">
@@ -140,8 +154,7 @@
                                 <label for="romaji">Romaji</label>
                             </div>
                             <div class="ui-g-8">
-                                <input pInputText id="romaji" [ngModelOptions]="{standalone: true}"
-                                       [(ngModel)]="word.romaji" />
+                                <input pInputText id="romaji" [ngModelOptions]="{standalone: true}" [(ngModel)]="word.romaji" />
                             </div>
                         </div>
                         <div class="ui-g-12">
@@ -149,8 +162,7 @@
                                 <label for="note">Uwagi</label>
                             </div>
                             <div class="ui-g-8">
-                                <input pInputText id="note" [ngModelOptions]="{standalone: true}"
-                                       [(ngModel)]="word.note" />
+                                <input pInputText id="note" [ngModelOptions]="{standalone: true}" [(ngModel)]="word.note" />
                             </div>
                         </div>
                         <div class="ui-g-12">
@@ -164,8 +176,7 @@
                     </div>
                     <p-footer>
                         <div class="ui-dialog-buttonpane ui-helper-clearfix">
-                            <button *ngIf="!this.newWord" type="button" icon="fa fa-close" (click)="deleteWord()"
-                                    class="btn btn-secondary">
+                            <button *ngIf="!this.newWord" type="button" icon="fa fa-close" (click)="deleteWord()" class="btn btn-secondary">
                                 <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span>Usuń</span>
                             </button>
                             <button type="button" icon="fa fa-check" (click)="saveWord()" class="btn btn-primary">
@@ -178,7 +189,7 @@
 
             </div>
             <div>
-                <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
+                <button type="button" id="cancel-save" class="btn btn-secondary" (click)="previousState()">
                     <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span>Cancel</span>
                 </button>
                 <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">

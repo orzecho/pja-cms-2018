@@ -2,14 +2,13 @@ import { Component, forwardRef, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { JhiAlertService } from 'ng-jhipster';
-
-import { ILesson } from 'app/shared/model/lesson.model';
+import { JhiAlertService, JhiDataUtils } from 'ng-jhipster';
+import { ILesson, Lesson } from 'app/shared/model/lesson.model';
 import { LessonService } from './lesson.service';
 import { ITag } from 'app/shared/model/tag.model';
 import { TagService } from 'app/entities/tag';
 import { LessonFileService } from 'app/entities/lesson-file';
-import { ILessonFile } from 'app/shared/model/lesson-file.model';
+import { ILessonFile, LessonFile } from 'app/shared/model/lesson-file.model';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Word } from 'app/shared/model/word.model';
 
@@ -19,6 +18,7 @@ import { Word } from 'app/shared/model/word.model';
 })
 export class LessonUpdateComponent implements OnInit {
     private _lesson: ILesson;
+    private _lessonFile: ILessonFile;
     isSaving: boolean;
 
     tags: ITag[];
@@ -38,12 +38,20 @@ export class LessonUpdateComponent implements OnInit {
     ];
 
     constructor(
+        private dataUtils: JhiDataUtils,
         private jhiAlertService: JhiAlertService,
         private lessonService: LessonService,
         private tagService: TagService,
         private activatedRoute: ActivatedRoute,
         private lessonFileService: LessonFileService
-    ) {}
+    ) {
+        this.lessonFile = {
+            name: '',
+            content: '',
+            contentContentType: '',
+            lessonId: null
+        };
+    }
 
     ngOnInit() {
         this.isSaving = false;
@@ -74,17 +82,37 @@ export class LessonUpdateComponent implements OnInit {
     save() {
         this.isSaving = true;
         if (this.lesson.id !== undefined) {
-            this.subscribeToSaveResponse(this.lessonService.update(this.lesson));
+            this.subscribeToSaveResponseLesson(this.lessonService.update(this.lesson));
         } else {
-            this.subscribeToSaveResponse(this.lessonService.create(this.lesson));
+            this.subscribeToSaveResponseLesson(this.lessonService.create(this.lesson));
         }
     }
 
-    private subscribeToSaveResponse(result: Observable<HttpResponse<ILesson>>) {
-        result.subscribe((res: HttpResponse<ILesson>) => this.onSaveSuccess(), (res: HttpErrorResponse) => this.onSaveError());
+    byteSize(field) {
+        return this.dataUtils.byteSize(field);
     }
 
-    private onSaveSuccess() {
+    private subscribeToSaveResponseLesson(result: Observable<HttpResponse<ILesson>>) {
+        result.subscribe(
+            (res: HttpResponse<ILesson>) => {
+                console.log('ID lekcji' + res.body.id);
+                this.lessonFile.lessonId = res.body.id;
+                this.onSaveSuccessLesson();
+            },
+            (res: HttpErrorResponse) => this.onSaveError()
+        );
+    }
+
+    private subscribeToSaveResponseFile(result: Observable<HttpResponse<ILessonFile>>) {
+        result.subscribe((res: HttpResponse<ILesson>) => this.onSaveSuccessFile(), (res: HttpErrorResponse) => this.onSaveError());
+    }
+
+    private onSaveSuccessLesson() {
+        this.subscribeToSaveResponseFile(this.lessonFileService.create(this.lessonFile));
+    }
+
+    private onSaveSuccessFile() {
+        console.log('koniec sejwa ;)');
         this.isSaving = false;
         this.previousState();
     }
@@ -95,6 +123,10 @@ export class LessonUpdateComponent implements OnInit {
 
     private onError(errorMessage: string) {
         this.jhiAlertService.error(errorMessage, null, null);
+    }
+
+    setFileData(event, entity, field, isImage) {
+        this.dataUtils.setFileData(event, entity, field, isImage);
     }
 
     trackTagById(index: number, item: ITag) {
@@ -117,6 +149,14 @@ export class LessonUpdateComponent implements OnInit {
 
     set lesson(lesson: ILesson) {
         this._lesson = lesson;
+    }
+
+    get lessonFile() {
+        return this._lessonFile;
+    }
+
+    set lessonFile(lessonFile: ILessonFile) {
+        this._lessonFile = lessonFile;
     }
 
     showDialogToAdd() {
