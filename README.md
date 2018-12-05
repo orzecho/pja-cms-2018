@@ -1,6 +1,6 @@
 # System wspomagania nauczania języka japońskiego
 ## Funckjonalności dotyczące nauki języka
-* utrzymywaniem informacji o słowach, wyrażeniach i ich tłumaczeniach
+* utrzymywanie informacji o słowach, wyrażeniach i ich tłumaczeniach
 * przypisywanie w/w słów i wyrażeń do tagów np. lekcji, ale też kategorii jak "jedzenie"
 * testowanie umiejętności językowych (np. tłumaczenie słówek) po zadanych tagach
 * utrzymywanie plików lub stron z lekcjami
@@ -10,7 +10,6 @@
 ## Funkcjonalności ogólne
 * rejestracja użytkowników
 * uprawnienia dla użytkowników
- 
  
 # Technologie
  * jHipster
