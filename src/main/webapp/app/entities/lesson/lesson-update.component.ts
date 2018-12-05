@@ -95,7 +95,6 @@ export class LessonUpdateComponent implements OnInit {
     private subscribeToSaveResponseLesson(result: Observable<HttpResponse<ILesson>>) {
         result.subscribe(
             (res: HttpResponse<ILesson>) => {
-                console.log('ID lekcji' + res.body.id);
                 this.lessonFile.lessonId = res.body.id;
                 this.onSaveSuccessLesson();
             },
@@ -104,15 +103,16 @@ export class LessonUpdateComponent implements OnInit {
     }
 
     private subscribeToSaveResponseFile(result: Observable<HttpResponse<ILessonFile>>) {
-        result.subscribe((res: HttpResponse<ILesson>) => this.onSaveSuccessFile(), (res: HttpErrorResponse) => this.onSaveError());
+        result.subscribe((res: HttpResponse<ILessonFile>) => this.onSaveSuccessFile(), (res: HttpErrorResponse) => this.onSaveError());
     }
 
     private onSaveSuccessLesson() {
+        // TYMCZASOWE
+        this.isSaving = false;
         this.subscribeToSaveResponseFile(this.lessonFileService.create(this.lessonFile));
     }
 
     private onSaveSuccessFile() {
-        console.log('koniec sejwa ;)');
         this.isSaving = false;
         this.previousState();
     }
@@ -127,6 +127,10 @@ export class LessonUpdateComponent implements OnInit {
 
     setFileData(event, entity, field, isImage) {
         this.dataUtils.setFileData(event, entity, field, isImage);
+    }
+
+    openFile(contentType, field) {
+        return this.dataUtils.openFile(contentType, field);
     }
 
     trackTagById(index: number, item: ITag) {
