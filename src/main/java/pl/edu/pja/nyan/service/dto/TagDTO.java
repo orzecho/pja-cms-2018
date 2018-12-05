@@ -1,12 +1,10 @@
 package pl.edu.pja.nyan.service.dto;
 
-import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.Objects;
+
+import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,6 +23,10 @@ public class TagDTO implements Serializable {
 
     @NotNull
     private String name;
+
+    private List<MinimalWordDTO> words;
+
+    private List<MinimalLessonDTO> lessons;
 
     @Override
     public boolean equals(Object o) {

@@ -1,21 +1,22 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 import { NyanSharedModule } from 'app/shared';
 import {
     TagComponent,
-    TagDetailComponent,
-    TagUpdateComponent,
-    TagDeletePopupComponent,
     TagDeleteDialogComponent,
+    TagDeletePopupComponent,
+    TagDetailComponent,
+    tagPopupRoute,
     tagRoute,
-    tagPopupRoute
+    TagUpdateComponent
 } from './';
+import { TableModule } from 'primeng/table';
 
 const ENTITY_STATES = [...tagRoute, ...tagPopupRoute];
 
 @NgModule({
-    imports: [NyanSharedModule, RouterModule.forChild(ENTITY_STATES)],
+    imports: [NyanSharedModule, RouterModule.forChild(ENTITY_STATES), TableModule],
     declarations: [TagComponent, TagDetailComponent, TagUpdateComponent, TagDeleteDialogComponent, TagDeletePopupComponent],
     entryComponents: [TagComponent, TagUpdateComponent, TagDeleteDialogComponent, TagDeletePopupComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
