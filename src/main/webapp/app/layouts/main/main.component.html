@@ -2,10 +2,34 @@
 <div>
     <router-outlet name="navbar"></router-outlet>
 </div>
-<div class="container-fluid">
-    <div class="card jh-card">
-        <router-outlet></router-outlet>
-        <router-outlet name="popup"></router-outlet>
+
+<header *ngIf="router.url === '/';else notRoot" class="masthead text-center text-white d-flex">
+    <div class="container my-auto">
+        <div class="row">
+            <div class="col-lg-8 mx-auto"></div>
+            <div class="col-lg-4 mx-auto">
+                <span class="logo img-fluid rounded"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-8 mx-auto"></div>
+            <div class="col-lg-4 mx-auto">
+                <p class="text-faded mb-5">Nyango to aplikacja wspomagająca naukę języka japońskiego na Polsko
+                    Japońskiej Akademii Technik Komputerowych. Zawiera materiały z lekcji i potrafi generować testy
+                    powtórzeniowe dla zadanego materiału.</p>
+                <a class="btn btn-primary btn-xl" [routerLink]="['/lesson' ]">Zobacz lekcje</a>
+                <a class="btn btn-primary btn-xl" [routerLink]="['/test' ]">Zobacz testy</a>
+            </div>
+        </div>
     </div>
+</header>
+
+<div class="container-fluid">
+    <ng-template #notRoot>
+        <div class="card jh-card">
+            <router-outlet></router-outlet>
+            <router-outlet name="popup"></router-outlet>
+        </div>
+    </ng-template>
     <jhi-footer></jhi-footer>
 </div>
