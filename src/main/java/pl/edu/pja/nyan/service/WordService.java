@@ -1,7 +1,6 @@
 package pl.edu.pja.nyan.service;
 
 import lombok.RequiredArgsConstructor;
-import pl.edu.pja.nyan.domain.Lesson;
 import pl.edu.pja.nyan.domain.Tag;
 import pl.edu.pja.nyan.domain.Word;
 import pl.edu.pja.nyan.repository.WordRepository;
@@ -100,7 +99,7 @@ public class WordService {
     public void saveWordsIfNecessary(List<WordDTO> words, Tag lessonTag) {
         words.forEach(word -> {
             Word entity;
-            Set<Tag> parsedTags;
+            Set<Tag> tags;
             if (word.getId() == null) {
                 Optional<Word> optionalWord = wordRepository
                     .findByTranslationAndKanaAndKanji(word.getTranslation(), word.getKana(), word.getKanji());
@@ -108,21 +107,21 @@ public class WordService {
                     entity = optionalWord.get();
                     entity.setNote(word.getNote());
                     entity.addTag(lessonTag);
-                    parsedTags = tagService.parseTags(word.getRawTags(), optionalWord.get());
+                    tags = tagService.findOrCreateTagsByName(word.getRawTags(), optionalWord.get());
                 } else {
                     entity = wordRepository.getOne(save(word).getId()).addTag(lessonTag);
-                    parsedTags = tagService.parseTags(word.getRawTags(), entity);
+                    tags = tagService.findOrCreateTagsByName(word.getRawTags(), entity);
                 }
             } else {
                 entity = wordMapper.toEntity(word);
-                parsedTags = tagService.parseTags(word.getRawTags(), entity);
+                tags = tagService.findOrCreateTagsByName(word.getRawTags(), entity);
                 if (entity.getTags().stream().noneMatch(e -> e.getId().equals(lessonTag.getId()))) {
                     entity.addTag(lessonTag);
                     wordRepository.save(entity);
                 }
             }
-            parsedTags.add(lessonTag);
-            deleteOldTags(entity, parsedTags);
+            tags.add(lessonTag);
+            deleteOldTags(entity, tags);
         });
     }
 

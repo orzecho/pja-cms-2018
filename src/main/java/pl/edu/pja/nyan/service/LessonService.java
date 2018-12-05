@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -48,16 +49,23 @@ public class LessonService {
     public LessonDTO save(LessonDTO lessonDTO) {
         log.debug("Request to save Lesson : {}", lessonDTO);
         Lesson lesson = lessonRepository.save(lessonMapper.toEntity(lessonDTO));
-        Set<Tag> parsedTags = tagService.parseTags(lessonDTO.getRawTags());
-        parsedTags.stream()
-            .filter(e -> e.getLessons().stream().noneMatch(l -> l.getId().equals(lesson.getId())))
-            .forEach(e -> e.addLesson(lesson));
-        Lesson lessonWithDeletedTags = deleteOldTags(lesson, parsedTags);
+        Set<Tag> tags = tagService.findOrCreateTagsByName(lessonDTO.getRawTags());
+        filterNewLessonTags(lesson, tags)
+            .forEach(tag -> tag.addLesson(lesson));
+
+        Lesson lessonWithDeletedTags = deleteOldTags(lesson, tags);
         Tag lessonTag = tagService.addLessonTag(lessonWithDeletedTags);
         if (lessonDTO.getWords() != null) {
             wordService.saveWordsIfNecessary(lessonDTO.getWords(), lessonTag);
         }
         return lessonMapper.toDto(lessonWithDeletedTags);
+    }
+
+    private Stream<Tag> filterNewLessonTags(Lesson lesson, Set<Tag> tags) {
+        return tags.stream()
+            .filter(tag -> tag.getLessons()
+                .stream()
+                .noneMatch(l -> l.getId().equals(lesson.getId())));
     }
 
     /**

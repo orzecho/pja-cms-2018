@@ -1,6 +1,7 @@
 <div class="row justify-content-center">
     <div class="col-8">
-        <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+        <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm"
+              (keydown.enter)="$event.target.tagName == 'TEXTAREA'">
             <h2 id="jhi-lesson-heading">Create or edit a Lesson</h2>
             <div>
                 <jhi-alert-error></jhi-alert-error>
@@ -26,9 +27,11 @@
                         [(ngModel)]="lesson.description" />
                 </div>
                 <div class="form-group">
-                    <label class="form-control-label" for="field_description">Tagi (oddzielane przecinkiem)</label>
-                    <input type="text" class="form-control" name="rawTags" id="field_raw_tags"
-                           [(ngModel)]="lesson.rawTags" />
+                    <label class="form-control-label" for="field_description">Tags</label>
+                    <p-autoComplete [(ngModel)]="lesson.rawTags" [suggestions]="foundTags" name="lesson_tags"
+                                    (completeMethod)="searchForTags($event)" [multiple]="true"
+                                    (onKeyUp)="onTagInputKeyUp($event)">
+                    </p-autoComplete>
                 </div>
                 <div class="form-group">
                     <label class="form-control-label" for="field_lesson_files">Pliki lekcji</label>
@@ -174,8 +177,6 @@
                         </div>
                     </p-footer>
                 </p-dialog>
-
-
             </div>
             <div>
                 <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">

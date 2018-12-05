@@ -7,7 +7,7 @@ export interface ILesson {
     name?: string;
     description?: string;
     lessonFiles?: ILessonFile[];
-    rawTags?: string;
+    rawTags?: string[];
     tags?: ITag[];
     words?: IWord[];
 }
@@ -19,7 +19,7 @@ export class Lesson implements ILesson {
         public description?: string,
         public lessonFiles?: ILessonFile[],
         public tags?: ITag[],
-        public rawTags?: string,
+        public rawTags?: string[],
         public words?: IWord[]
     ) {}
 }

@@ -25,7 +25,7 @@ public class LessonDTO {
     private String description;
     private List<LessonFileShortDTO> lessonFiles;
     private List<TagDTO> tags;
-    private String rawTags;
+    private List<String> rawTags;
     private List<WordDTO> words;
 
     @Override

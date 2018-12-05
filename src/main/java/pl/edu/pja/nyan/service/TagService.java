@@ -99,26 +99,23 @@ public class TagService {
         tagRepository.deleteById(id);
     }
 
-    public Set<Tag> parseTags(String rawTags) {
+    public Set<Tag> findOrCreateTagsByName(List<String> tagNames) {
         Set<Tag> tags = new HashSet<>();
-        if (rawTags == null) {
+        if (tagNames == null) {
             return tags;
         }
-        try (Scanner scanner = new Scanner(rawTags).useDelimiter(",")) {
-            while (scanner.hasNext()) {
-                String token = scanner.next().trim();
-                Optional<Tag> tag = tagRepository.findByName(token);
-                if (!tag.isPresent()) {
-                    tags.add(tagRepository.save(new Tag(token)));
-                } else {
-                    tags.add(tag.get());
-                }
+        for (String tagName : tagNames) {
+            Optional<Tag> tag = tagRepository.findByName(tagName);
+            if (!tag.isPresent()) {
+                tags.add(tagRepository.save(new Tag(tagName)));
+            } else {
+                tags.add(tag.get());
             }
         }
         return tags;
     }
 
-    public Set<Tag> parseTags(String rawTags, Word word) {
+    public Set<Tag> findOrCreateTagsByName(String rawTags, Word word) {
         Set<Tag> tags = new HashSet<>();
         if (rawTags == null || word == null) {
             return tags;

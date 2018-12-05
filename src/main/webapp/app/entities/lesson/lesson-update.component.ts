@@ -28,6 +28,9 @@ export class LessonUpdateComponent implements OnInit {
     word = new Word();
     selectedWord: Word;
     newWord: boolean;
+
+    foundTags: string[];
+
     cols: [
         { field: 'translation'; header: 'Vin' },
         { field: 'kana'; header: 'Year' },
@@ -65,6 +68,9 @@ export class LessonUpdateComponent implements OnInit {
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
+        if (!this.lesson.rawTags) {
+            this.lesson.rawTags = [];
+        }
     }
 
     previousState() {
@@ -160,5 +166,31 @@ export class LessonUpdateComponent implements OnInit {
 
     clearSelection() {
         this.selectedWord = null;
+    }
+
+    searchForTags(event) {
+        this.tagService
+            .findByNameContaining(event.query)
+            .subscribe(
+                (res: HttpResponse<ITag[]>) => (this.foundTags = res.body.map(tag => tag.name)),
+                (res: HttpErrorResponse) => this.onError(res.message)
+            );
+    }
+
+    /**
+     * custom implementation of adding new elements to the p-autocomplete
+     * component, as currently it doesn't support this behavior by default
+     */
+    onTagInputKeyUp(event: KeyboardEvent) {
+        console.log(event);
+        if (event.key === 'Enter') {
+            const tokenInput = event.srcElement as any;
+            const inputValue = tokenInput.value;
+
+            if (inputValue && !this.lesson.rawTags.includes(inputValue)) {
+                this.lesson.rawTags.push(inputValue);
+                tokenInput.value = '';
+            }
+        }
     }
 }
