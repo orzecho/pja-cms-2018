@@ -20,6 +20,7 @@ public class MinimalWordMapper {
             .kanji(entity.getKanji())
             .kana(entity.getKana())
             .translation(entity.getTranslation())
+            .romaji(entity.getRomaji())
             .build();
     }
 

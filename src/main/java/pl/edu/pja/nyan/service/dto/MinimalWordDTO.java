@@ -26,4 +26,6 @@ public class MinimalWordDTO implements Serializable {
     private String kana;
 
     private String kanji;
+
+    private String romaji;
 }
