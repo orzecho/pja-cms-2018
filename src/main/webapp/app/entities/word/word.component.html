@@ -27,6 +27,7 @@
             <th jhiSortBy="kanji"><span>Kanji</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="romaji"><span>Romaji</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="note"><span>Note</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th><span>Tags</span></th>
             <th></th>
             </tr>
             </thead>
@@ -38,6 +39,11 @@
                 <td>{{word.kanji}}</td>
                 <td>{{word.romaji}}</td>
                 <td>{{word.note}}</td>
+                <td>
+                    <span *ngFor="let tag of word.tags; let last = last">
+                        <a [routerLink]="['/tag', tag?.id, 'view' ]">{{tag.name}}</a>{{last ? '' : ', '}}
+                    </span>
+                </td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
