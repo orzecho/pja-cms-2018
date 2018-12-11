@@ -7,6 +7,7 @@ import { ITag } from 'app/shared/model/tag.model';
 import { Principal } from 'app/core';
 import { TestService } from 'app/entities/test/test.service';
 import { IVocabularyTestItem, VocabularyTestItem } from 'app/shared/model/vocabulary-test-item.model';
+import { Word } from 'app/shared/model/word.model';
 
 @Component({
     selector: 'jhi-vocabulary-test',
@@ -73,5 +74,9 @@ export class VocabularyTestComponent implements OnInit {
 
     previousState() {
         window.history.back();
+    }
+
+    getJishoLink(word: Word) {
+        return 'https://jisho.org/search/'.concat(word.kanji ? word.kanji : word.kana);
     }
 }

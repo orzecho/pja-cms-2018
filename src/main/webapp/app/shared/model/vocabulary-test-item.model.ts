@@ -1,3 +1,5 @@
+import { IWord } from 'app/shared/model/word.model';
+
 export interface IVocabularyTestItem {
     translationFromSystem?: string;
     kanaFromSystem?: string;
@@ -8,6 +10,7 @@ export interface IVocabularyTestItem {
     translationCorrect?: boolean;
     kanaCorrect?: boolean;
     kanjiCorrect?: boolean;
+    word?: IWord;
 }
 
 export class VocabularyTestItem implements IVocabularyTestItem {
@@ -20,6 +23,7 @@ export class VocabularyTestItem implements IVocabularyTestItem {
         public kanjiFromUser?: string,
         public translationCorrect?: boolean,
         public kanaCorrect?: boolean,
-        public kanjiCorrect?: boolean
+        public kanjiCorrect?: boolean,
+        public word?: IWord
     ) {}
 }

@@ -8,7 +8,7 @@
              *ngFor="let tag of this.tags.split(',')">{{tag}}</span>
 
     <div *ngFor="let item of this.vocabularyTestItems" class="ui-g ui-fluid">
-        <div class="ui-g-12 ui-md-4">
+        <div class="ui-g-12 ui-md-3">
             <div class="ui-inputgroup">
                 <input type="text"
                        [class]="item.translationCorrect ? 'good-answer ng-pristine ng-valid ui-inputtext ui-corner-all ui-state-default ui-widget' :
@@ -24,9 +24,10 @@
             </div>
         </div>
 
-        <div class="ui-g-12 ui-md-4">
+        <div class="ui-g-12 ui-md-3">
             <div class="ui-inputgroup">
-                <input type="text" [class]="item.kanaCorrect ? 'good-answer' : 'bad-answer'" pInputText placeholder="kana"
+                <input type="text" [class]="item.kanaCorrect ? 'good-answer ng-pristine ng-valid ui-inputtext ui-corner-all ui-state-default ui-widget' :
+                       'bad-answer ng-pristine ng-valid ui-inputtext ui-corner-all ui-state-default ui-widget'" pInputText placeholder="kana"
                        [(ngModel)]="item.kanaFromUser" (ngModelChange)="checkKana(item)">
                 <ng-template [ngIf]="item.kanaCorrect" [ngIfElse]="kanaNotCorrect">
                     <fa-icon class="ui-inputgroup-addon" [icon]="'check'"></fa-icon>
@@ -37,9 +38,10 @@
             </div>
         </div>
 
-        <div class="ui-g-12 ui-md-4">
+        <div class="ui-g-12 ui-md-3">
             <div class="ui-inputgroup">
-                <input type="text" [class]="item.kanjiCorrect ? 'good-answer' : 'bad-answer'" pInputText placeholder="kanji"
+                <input type="text" [class]="item.kanjiCorrect ? 'good-answer ng-pristine ng-valid ui-inputtext ui-corner-all ui-state-default ui-widget' :
+                       'bad-answer ng-pristine ng-valid ui-inputtext ui-corner-all ui-state-default ui-widget'" pInputText placeholder="kanji"
                        [(ngModel)]="item.kanjiFromUser" (ngModelChange)="checkKanji(item)">
                 <ng-template [ngIf]="item.kanjiCorrect" [ngIfElse]="kanjiNotCorrect">
                     <fa-icon class="ui-inputgroup-addon" [icon]="'check'"></fa-icon>
@@ -48,6 +50,14 @@
                     <fa-icon class="ui-inputgroup-addon" [icon]="'times'"></fa-icon>
                 </ng-template>
             </div>
+        </div>
+        <div class="ui-g-12 ui-md-3">
+            <span>
+                <a [routerLink]="['/word', item.word.id, 'view' ]">Słowo w Nyango</a> |
+                <a target="_blank"
+                   [href]="getJishoLink(item.word)">
+                    Słowo w Jisho</a>
+            </span>
         </div>
     </div>
 
