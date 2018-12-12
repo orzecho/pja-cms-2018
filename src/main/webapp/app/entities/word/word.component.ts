@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { JhiEventManager, JhiParseLinks, JhiAlertService } from 'ng-jhipster';
 
-import { IWord } from 'app/shared/model/word.model';
+import { IWord, Word } from 'app/shared/model/word.model';
 import { ITag } from 'app/shared/model/tag.model';
 import { Principal } from 'app/core';
 
@@ -149,5 +149,9 @@ export class WordComponent implements OnInit, OnDestroy {
 
     private onError(errorMessage: string) {
         this.jhiAlertService.error(errorMessage, null, null);
+    }
+
+    getJishoLink(word: Word) {
+        return 'https://jisho.org/search/'.concat(word.kanji ? word.kanji : word.kana);
     }
 }

@@ -1,11 +1,11 @@
 <div class="row justify-content-center">
     <div class="col-8">
         <div *ngIf="word">
-            <h2><span>Word</span> {{word.id}}</h2>
+            <h2>{{word.kanji ? word.kanji : word.kana}} - {{word.translation}}</h2>
             <hr>
             <jhi-alert-error></jhi-alert-error>
             <dl class="row-md jh-entity-details">
-                <dt><span>Translation</span></dt>
+                <dt><span>Tłumaczenie</span></dt>
                 <dd>
                     <span>{{word.translation}}</span>
                 </dd>
@@ -21,17 +21,20 @@
                 <dd>
                     <span>{{word.romaji}}</span>
                 </dd>
-                <dt><span>Note</span></dt>
+                <dt><span>Uwagi</span></dt>
                 <dd>
                     <span>{{word.note}}</span>
                 </dd>
-                <dt><span>Tag</span></dt>
+                <dt><span>Tagi</span></dt>
                 <dd>
                     <span *ngFor="let tag of word.tags; let last = last">
                         <a [routerLink]="['/tag', tag?.id, 'view' ]">{{tag.name}}</a>{{last ? '' : ', '}}
                     </span>
                 </dd>
             </dl>
+            <div class="row-md jh-entity-details">
+                <a [href]="getJishoLink(word)" target="_blank">Zobacz {{word.kanji ? word.kanji : word.kana}} na jisho.org</a>
+            </div>
 
             <button type="submit"
                     (click)="previousState()"

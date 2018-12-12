@@ -1,10 +1,10 @@
 <div>
     <h2 id="page-heading">
-        <span>Words</span>
+        <span>Słowa</span>
         <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-word" [routerLink]="['/word/new']">
             <fa-icon [icon]="'plus'"></fa-icon>
             <span >
-            Create new Word
+            Dodaj nowe słowo
             </span>
         </button>
     </h2>
@@ -21,19 +21,18 @@
         <table class="table table-striped">
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
-            <th jhiSortBy="id"><span>ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="translation"><span>Translation</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="translation"><span>Tłumaczenie</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="kana"><span>Kana</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="kanji"><span>Kanji</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="romaji"><span>Romaji</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="note"><span>Note</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th><span>Tags</span></th>
+            <th jhiSortBy="note"><span>Uwagi</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th><span>Tagi</span></th>
+            <th><span>Jisho.org</span></th>
             <th></th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let word of words ;trackBy: trackId">
-                <td><a [routerLink]="['/word', word.id, 'view' ]">{{word.id}}</a></td>
                 <td>{{word.translation}}</td>
                 <td>{{word.kana}}</td>
                 <td>{{word.kanji}}</td>
@@ -44,19 +43,20 @@
                         <a [routerLink]="['/tag', tag?.id, 'view' ]">{{tag.name}}</a>{{last ? '' : ', '}}
                     </span>
                 </td>
+                <td> <a [href]="getJishoLink(word)" target="_blank">{{word.kanji ? word.kanji : word.kana}} na jisho.org</a></td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
                                 [routerLink]="['/word', word.id, 'view' ]"
                                 class="btn btn-info btn-sm">
                             <fa-icon [icon]="'eye'"></fa-icon>
-                            <span class="d-none d-md-inline">View</span>
+                            <span class="d-none d-md-inline">Szczegóły</span>
                         </button>
                         <button type="submit"
                                 [routerLink]="['/word', word.id, 'edit']"
                                 class="btn btn-primary btn-sm">
                             <fa-icon [icon]="'pencil-alt'"></fa-icon>
-                            <span class="d-none d-md-inline">Edit</span>
+                            <span class="d-none d-md-inline">Edytuj</span>
                         </button>
                         <button type="submit"
                                 [routerLink]="['/', { outlets: { popup: 'word/'+ word.id + '/delete'} }]"
@@ -64,7 +64,7 @@
                                 queryParamsHandling="merge"
                                 class="btn btn-danger btn-sm">
                             <fa-icon [icon]="'times'"></fa-icon>
-                            <span class="d-none d-md-inline">Delete</span>
+                            <span class="d-none d-md-inline">Usuń</span>
                         </button>
                     </div>
                 </td>

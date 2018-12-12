@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { IWord } from 'app/shared/model/word.model';
+import { IWord, Word } from 'app/shared/model/word.model';
 
 @Component({
     selector: 'jhi-word-detail',
@@ -20,5 +20,9 @@ export class WordDetailComponent implements OnInit {
 
     previousState() {
         window.history.back();
+    }
+
+    getJishoLink(word: Word) {
+        return 'https://jisho.org/search/'.concat(word.kanji ? word.kanji : word.kana);
     }
 }
