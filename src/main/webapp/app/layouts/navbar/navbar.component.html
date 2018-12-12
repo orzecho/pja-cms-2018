@@ -33,6 +33,18 @@
                     <span>Tags</span>
                 </a>
             </li>
+            <li>
+                <a class="dropdown-item" routerLink="filling-gaps-test-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
+                    <fa-icon [icon]="'asterisk'" [fixedWidth]="true"></fa-icon>
+                    <span>Filling Gaps Test Item</span>
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item" routerLink="gap-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
+                    <fa-icon [icon]="'asterisk'" [fixedWidth]="true"></fa-icon>
+                    <span>Gap Item</span>
+                </a>
+            </li>
             <li *jhiHasAnyAuthority="'ROLE_ADMIN'" ngbDropdown class="nav-item dropdown pointer" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
                 <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="admin-menu">
                     <span>

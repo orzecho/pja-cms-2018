@@ -1,3 +1,34 @@
+entity Lesson {
+	name String required
+        description String
+}
+
+entity Word {
+	translation String required
+        kana String required
+        kanji String
+	romaji String
+        note String
+}
+
+entity Tag {
+	name String required
+}
+
+entity LessonFile {
+	name String required
+        content Blob required
+}
+
+relationship ManyToOne {
+	LessonFile{lesson(name)} to Lesson{lessonFile(name)}
+}
+
+relationship ManyToMany {
+    Tag{lesson(name)} to Lesson{tag(name)}
+    Word{tag(name)} to Tag{word(translation)}
+}
+
 entity FillingGapsTestItem {
 	question String required
 }
@@ -6,8 +37,6 @@ entity GapItem {
     key String required
     value String required
 }
-
-entity Tag
 
 relationship ManyToOne {
     GapItem{testItem} to FillingGapsTestItem{gapItem}

@@ -47,6 +47,11 @@ public class CacheConfiguration {
             cm.createCache(pl.edu.pja.nyan.domain.Tag.class.getName() + ".lessons", jcacheConfiguration);
             cm.createCache(pl.edu.pja.nyan.domain.Tag.class.getName() + ".words", jcacheConfiguration);
             cm.createCache(pl.edu.pja.nyan.domain.LessonFile.class.getName(), jcacheConfiguration);
+            cm.createCache(pl.edu.pja.nyan.domain.Tag.class.getName() + ".fillingGapsTestItems", jcacheConfiguration);
+            cm.createCache(pl.edu.pja.nyan.domain.FillingGapsTestItem.class.getName(), jcacheConfiguration);
+            cm.createCache(pl.edu.pja.nyan.domain.FillingGapsTestItem.class.getName() + ".gapItems", jcacheConfiguration);
+            cm.createCache(pl.edu.pja.nyan.domain.FillingGapsTestItem.class.getName() + ".tags", jcacheConfiguration);
+            cm.createCache(pl.edu.pja.nyan.domain.GapItem.class.getName(), jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }

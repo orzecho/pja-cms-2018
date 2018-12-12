@@ -14,41 +14,27 @@
     <property name="floatType" value="float" dbms="mysql, oracle, mssql"/>
 
     <!--
-        Added the entity Tag.
+        Added the entity GapItem.
     -->
-    <changeSet id="20181108154459-1" author="jhipster">
-        <createTable tableName="tag">
+    <changeSet id="20181212125530-1" author="jhipster">
+        <createTable tableName="gap_item">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="name" type="varchar(255)">
+            <column name="jhi_key" type="varchar(255)">
                 <constraints nullable="false" />
+            </column>
+
+            <column name="jhi_value" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="test_item_id" type="bigint">
+                <constraints nullable="true" />
             </column>
 
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
-        
-        <createTable tableName="tag_lesson">
-            <column name="lessons_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="tags_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-
-        <addPrimaryKey columnNames="tags_id, lessons_id" tableName="tag_lesson"/>
-        
-        <createTable tableName="tag_filling_gaps_test_item">
-            <column name="filling_gaps_test_items_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="tags_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-
-        <addPrimaryKey columnNames="tags_id, filling_gaps_test_items_id" tableName="tag_filling_gaps_test_item"/>
         
     </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
