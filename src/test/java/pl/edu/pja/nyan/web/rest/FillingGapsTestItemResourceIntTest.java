@@ -55,7 +55,7 @@ public class FillingGapsTestItemResourceIntTest {
 
     @Autowired
     private FillingGapsTestItemMapper fillingGapsTestItemMapper;
-    
+
 
     @Autowired
     private FillingGapsTestItemService fillingGapsTestItemService;
@@ -178,7 +178,7 @@ public class FillingGapsTestItemResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(fillingGapsTestItem.getId().intValue())))
             .andExpect(jsonPath("$.[*].question").value(hasItem(DEFAULT_QUESTION.toString())));
     }
-    
+
 
     @Test
     @Transactional
@@ -336,7 +336,7 @@ public class FillingGapsTestItemResourceIntTest {
         // Create the FillingGapsTestItem
         FillingGapsTestItemDTO fillingGapsTestItemDTO = fillingGapsTestItemMapper.toDto(fillingGapsTestItem);
 
-        // If the entity doesn't have an ID, it will throw BadRequestAlertException 
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restFillingGapsTestItemMockMvc.perform(put("/api/filling-gaps-test-items")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(fillingGapsTestItemDTO)))
@@ -394,12 +394,5 @@ public class FillingGapsTestItemResourceIntTest {
         assertThat(fillingGapsTestItemDTO1).isNotEqualTo(fillingGapsTestItemDTO2);
         fillingGapsTestItemDTO1.setId(null);
         assertThat(fillingGapsTestItemDTO1).isNotEqualTo(fillingGapsTestItemDTO2);
-    }
-
-    @Test
-    @Transactional
-    public void testEntityFromId() {
-        assertThat(fillingGapsTestItemMapper.fromId(42L).getId()).isEqualTo(42);
-        assertThat(fillingGapsTestItemMapper.fromId(null)).isNull();
     }
 }

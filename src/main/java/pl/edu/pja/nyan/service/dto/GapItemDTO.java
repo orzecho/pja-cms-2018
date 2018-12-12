@@ -1,12 +1,21 @@
 package pl.edu.pja.nyan.service.dto;
 
-import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
 
-/**
- * A DTO for the GapItem entity.
- */
+import javax.validation.constraints.NotNull;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Builder
+@Setter
 public class GapItemDTO implements Serializable {
 
     private Long id;
@@ -16,40 +25,6 @@ public class GapItemDTO implements Serializable {
 
     @NotNull
     private String value;
-
-    private Long testItemId;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    public Long getTestItemId() {
-        return testItemId;
-    }
-
-    public void setTestItemId(Long fillingGapsTestItemId) {
-        this.testItemId = fillingGapsTestItemId;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -78,7 +53,6 @@ public class GapItemDTO implements Serializable {
             "id=" + getId() +
             ", key='" + getKey() + "'" +
             ", value='" + getValue() + "'" +
-            ", testItem=" + getTestItemId() +
             "}";
     }
 }
