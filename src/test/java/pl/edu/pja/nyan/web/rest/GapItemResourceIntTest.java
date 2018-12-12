@@ -54,10 +54,8 @@ public class GapItemResourceIntTest {
     @Autowired
     private GapItemRepository gapItemRepository;
 
-
     @Autowired
     private GapItemMapper gapItemMapper;
-    
 
     @Autowired
     private GapItemService gapItemService;
@@ -94,7 +92,7 @@ public class GapItemResourceIntTest {
 
     /**
      * Create an entity for this test.
-     *
+     * <p>
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
@@ -202,7 +200,6 @@ public class GapItemResourceIntTest {
             .andExpect(jsonPath("$.[*].key").value(hasItem(DEFAULT_KEY.toString())))
             .andExpect(jsonPath("$.[*].value").value(hasItem(DEFAULT_VALUE.toString())));
     }
-    
 
     @Test
     @Transactional
@@ -384,7 +381,7 @@ public class GapItemResourceIntTest {
         // Create the GapItem
         GapItemDTO gapItemDTO = gapItemMapper.toDto(gapItem);
 
-        // If the entity doesn't have an ID, it will throw BadRequestAlertException 
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restGapItemMockMvc.perform(put("/api/gap-items")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(gapItemDTO)))
@@ -442,12 +439,5 @@ public class GapItemResourceIntTest {
         assertThat(gapItemDTO1).isNotEqualTo(gapItemDTO2);
         gapItemDTO1.setId(null);
         assertThat(gapItemDTO1).isNotEqualTo(gapItemDTO2);
-    }
-
-    @Test
-    @Transactional
-    public void testEntityFromId() {
-        assertThat(gapItemMapper.fromId(42L).getId()).isEqualTo(42);
-        assertThat(gapItemMapper.fromId(null)).isNull();
     }
 }

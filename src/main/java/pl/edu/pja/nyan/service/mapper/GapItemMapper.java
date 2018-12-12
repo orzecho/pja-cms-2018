@@ -1,28 +1,60 @@
 package pl.edu.pja.nyan.service.mapper;
 
-import pl.edu.pja.nyan.domain.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
+import com.google.common.collect.Lists;
+
+import lombok.RequiredArgsConstructor;
+import pl.edu.pja.nyan.domain.GapItem;
+import pl.edu.pja.nyan.repository.GapItemRepository;
 import pl.edu.pja.nyan.service.dto.GapItemDTO;
 
-import org.mapstruct.*;
+@RequiredArgsConstructor
+@Service
+public class GapItemMapper implements EntityMapper<GapItemDTO, GapItem> {
 
-/**
- * Mapper for the entity GapItem and its DTO GapItemDTO.
- */
-@Mapper(componentModel = "spring", uses = {FillingGapsTestItemMapper.class})
-public interface GapItemMapper extends EntityMapper<GapItemDTO, GapItem> {
+    private final GapItemRepository gapItemRepository;
 
-    @Mapping(source = "testItem.id", target = "testItemId")
-    GapItemDTO toDto(GapItem gapItem);
+    @Override
+    public GapItemDTO toDto(GapItem gapItem) {
+        return GapItemDTO.builder()
+            .id(gapItem.getId())
+            .key(gapItem.getKey())
+            .value(gapItem.getValue())
+            .build();
+    }
 
-    @Mapping(source = "testItemId", target = "testItem")
-    GapItem toEntity(GapItemDTO gapItemDTO);
-
-    default GapItem fromId(Long id) {
-        if (id == null) {
-            return null;
+    @Override
+    public GapItem toEntity(GapItemDTO gapItemDTO) {
+        GapItem gapItem;
+        if (gapItemDTO.getId() == null) {
+            gapItem = new GapItem();
+        } else {
+            gapItem = gapItemRepository.getOne(gapItemDTO.getId());
         }
-        GapItem gapItem = new GapItem();
-        gapItem.setId(id);
+        gapItem.setKey(gapItemDTO.getKey());
+        gapItem.setValue(gapItemDTO.getValue());
+
         return gapItem;
     }
+
+    @Override
+    public List<GapItem> toEntity(Collection<GapItemDTO> dtoList) {
+        if (dtoList != null) {
+            return dtoList.stream().map(this::toEntity).collect(Collectors.toList());
+        } else {
+            return Lists.newArrayList();
+        }
+    }
+
+    @Override
+    public List<GapItemDTO> toDto(Collection<GapItem> entityList) {
+        return entityList.stream().map(this::toDto).collect(Collectors.toList());
+    }
+
+
 }

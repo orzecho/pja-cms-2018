@@ -2,33 +2,26 @@ package pl.edu.pja.nyan.service.dto;
 
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
-/**
- * A DTO for the FillingGapsTestItem entity.
- */
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Getter
+@Setter
 public class FillingGapsTestItemDTO implements Serializable {
 
     private Long id;
-
     @NotNull
     private String question;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getQuestion() {
-        return question;
-    }
-
-    public void setQuestion(String question) {
-        this.question = question;
-    }
+    private List<GapItemDTO> gapItems;
 
     @Override
     public boolean equals(Object o) {
