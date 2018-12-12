@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <!--
+        Added the constraints for entity GapItem.
+    -->
+    <changeSet id="20181212125530-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="test_item_id"
+                                 baseTableName="gap_item"
+                                 constraintName="fk_gap_item_test_item_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="filling_gaps_test_item"/>
+
+    </changeSet>
+</databaseChangeLog>

@@ -1,26 +1,16 @@
 package pl.edu.pja.nyan.domain;
 
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.persistence.*;
+import javax.validation.constraints.*;
+
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Objects;
 
 import lombok.NoArgsConstructor;
 
@@ -50,6 +40,13 @@ public class Tag implements Serializable {
                joinColumns = @JoinColumn(name = "tags_id", referencedColumnName = "id"),
                inverseJoinColumns = @JoinColumn(name = "lessons_id", referencedColumnName = "id"))
     private Set<Lesson> lessons = new HashSet<>();
+
+    @ManyToMany
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JoinTable(name = "tag_filling_gaps_test_item",
+               joinColumns = @JoinColumn(name = "tags_id", referencedColumnName = "id"),
+               inverseJoinColumns = @JoinColumn(name = "filling_gaps_test_items_id", referencedColumnName = "id"))
+    private Set<FillingGapsTestItem> fillingGapsTestItems = new HashSet<>();
 
     @ManyToMany(mappedBy = "tags")
     @JsonIgnore
@@ -115,6 +112,31 @@ public class Tag implements Serializable {
 
     public void setLessons(Set<Lesson> lessons) {
         this.lessons = lessons;
+    }
+
+    public Set<FillingGapsTestItem> getFillingGapsTestItems() {
+        return fillingGapsTestItems;
+    }
+
+    public Tag fillingGapsTestItems(Set<FillingGapsTestItem> fillingGapsTestItems) {
+        this.fillingGapsTestItems = fillingGapsTestItems;
+        return this;
+    }
+
+    public Tag addFillingGapsTestItem(FillingGapsTestItem fillingGapsTestItem) {
+        this.fillingGapsTestItems.add(fillingGapsTestItem);
+        fillingGapsTestItem.getTags().add(this);
+        return this;
+    }
+
+    public Tag removeFillingGapsTestItem(FillingGapsTestItem fillingGapsTestItem) {
+        this.fillingGapsTestItems.remove(fillingGapsTestItem);
+        fillingGapsTestItem.getTags().remove(this);
+        return this;
+    }
+
+    public void setFillingGapsTestItems(Set<FillingGapsTestItem> fillingGapsTestItems) {
+        this.fillingGapsTestItems = fillingGapsTestItems;
     }
 
     public Set<Word> getWords() {

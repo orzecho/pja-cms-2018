@@ -19,5 +19,16 @@
                                  referencedColumnNames="id"
                                  referencedTableName="lesson"/>
         
+        <addForeignKeyConstraint baseColumnNames="tags_id"
+                                 baseTableName="tag_filling_gaps_test_item"
+                                 constraintName="fk_tag_filling_gaps_test_item_tags_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="tag"/>
+        <addForeignKeyConstraint baseColumnNames="filling_gaps_test_items_id"
+                                 baseTableName="tag_filling_gaps_test_item"
+                                 constraintName="fk_tag_filling_gaps_test_item_filling_gaps_test_items_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="filling_gaps_test_item"/>
+        
     </changeSet>
 </databaseChangeLog>
