@@ -1,0 +1,23 @@
+entity FillingGapsTestItem {
+	question String required
+}
+
+entity GapItem {
+    key String required
+    value String required
+}
+
+entity Tag
+
+relationship ManyToOne {
+    GapItem{testItem} to FillingGapsTestItem{gapItem}
+}
+
+relationship ManyToMany {
+    Tag{fillingGapsTestItem} to FillingGapsTestItem{tag(name)}
+}
+
+service all with serviceClass
+paginate all with pagination
+dto all with mapstruct
+filter all
