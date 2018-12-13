@@ -20,6 +20,7 @@ export class FillingGapsTestItemUpdateComponent implements OnInit {
     answersRaw: String;
     keysInQuestion: String[];
     keysInAnswer: String[];
+    keyValidate = true;
 
     tags: ITag[];
 

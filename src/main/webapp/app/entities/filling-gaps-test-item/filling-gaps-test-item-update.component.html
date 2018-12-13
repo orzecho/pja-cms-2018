@@ -31,8 +31,7 @@
                             To pole jest wymagane.
                         </small>
                     </div>
-                    Znalezione klucze: <span *ngFor="let key of keysInAnswer" class="badge badge-pill badge-danger">{{key
-                    }}</span>
+                    Znalezione klucze: <span *ngFor="let key of keysInAnswer" class="badge badge-pill badge-danger">{{key}}</span>
                 </div>
 
             </div>
@@ -40,7 +39,8 @@
                 <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
                     <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span>Anuluj</span>
                 </button>
-                <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+                <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving || !keyValidate"
+                        class="btn btn-primary">
                     <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span>Zapisz</span>
                 </button>
             </div>

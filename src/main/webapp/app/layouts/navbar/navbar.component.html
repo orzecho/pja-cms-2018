@@ -14,42 +14,37 @@
                 <a class="nav-link" routerLink="/" (click)="collapseNavbar()">
                     <span>
                         <fa-icon [icon]="'home'"></fa-icon>
-                        <span>Home</span>
+                        <span>Strona główna</span>
                     </span>
                 </a>
             </li>
             <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
                 <a class="nav-link" routerLink="lesson"  (click)="collapseNavbar()">
-                    <span>Lessons</span>
+                    <span>Lekcje</span>
                 </a>
             </li>
             <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
                 <a class="nav-link" routerLink="word"  (click)="collapseNavbar()">
-                    <span>Words</span>
+                    <span>Słownictwo</span>
                 </a>
             </li>
             <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
                 <a class="nav-link" routerLink="tag"  (click)="collapseNavbar()">
-                    <span>Tags</span>
+                    <span>Tagi</span>
                 </a>
             </li>
-            <li>
-                <a class="dropdown-item" routerLink="filling-gaps-test-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
+            <li class="nav-item" >
+                <a class="nav-link" routerLink="filling-gaps-test-item" routerLinkActive="active"
+                   [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
                     <fa-icon [icon]="'asterisk'" [fixedWidth]="true"></fa-icon>
-                    <span>Filling Gaps Test Item</span>
-                </a>
-            </li>
-            <li>
-                <a class="dropdown-item" routerLink="gap-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
-                    <fa-icon [icon]="'asterisk'" [fixedWidth]="true"></fa-icon>
-                    <span>Gap Item</span>
+                    <span>Testy z wypełnianiem luk</span>
                 </a>
             </li>
             <li *jhiHasAnyAuthority="'ROLE_ADMIN'" ngbDropdown class="nav-item dropdown pointer" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
                 <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="admin-menu">
                     <span>
                         <fa-icon [icon]="'user-plus'"></fa-icon>
-                        <span>Administration</span>
+                        <span>Administracja</span>
                     </span>
                 </a>
                 <ul class="dropdown-menu" ngbDropdownMenu>
