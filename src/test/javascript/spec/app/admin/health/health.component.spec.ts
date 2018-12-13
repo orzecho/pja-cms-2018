@@ -42,7 +42,7 @@ describe('Component Tests', () => {
                 expect(comp.subSystemName('subsystem')).toBe('');
             });
 
-            it('should return the subsystem when it has multiple keys', () => {
+            it('should return the subsystem when it has multiple keysInQuestion', () => {
                 expect(comp.subSystemName('subsystem.subsystem.system')).toBe(' - subsystem.system');
             });
         });
