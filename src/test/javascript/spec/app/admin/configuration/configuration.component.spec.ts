@@ -56,8 +56,8 @@ describe('Component Tests', () => {
                 expect(comp.allConfiguration).toEqual(envConfig);
             });
         });
-        describe('keys method', () => {
-            it('should return the keys of an Object', () => {
+        describe('keysInQuestion method', () => {
+            it('should return the keysInQuestion of an Object', () => {
                 // GIVEN
                 const data = {
                     key1: 'test',

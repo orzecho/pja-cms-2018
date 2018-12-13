@@ -1,10 +1,10 @@
 <div>
     <h2 id="page-heading">
-        <span>Filling Gaps Test Items</span>
+        <span>Pytania z lukami</span>
         <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-filling-gaps-test-item" [routerLink]="['/filling-gaps-test-item/new']">
             <fa-icon [icon]="'plus'"></fa-icon>
             <span >
-            Create new Filling Gaps Test Item
+            Dodaj nowe pytanie z lukami
             </span>
         </button>
     </h2>
@@ -14,28 +14,29 @@
         <table class="table table-striped">
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
-            <th jhiSortBy="id"><span>ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="question"><span>Question</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="question"><span>Pytanie</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th><span>Odpowiedzi</span></th>
             <th></th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let fillingGapsTestItem of fillingGapsTestItems ;trackBy: trackId">
-                <td><a [routerLink]="['/filling-gaps-test-item', fillingGapsTestItem.id, 'view' ]">{{fillingGapsTestItem.id}}</a></td>
                 <td>{{fillingGapsTestItem.question}}</td>
+                <td><span *ngFor="let gap of fillingGapsTestItem.gapItems">
+                    <span class="badge badge-pill badge-success">{{gap.key}}</span>{{gap.value}}</span></td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
                                 [routerLink]="['/filling-gaps-test-item', fillingGapsTestItem.id, 'view' ]"
                                 class="btn btn-info btn-sm">
                             <fa-icon [icon]="'eye'"></fa-icon>
-                            <span class="d-none d-md-inline">View</span>
+                            <span class="d-none d-md-inline">Szczegóły</span>
                         </button>
                         <button type="submit"
                                 [routerLink]="['/filling-gaps-test-item', fillingGapsTestItem.id, 'edit']"
                                 class="btn btn-primary btn-sm">
                             <fa-icon [icon]="'pencil-alt'"></fa-icon>
-                            <span class="d-none d-md-inline">Edit</span>
+                            <span class="d-none d-md-inline">Edytuj</span>
                         </button>
                         <button type="submit"
                                 [routerLink]="['/', { outlets: { popup: 'filling-gaps-test-item/'+ fillingGapsTestItem.id + '/delete'} }]"
@@ -43,7 +44,7 @@
                                 queryParamsHandling="merge"
                                 class="btn btn-danger btn-sm">
                             <fa-icon [icon]="'times'"></fa-icon>
-                            <span class="d-none d-md-inline">Delete</span>
+                            <span class="d-none d-md-inline">Usuń</span>
                         </button>
                     </div>
                 </td>

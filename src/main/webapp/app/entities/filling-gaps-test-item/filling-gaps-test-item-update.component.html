@@ -1,7 +1,7 @@
 <div class="row justify-content-center">
     <div class="col-8">
         <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
-            <h2 id="jhi-filling-gaps-test-item-heading">Create or edit a Filling Gaps Test Item</h2>
+            <h2 id="jhi-filling-gaps-test-item-heading">Utwórz lub edytuj pytanie z lukami</h2>
             <div>
                 <jhi-alert-error></jhi-alert-error>
                 <div class="form-group" [hidden]="!fillingGapsTestItem.id">
@@ -10,24 +10,38 @@
                         [(ngModel)]="fillingGapsTestItem.id" readonly />
                 </div>
                 <div class="form-group">
-                    <label class="form-control-label" for="field_question">Question</label>
+                    <label class="form-control-label" for="field_question">Pytanie</label>
                     <input type="text" class="form-control" name="question" id="field_question"
-                        [(ngModel)]="fillingGapsTestItem.question" required/>
+                        [(ngModel)]="fillingGapsTestItem.question" (ngModelChange)="parseQuestion()" required/>
                     <div [hidden]="!(editForm.controls.question?.dirty && editForm.controls.question?.invalid)">
                         <small class="form-text text-danger"
                         [hidden]="!editForm.controls.question?.errors?.required">
-                        This field is required.
+                        To pole jest wymagane.
                         </small>
                     </div>
+                    Znalezione klucze: <span *ngFor="let key of keysInQuestion" class="badge badge-pill badge-success">{{key}}</span>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_answers">Odpowiedzi</label>
+                    <textarea type="text" class="form-control" name="answers" id="field_answers"
+                           [(ngModel)]="answersRaw" (ngModelChange)="parseAnswers()" required></textarea>
+                    <div [hidden]="!(editForm.controls.answers?.dirty && editForm.controls.answers?.invalid)">
+                        <small class="form-text text-danger"
+                               [hidden]="!editForm.controls.answers?.errors?.required">
+                            To pole jest wymagane.
+                        </small>
+                    </div>
+                    Znalezione klucze: <span *ngFor="let key of keysInAnswer" class="badge badge-pill badge-danger">{{key
+                    }}</span>
                 </div>
 
             </div>
             <div>
                 <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
-                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span>Cancel</span>
+                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span>Anuluj</span>
                 </button>
                 <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
-                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span>Save</span>
+                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span>Zapisz</span>
                 </button>
             </div>
         </form>

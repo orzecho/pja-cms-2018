@@ -33,14 +33,20 @@ public class FillingGapsTestItemMapper implements EntityMapper<FillingGapsTestIt
             fillingGapsTestItem = fillingGapsTestItemRepository.getOne(dto.getId());
         }
         fillingGapsTestItem.setQuestion(dto.getQuestion());
-        fillingGapsTestItem.setGapItems(saveAndGetGapItems(dto));
+        fillingGapsTestItem = fillingGapsTestItemRepository.save(fillingGapsTestItem);
+        fillingGapsTestItem.setGapItems(saveAndGetGapItems(dto, fillingGapsTestItem));
 
         return fillingGapsTestItem;
     }
 
-    private Set<GapItem> saveAndGetGapItems(FillingGapsTestItemDTO dto) {
-        List<GapItem> items = gapItemMapper.toEntity(dto.getGapItems())
+    private Set<GapItem> saveAndGetGapItems(FillingGapsTestItemDTO dto,
+        FillingGapsTestItem fillingGapsTestItem) {
+        List<GapItem> gapItems = gapItemMapper.toEntity(dto.getGapItems());
+        fillingGapsTestItem.getGapItems().stream().filter(e -> !gapItems.contains(e))
+            .forEach(gapItem -> gapItem.setTestItem(null));
+        List<GapItem> items = gapItems
             .stream()
+            .peek(e -> e.setTestItem(fillingGapsTestItem))
             .map(gapItemRepository::save)
             .collect(Collectors.toList());
         return Sets.newHashSet(items);

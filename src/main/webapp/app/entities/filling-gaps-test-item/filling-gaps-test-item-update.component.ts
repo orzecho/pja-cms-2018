@@ -8,6 +8,7 @@ import { IFillingGapsTestItem } from 'app/shared/model/filling-gaps-test-item.mo
 import { FillingGapsTestItemService } from './filling-gaps-test-item.service';
 import { ITag } from 'app/shared/model/tag.model';
 import { TagService } from 'app/entities/tag';
+import { GapItem } from 'app/shared/model/gap-item.model';
 
 @Component({
     selector: 'jhi-filling-gaps-test-item-update',
@@ -16,6 +17,9 @@ import { TagService } from 'app/entities/tag';
 export class FillingGapsTestItemUpdateComponent implements OnInit {
     private _fillingGapsTestItem: IFillingGapsTestItem;
     isSaving: boolean;
+    answersRaw: String;
+    keysInQuestion: String[];
+    keysInAnswer: String[];
 
     tags: ITag[];
 
@@ -30,6 +34,9 @@ export class FillingGapsTestItemUpdateComponent implements OnInit {
         this.isSaving = false;
         this.activatedRoute.data.subscribe(({ fillingGapsTestItem }) => {
             this.fillingGapsTestItem = fillingGapsTestItem;
+            this.answersRaw = '';
+            this.fillingGapsTestItem.gapItems.forEach(gapItem => (this.answersRaw += `${gapItem.key}:${gapItem.value}\n`));
+            this.parseAnswers();
         });
         this.tagService.query().subscribe(
             (res: HttpResponse<ITag[]>) => {
@@ -89,5 +96,41 @@ export class FillingGapsTestItemUpdateComponent implements OnInit {
 
     set fillingGapsTestItem(fillingGapsTestItem: IFillingGapsTestItem) {
         this._fillingGapsTestItem = fillingGapsTestItem;
+    }
+
+    parseQuestion() {
+        const regex = /[?][a-zA-Z][?]/g;
+        const keys = [];
+        let m;
+        do {
+            m = regex.exec(this.fillingGapsTestItem.question);
+            if (m) {
+                keys.push(m[0]);
+            }
+        } while (m);
+        this.keysInQuestion = keys;
+    }
+
+    parseAnswers() {
+        const lines = this.answersRaw.split(/[\n\r]/g);
+        const gapItems = [];
+        const keys = [];
+        lines.forEach(line => {
+            const regex = /[?][a-zA-Z][?]:.*/g;
+            const m = regex.exec(line);
+            if (m) {
+                const key = m[0].substr(0, 3);
+                keys.push(key);
+                const value = m[0].substr(4);
+                if (value.length > 0) {
+                    const gapItem = new GapItem();
+                    gapItem.key = key;
+                    gapItem.value = value.trim();
+                    gapItems.push(gapItem);
+                }
+            }
+        });
+        this.keysInAnswer = keys;
+        this.fillingGapsTestItem.gapItems = gapItems;
     }
 }
