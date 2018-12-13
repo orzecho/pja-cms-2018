@@ -1,6 +1,8 @@
 package pl.edu.pja.nyan.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+
+import pl.edu.pja.nyan.security.AuthoritiesConstants;
 import pl.edu.pja.nyan.service.WordService;
 import pl.edu.pja.nyan.web.rest.errors.BadRequestAlertException;
 import pl.edu.pja.nyan.web.rest.util.HeaderUtil;
@@ -16,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -54,6 +57,7 @@ public class WordResource {
      */
     @PostMapping("/words")
     @Timed
+    @Secured({ AuthoritiesConstants.ADMIN, AuthoritiesConstants.TEACHER})
     public ResponseEntity<WordDTO> createWord(@Valid @RequestBody WordDTO wordDTO) throws URISyntaxException {
         log.debug("REST request to save Word : {}", wordDTO);
         if (wordDTO.getId() != null) {
@@ -76,6 +80,7 @@ public class WordResource {
      */
     @PutMapping("/words")
     @Timed
+    @Secured({AuthoritiesConstants.ADMIN, AuthoritiesConstants.TEACHER})
     public ResponseEntity<WordDTO> updateWord(@Valid @RequestBody WordDTO wordDTO) throws URISyntaxException {
         log.debug("REST request to update Word : {}", wordDTO);
         if (wordDTO.getId() == null) {
@@ -125,6 +130,7 @@ public class WordResource {
      */
     @DeleteMapping("/words/{id}")
     @Timed
+    @Secured({AuthoritiesConstants.ADMIN, AuthoritiesConstants.TEACHER})
     public ResponseEntity<Void> deleteWord(@PathVariable Long id) {
         log.debug("REST request to delete Word : {}", id);
         wordService.delete(id);

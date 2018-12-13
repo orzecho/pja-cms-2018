@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.sql.SQLException;
 
+import javax.annotation.PostConstruct;
+
 @Configuration
 @EnableJpaRepositories("pl.edu.pja.nyan.repository")
 @EnableJpaAuditing(auditorAwareRef = "springSecurityAuditorAware")
