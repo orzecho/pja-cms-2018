@@ -60,7 +60,7 @@ public class LessonMapper implements EntityMapper<LessonDTO,Lesson> {
             .name(entity.getName())
             .lessonFiles(lessonFileMapper.toShortDto(lessonFileRepository.findByLesson(entity)))
             .tags(tagMapper.toDto(entity.getTags()))
-            .rawTags(String.join(",", entity.getTags().stream().map(Tag::getName).collect(Collectors.toList())))
+            .rawTags(entity.getTags().stream().map(Tag::getName).collect(Collectors.toList()))
             .words(words)
             .build();
     }

@@ -136,7 +136,7 @@ export class LessonComponent implements OnInit, OnDestroy {
 
     searchForTags(event) {
         this.tagService
-            .query({ 'name.contains': event.query })
+            .findByNameContaining(event.query)
             .subscribe((res: HttpResponse<ITag[]>) => (this.foundTags = res.body), (res: HttpErrorResponse) => this.onError(res.message));
     }
 
