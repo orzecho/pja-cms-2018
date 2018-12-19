@@ -1,6 +1,8 @@
 package pl.edu.pja.nyan.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+
+import pl.edu.pja.nyan.security.AuthoritiesConstants;
 import pl.edu.pja.nyan.service.LessonFileService;
 import pl.edu.pja.nyan.service.dto.LessonFileShortDTO;
 import pl.edu.pja.nyan.web.rest.errors.BadRequestAlertException;
@@ -17,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -55,6 +58,7 @@ public class LessonFileResource {
      */
     @PostMapping("/lesson-files")
     @Timed
+    @Secured({ AuthoritiesConstants.ADMIN, AuthoritiesConstants.TEACHER})
     public ResponseEntity<LessonFileDTO> createLessonFile(@Valid @RequestBody LessonFileDTO lessonFileDTO) throws URISyntaxException {
         log.debug("REST request to save LessonFile : {}", lessonFileDTO);
         if (lessonFileDTO.getId() != null) {
@@ -77,6 +81,7 @@ public class LessonFileResource {
      */
     @PutMapping("/lesson-files")
     @Timed
+    @Secured({AuthoritiesConstants.ADMIN, AuthoritiesConstants.TEACHER})
     public ResponseEntity<LessonFileDTO> updateLessonFile(@Valid @RequestBody LessonFileDTO lessonFileDTO) throws URISyntaxException {
         log.debug("REST request to update LessonFile : {}", lessonFileDTO);
         if (lessonFileDTO.getId() == null) {
@@ -126,6 +131,7 @@ public class LessonFileResource {
      */
     @DeleteMapping("/lesson-files/{id}")
     @Timed
+    @Secured({AuthoritiesConstants.ADMIN, AuthoritiesConstants.TEACHER})
     public ResponseEntity<Void> deleteLessonFile(@PathVariable Long id) {
         log.debug("REST request to delete LessonFile : {}", id);
         lessonFileService.delete(id);
