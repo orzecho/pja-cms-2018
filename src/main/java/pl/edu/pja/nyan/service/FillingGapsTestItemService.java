@@ -1,19 +1,21 @@
 package pl.edu.pja.nyan.service;
 
-import pl.edu.pja.nyan.domain.FillingGapsTestItem;
-import pl.edu.pja.nyan.repository.FillingGapsTestItemRepository;
-import pl.edu.pja.nyan.service.dto.FillingGapsTestItemDTO;
-import pl.edu.pja.nyan.service.mapper.FillingGapsTestItemMapper;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
-import java.util.Optional;
+import pl.edu.pja.nyan.domain.FillingGapsTestItem;
+import pl.edu.pja.nyan.domain.Tag;
+import pl.edu.pja.nyan.repository.FillingGapsTestItemRepository;
+import pl.edu.pja.nyan.service.dto.FillingGapsTestItemDTO;
+import pl.edu.pja.nyan.service.mapper.FillingGapsTestItemMapper;
 /**
  * Service Implementation for managing FillingGapsTestItem.
  */
@@ -80,5 +82,12 @@ public class FillingGapsTestItemService {
     public void delete(Long id) {
         log.debug("Request to delete FillingGapsTestItem : {}", id);
         fillingGapsTestItemRepository.deleteById(id);
+    }
+
+    public List<FillingGapsTestItemDTO> findByTags(List<String> tags) {
+        return fillingGapsTestItemRepository.findAll().stream()
+            .filter(e -> e.getTags().stream().map(Tag::getName).anyMatch(tags::contains))
+            .map(fillingGapsTestItemMapper::toDto)
+            .collect(Collectors.toList());
     }
 }

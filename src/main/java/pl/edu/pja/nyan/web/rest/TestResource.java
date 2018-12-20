@@ -1,8 +1,8 @@
 package pl.edu.pja.nyan.web.rest;
 
+import java.util.Arrays;
 import java.util.List;
 
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,7 +31,6 @@ public class TestResource {
 
     @GetMapping("/gaps/{tags}")
     public List<FillingGapsTestItemDTO> generateFillingGapsTest(@PathVariable String tags) {
-        return fillingGapsTestItemService.findAll(Pageable.unpaged()).getContent();
-        //TODO add fetching items based of tags
+        return fillingGapsTestItemService.findByTags(Arrays.asList(tags.split(",")));
     }
 }
