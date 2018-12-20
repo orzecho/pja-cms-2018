@@ -33,10 +33,15 @@
                     <span>Tagi</span>
                 </a>
             </li>
-            <li class="nav-item" >
+            <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                <a class="nav-link" routerLink="test"  (click)="collapseNavbar()">
+                    <span>Testy</span>
+                </a>
+            </li>
+            <li *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_TEACHER']" class="nav-item" >
                 <a class="nav-link" routerLink="filling-gaps-test-item" routerLinkActive="active"
                    [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
-                    <fa-icon [icon]="'asterisk'" [fixedWidth]="true"></fa-icon>
+                    <fa-icon [icon]="'book'" [fixedWidth]="true"></fa-icon>
                     <span>Testy z wypełnianiem luk</span>
                 </a>
             </li>
@@ -104,7 +109,7 @@
                   <span *ngIf="!getImageUrl()">
                     <fa-icon [icon]="'user'"></fa-icon>
                     <span>
-                      Account
+                      Konto
                     </span>
                   </span>
                   <span *ngIf="getImageUrl()">

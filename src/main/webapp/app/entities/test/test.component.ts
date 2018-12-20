@@ -34,7 +34,11 @@ export class TestComponent implements OnInit {
 
     routeToTestPage() {
         const stringTags = this.tags.map(t => t.name).join(',');
-        this.router.navigate([`/test/vocabulary/${this.testType}/${stringTags}`]);
+        if (this.testType === 'GAPS') {
+            this.router.navigate([`/test/${this.testType}/${stringTags}`]);
+        } else {
+            this.router.navigate([`/test/vocabulary/${this.testType}/${stringTags}`]);
+        }
     }
 
     private onError(errorMessage: string) {
