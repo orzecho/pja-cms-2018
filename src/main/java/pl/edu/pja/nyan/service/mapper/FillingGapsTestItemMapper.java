@@ -12,8 +12,10 @@ import com.google.common.collect.Sets;
 import lombok.RequiredArgsConstructor;
 import pl.edu.pja.nyan.domain.FillingGapsTestItem;
 import pl.edu.pja.nyan.domain.GapItem;
+import pl.edu.pja.nyan.domain.Tag;
 import pl.edu.pja.nyan.repository.FillingGapsTestItemRepository;
 import pl.edu.pja.nyan.repository.GapItemRepository;
+import pl.edu.pja.nyan.repository.TagRepository;
 import pl.edu.pja.nyan.service.dto.FillingGapsTestItemDTO;
 
 @Service
@@ -23,6 +25,8 @@ public class FillingGapsTestItemMapper implements EntityMapper<FillingGapsTestIt
     private final FillingGapsTestItemRepository fillingGapsTestItemRepository;
     private final GapItemMapper gapItemMapper;
     private final GapItemRepository gapItemRepository;
+    private final TagRepository tagRepository;
+    private final TagMapper tagMapper;
 
     @Override
     public FillingGapsTestItem toEntity(FillingGapsTestItemDTO dto) {
@@ -31,12 +35,28 @@ public class FillingGapsTestItemMapper implements EntityMapper<FillingGapsTestIt
             fillingGapsTestItem = new FillingGapsTestItem();
         } else {
             fillingGapsTestItem = fillingGapsTestItemRepository.getOne(dto.getId());
+            clearTags(fillingGapsTestItem);
         }
         fillingGapsTestItem.setQuestion(dto.getQuestion());
         fillingGapsTestItem = fillingGapsTestItemRepository.save(fillingGapsTestItem);
         fillingGapsTestItem.setGapItems(saveAndGetGapItems(dto, fillingGapsTestItem));
+        createAndAssignTags(dto.getRawTags(), fillingGapsTestItem);
 
         return fillingGapsTestItem;
+    }
+
+    private void createAndAssignTags(List<String> rawTags,
+        FillingGapsTestItem fillingGapsTestItem) {
+        rawTags.stream()
+            .map(rawTag -> tagRepository.findByName(rawTag).orElseGet(() -> tagRepository.save(new Tag(rawTag))))
+            .peek(tag -> tag.addFillingGapsTestItem(fillingGapsTestItem))
+            .forEach(tagRepository::save);
+    }
+
+    private void clearTags(FillingGapsTestItem fillingGapsTestItem) {
+        tagRepository.findAllWithEagerRelationships().stream()
+            .filter(e -> e.getFillingGapsTestItems().contains(fillingGapsTestItem))
+            .forEach(e -> e.removeFillingGapsTestItem(fillingGapsTestItem));
     }
 
     private Set<GapItem> saveAndGetGapItems(FillingGapsTestItemDTO dto,
@@ -58,6 +78,8 @@ public class FillingGapsTestItemMapper implements EntityMapper<FillingGapsTestIt
             .id(entity.getId())
             .question(entity.getQuestion())
             .gapItems(gapItemMapper.toDto(entity.getGapItems()))
+            .tags(tagMapper.toDto(entity.getTags()))
+            .rawTags(entity.getTags().stream().map(Tag::getName).collect(Collectors.toList()))
             .build();
     }
 

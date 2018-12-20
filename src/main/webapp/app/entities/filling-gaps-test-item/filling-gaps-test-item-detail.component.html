@@ -14,6 +14,12 @@
                     <span *ngFor="let gap of fillingGapsTestItem.gapItems">
                     <span class="badge badge-pill badge-success">{{gap.key}}</span>{{gap.value}}</span>
                 </dd>
+                <dt><span>Tagi</span></dt>
+                <dd>
+                    <a [routerLink]="['/tag', tag?.id, 'view' ]"
+                       class="badge badge-pill badge-primary"
+                       *ngFor="let tag of fillingGapsTestItem.tags">{{tag.name}}</a>
+                </dd>
             </dl>
 
             <button type="submit"

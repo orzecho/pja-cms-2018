@@ -11,11 +11,12 @@ import {
     fillingGapsTestItemRoute,
     fillingGapsTestItemPopupRoute
 } from './';
+import { AutoCompleteModule } from 'primeng/primeng';
 
 const ENTITY_STATES = [...fillingGapsTestItemRoute, ...fillingGapsTestItemPopupRoute];
 
 @NgModule({
-    imports: [NyanSharedModule, RouterModule.forChild(ENTITY_STATES)],
+    imports: [NyanSharedModule, RouterModule.forChild(ENTITY_STATES), AutoCompleteModule],
     declarations: [
         FillingGapsTestItemComponent,
         FillingGapsTestItemDetailComponent,

@@ -22,6 +22,8 @@ public class FillingGapsTestItemDTO implements Serializable {
     @NotNull
     private String question;
     private List<GapItemDTO> gapItems;
+    private List<String> rawTags;
+    private List<TagDTO> tags;
 
     @Override
     public boolean equals(Object o) {

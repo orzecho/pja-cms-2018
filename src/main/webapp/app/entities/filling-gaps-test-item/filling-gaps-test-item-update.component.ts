@@ -23,6 +23,7 @@ export class FillingGapsTestItemUpdateComponent implements OnInit {
     keyValidate = true;
 
     tags: ITag[];
+    foundTags: string[];
 
     constructor(
         private jhiAlertService: JhiAlertService,
@@ -133,5 +134,26 @@ export class FillingGapsTestItemUpdateComponent implements OnInit {
         });
         this.keysInAnswer = keys;
         this.fillingGapsTestItem.gapItems = gapItems;
+    }
+
+    searchForTags(event) {
+        this.tagService
+            .findByNameContaining(event.query)
+            .subscribe(
+                (res: HttpResponse<ITag[]>) => (this.foundTags = res.body.map(tag => tag.name)),
+                (res: HttpErrorResponse) => this.onError(res.message)
+            );
+    }
+
+    onTagInputKeyUp(event: KeyboardEvent) {
+        if (event.key === 'Enter') {
+            const tokenInput = event.srcElement as any;
+            const inputValue = tokenInput.value;
+
+            if (inputValue && !this.fillingGapsTestItem.rawTags.includes(inputValue)) {
+                this.fillingGapsTestItem.rawTags.push(inputValue);
+                tokenInput.value = '';
+            }
+        }
     }
 }
