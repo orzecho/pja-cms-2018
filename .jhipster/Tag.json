@@ -20,6 +20,14 @@
         },
         {
             "relationshipType": "many-to-many",
+            "otherEntityRelationshipName": "tag",
+            "relationshipName": "fillingGapsTestItem",
+            "otherEntityName": "fillingGapsTestItem",
+            "otherEntityField": "id",
+            "ownerSide": true
+        },
+        {
+            "relationshipType": "many-to-many",
             "relationshipName": "word",
             "otherEntityName": "word",
             "ownerSide": false,

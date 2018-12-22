@@ -5,6 +5,8 @@ import { NyanWordModule } from './word/word.module';
 import { NyanTagModule } from './tag/tag.module';
 import { NyanLessonFileModule } from './lesson-file/lesson-file.module';
 import { NyanTestModule } from 'app/entities/test/test.module';
+import { NyanFillingGapsTestItemModule } from './filling-gaps-test-item/filling-gaps-test-item.module';
+import { NyanGapItemModule } from './gap-item/gap-item.module';
 /* jhipster-needle-add-entity-module-import - JHipster will add entity modules imports here */
 
 @NgModule({
@@ -15,6 +17,8 @@ import { NyanTestModule } from 'app/entities/test/test.module';
         NyanTagModule,
         NyanLessonFileModule,
         NyanTestModule,
+        NyanFillingGapsTestItemModule,
+        NyanGapItemModule,
         /* jhipster-needle-add-entity-module - JHipster will add entity modules here */
     ],
     declarations: [],

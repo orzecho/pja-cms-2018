@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 
 import { SERVER_API_URL } from 'app/app.constants';
 import { IVocabularyTestItem } from 'app/shared/model/vocabulary-test-item.model';
+import { IFillingGapsTestItem } from 'app/shared/model/filling-gaps-test-item.model';
 
 type EntityArrayResponseType = HttpResponse<IVocabularyTestItem[]>;
 
@@ -16,5 +17,10 @@ export class TestService {
     getVocabulary(type: string, tags: string[]): Observable<EntityArrayResponseType> {
         const tagsString = tags.join(',');
         return this.http.get<IVocabularyTestItem[]>(`${this.resourceUrl}/vocabulary/${type}/${tagsString}`, { observe: 'response' });
+    }
+
+    getFillingGaps(tags: string[]): Observable<HttpResponse<IFillingGapsTestItem[]>> {
+        const tagsString = tags.join(',');
+        return this.http.get<IFillingGapsTestItem[]>(`${this.resourceUrl}/gaps/${tagsString}`, { observe: 'response' });
     }
 }

@@ -1,0 +1,37 @@
+<div>
+    <h2 id="page-heading">
+        <span>Test słownictwa</span>
+    </h2>
+    <jhi-alert></jhi-alert>
+    <br/>
+    Tagi: <span class="badge badge-pill badge-primary"
+             *ngFor="let tag of this.tags.split(',')">{{tag}}</span>
+
+    <div *ngFor="let item of this.fillingGapsTestItems" class="ui-g ui-fluid">
+        <div class="ui-g-12">
+            {{item.question}}
+        </div>
+        <div *ngFor="let gap of item.gapItems">
+            <div class="ui-g-12 ui-md-12">
+                <div class="ui-inputgroup">
+                    <input type="text"
+                           [class]="gap.answerCorrect ? 'good-answer ng-pristine ng-valid ui-inputtext ui-corner-all ui-state-default ui-widget' :
+                       'bad-answer ng-pristine ng-valid ui-inputtext ui-corner-all ui-state-default ui-widget'" pInputText
+                           [placeholder]="gap.key" [(ngModel)]="gap.answerFromUser" (ngModelChange)="checkAnswer(gap)">
+                    <ng-template [ngIf]="gap.answerCorrect" [ngIfElse]="answerNotCorrect">
+                        <fa-icon class="ui-inputgroup-addon" [icon]="'check'"></fa-icon>
+                    </ng-template>
+                    <ng-template #answerNotCorrect>
+                        <fa-icon class="ui-inputgroup-addon" [icon]="'times'"></fa-icon>
+                    </ng-template>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Powrót</span>
+    </button>
+</div>

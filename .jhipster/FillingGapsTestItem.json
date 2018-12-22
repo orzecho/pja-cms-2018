@@ -1,0 +1,36 @@
+{
+    "name": "FillingGapsTestItem",
+    "fields": [
+        {
+            "fieldName": "question",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "gapItem",
+            "otherEntityName": "gapItem",
+            "otherEntityRelationshipName": "testItem"
+        },
+        {
+            "relationshipType": "many-to-many",
+            "relationshipName": "tag",
+            "otherEntityName": "tag",
+            "ownerSide": false,
+            "otherEntityRelationshipName": "fillingGapsTestItem"
+        }
+    ],
+    "changelogDate": "20181212125529",
+    "entityTableName": "filling_gaps_test_item",
+    "dto": "mapstruct",
+    "pagination": "pagination",
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": true,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
+}

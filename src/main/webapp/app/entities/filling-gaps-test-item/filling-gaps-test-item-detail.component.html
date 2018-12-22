@@ -1,0 +1,38 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="fillingGapsTestItem">
+            <h2><span>Pytanie z lukami</span> {{fillingGapsTestItem.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span>Pytanie</span></dt>
+                <dd>
+                    <span>{{fillingGapsTestItem.question}}</span>
+                </dd>
+                <dt><span>Odpowiedzi</span></dt>
+                <dd>
+                    <span *ngFor="let gap of fillingGapsTestItem.gapItems">
+                    <span class="badge badge-pill badge-success">{{gap.key}}</span>{{gap.value}}</span>
+                </dd>
+                <dt><span>Tagi</span></dt>
+                <dd>
+                    <a [routerLink]="['/tag', tag?.id, 'view' ]"
+                       class="badge badge-pill badge-primary"
+                       *ngFor="let tag of fillingGapsTestItem.tags">{{tag.name}}</a>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Cofnij</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/filling-gaps-test-item', fillingGapsTestItem.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span> Edytuj</span>
+            </button>
+        </div>
+    </div>
+</div>

@@ -39,6 +39,17 @@
 
         <addPrimaryKey columnNames="tags_id, lessons_id" tableName="tag_lesson"/>
         
+        <createTable tableName="tag_filling_gaps_test_item">
+            <column name="filling_gaps_test_items_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tags_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="tags_id, filling_gaps_test_items_id" tableName="tag_filling_gaps_test_item"/>
+        
     </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
 </databaseChangeLog>
