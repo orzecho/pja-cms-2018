@@ -1,14 +1,14 @@
 entity Lesson {
 	name String required
-        description String
+    description String
 }
 
 entity Word {
 	translation String required
-        kana String required
-        kanji String
+    kana String required
+    kanji String
 	romaji String
-        note String
+    note String
 }
 
 entity Tag {
@@ -17,7 +17,7 @@ entity Tag {
 
 entity LessonFile {
 	name String required
-        content Blob required
+    content Blob required
 }
 
 relationship ManyToOne {
@@ -25,8 +25,45 @@ relationship ManyToOne {
 }
 
 relationship ManyToMany {
-        Tag{lesson(name)} to Lesson{tag(name)}
-        Word{tag(name)} to Tag{word(translation)}
+    Tag{lesson(name)} to Lesson{tag(name)}
+    Word{tag(name)} to Tag{word(translation)}
+}
+
+entity WordsTest {
+	name String required
+    type TestType required
+    code String required
+}
+
+enum TestType {
+	WRITTEN,
+	FILLING_GAPS,
+    TRUE_FALSE
+}
+
+relationship ManyToMany {
+	WordsTest{word(translation)} to Word{wordsTest}
+}
+
+relationship ManyToOne {
+	WordsTest{creator(login)} to User{wordsTest}
+}
+
+entity FillingGapsTestItem {
+	question String required
+}
+
+entity GapItem {
+    key String required
+    value String required
+}
+
+relationship ManyToOne {
+    GapItem{testItem} to FillingGapsTestItem{gapItem}
+}
+
+relationship ManyToMany {
+    Tag{fillingGapsTestItem} to FillingGapsTestItem{tag(name)}
 }
 
 service all with serviceClass
