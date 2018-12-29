@@ -1,14 +1,14 @@
 entity Lesson {
 	name String required
-        description String
+    description String
 }
 
 entity Word {
 	translation String required
-        kana String required
-        kanji String
+    kana String required
+    kanji String
 	romaji String
-        note String
+    note String
 }
 
 entity Tag {
@@ -17,7 +17,7 @@ entity Tag {
 
 entity LessonFile {
 	name String required
-        content Blob required
+    content Blob required
 }
 
 relationship ManyToOne {
@@ -25,8 +25,80 @@ relationship ManyToOne {
 }
 
 relationship ManyToMany {
-        Tag{lesson(name)} to Lesson{tag(name)}
-        Word{tag(name)} to Tag{word(translation)}
+    Tag{lesson(name)} to Lesson{tag(name)}
+    Word{tag(name)} to Tag{word(translation)}
+}
+
+/* EXAM ENTITIES */
+
+entity Exam {
+	name String required
+    type TestType required
+    code String required
+}
+
+enum TestType {
+	WRITTEN,
+	FILLING_GAPS,
+    TRUE_FALSE
+}
+
+entity ExamResult {
+	date Instant required
+    result Integer required
+}
+
+entity WrittenAnswer {
+	translationFrom String
+    translation String
+    kana String
+    kanji String
+    romaji String
+    isRightAnswer Boolean
+}
+
+entity TrueFalseAnswer {
+	translationFrom String
+    isRightAnswer Boolean
+}
+
+relationship OneToMany {
+    ExamResult{writtenAnswers} to WrittenAnswer{exam}
+    ExamResult{trueFalseAnswers} to TrueFalseAnswer{exam}
+
+    Exam{results(name)} to ExamResult{exam}
+}
+
+relationship ManyToMany {
+	Exam{word(translation)} to Word{exam}
+}
+
+relationship ManyToOne {
+	WrittenAnswer{answer} to Word
+	TrueFalseAnswer{srcWord} to Word
+    TrueFalseAnswer{targetWord} to Word
+
+	Exam{creator(login)} to User{createdExaminations(name)}
+    ExamResult{student(login)} to User{examResult}
+}
+
+/* FILLING GAPS TEST */
+
+entity FillingGapsTestItem {
+	question String required
+}
+
+entity GapItem {
+    key String required
+    value String required
+}
+
+relationship ManyToOne {
+    GapItem{testItem} to FillingGapsTestItem{gapItem}
+}
+
+relationship ManyToMany {
+    Tag{fillingGapsTestItem} to FillingGapsTestItem{tag(name)}
 }
 
 service all with serviceClass
