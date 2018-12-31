@@ -4,47 +4,46 @@ import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { JhiAlertService } from 'ng-jhipster';
 
-import { IWord } from 'app/shared/model/word.model';
-import { WordService } from './word.service';
-import { ITag } from 'app/shared/model/tag.model';
-import { TagService } from 'app/entities/tag';
 import { IWordsTest } from 'app/shared/model/words-test.model';
-import { WordsTestService } from 'app/entities/words-test';
+import { WordsTestService } from './words-test.service';
+import { IUser, UserService } from 'app/core';
+import { IWord } from 'app/shared/model/word.model';
+import { WordService } from 'app/entities/word';
 
 @Component({
-    selector: 'jhi-word-update',
-    templateUrl: './word-update.component.html'
+    selector: 'jhi-words-test-update',
+    templateUrl: './words-test-update.component.html'
 })
-export class WordUpdateComponent implements OnInit {
-    private _word: IWord;
+export class WordsTestUpdateComponent implements OnInit {
+    private _wordsTest: IWordsTest;
     isSaving: boolean;
 
-    tags: ITag[];
+    users: IUser[];
 
-    wordstests: IWordsTest[];
+    words: IWord[];
 
     constructor(
         private jhiAlertService: JhiAlertService,
-        private wordService: WordService,
-        private tagService: TagService,
         private wordsTestService: WordsTestService,
+        private userService: UserService,
+        private wordService: WordService,
         private activatedRoute: ActivatedRoute
     ) {}
 
     ngOnInit() {
         this.isSaving = false;
-        this.activatedRoute.data.subscribe(({ word }) => {
-            this.word = word;
+        this.activatedRoute.data.subscribe(({ wordsTest }) => {
+            this.wordsTest = wordsTest;
         });
-        this.tagService.query().subscribe(
-            (res: HttpResponse<ITag[]>) => {
-                this.tags = res.body;
+        this.userService.query().subscribe(
+            (res: HttpResponse<IUser[]>) => {
+                this.users = res.body;
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
-        this.wordsTestService.query().subscribe(
-            (res: HttpResponse<IWordsTest[]>) => {
-                this.wordstests = res.body;
+        this.wordService.query().subscribe(
+            (res: HttpResponse<IWord[]>) => {
+                this.words = res.body;
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
@@ -56,15 +55,15 @@ export class WordUpdateComponent implements OnInit {
 
     save() {
         this.isSaving = true;
-        if (this.word.id !== undefined) {
-            this.subscribeToSaveResponse(this.wordService.update(this.word));
+        if (this.wordsTest.id !== undefined) {
+            this.subscribeToSaveResponse(this.wordsTestService.update(this.wordsTest));
         } else {
-            this.subscribeToSaveResponse(this.wordService.create(this.word));
+            this.subscribeToSaveResponse(this.wordsTestService.create(this.wordsTest));
         }
     }
 
-    private subscribeToSaveResponse(result: Observable<HttpResponse<IWord>>) {
-        result.subscribe((res: HttpResponse<IWord>) => this.onSaveSuccess(), (res: HttpErrorResponse) => this.onSaveError());
+    private subscribeToSaveResponse(result: Observable<HttpResponse<IWordsTest>>) {
+        result.subscribe((res: HttpResponse<IWordsTest>) => this.onSaveSuccess(), (res: HttpErrorResponse) => this.onSaveError());
     }
 
     private onSaveSuccess() {
@@ -80,11 +79,11 @@ export class WordUpdateComponent implements OnInit {
         this.jhiAlertService.error(errorMessage, null, null);
     }
 
-    trackTagById(index: number, item: ITag) {
+    trackUserById(index: number, item: IUser) {
         return item.id;
     }
 
-    trackWordsTestById(index: number, item: IWordsTest) {
+    trackWordById(index: number, item: IWord) {
         return item.id;
     }
 
@@ -98,11 +97,11 @@ export class WordUpdateComponent implements OnInit {
         }
         return option;
     }
-    get word() {
-        return this._word;
+    get wordsTest() {
+        return this._wordsTest;
     }
 
-    set word(word: IWord) {
-        this._word = word;
+    set wordsTest(wordsTest: IWordsTest) {
+        this._wordsTest = wordsTest;
     }
 }

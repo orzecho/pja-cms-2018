@@ -5,6 +5,7 @@ import pl.edu.pja.nyan.NyanApp;
 
 import pl.edu.pja.nyan.domain.Word;
 import pl.edu.pja.nyan.domain.Tag;
+import pl.edu.pja.nyan.domain.WordsTest;
 import pl.edu.pja.nyan.repository.WordRepository;
 import pl.edu.pja.nyan.service.WordService;
 import pl.edu.pja.nyan.service.dto.WordDTO;
@@ -393,6 +394,9 @@ public class WordResourceIntTest {
 
         // Get all the wordList where romaji is not null
         defaultWordShouldBeFound("romaji.specified=true");
+
+        // Get all the wordList where romaji is null
+        defaultWordShouldNotBeFound("romaji.specified=false");
     }
 
     @Test
@@ -429,6 +433,9 @@ public class WordResourceIntTest {
 
         // Get all the wordList where note is not null
         defaultWordShouldBeFound("note.specified=true");
+
+        // Get all the wordList where note is null
+        defaultWordShouldNotBeFound("note.specified=false");
     }
 
     @Test
@@ -447,6 +454,25 @@ public class WordResourceIntTest {
 
         // Get all the wordList where tag equals to tagId + 1
         defaultWordShouldNotBeFound("tagId.equals=" + (tagId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllWordsByWordsTestIsEqualToSomething() throws Exception {
+        // Initialize the database
+        WordsTest wordsTest = WordsTestResourceIntTest.createEntity(em);
+        em.persist(wordsTest);
+        em.flush();
+        word.addWordsTest(wordsTest);
+        wordRepository.saveAndFlush(word);
+        Long wordsTestId = wordsTest.getId();
+
+        // Get all the wordList where wordsTest equals to wordsTestId
+        defaultWordShouldBeFound("wordsTestId.equals=" + wordsTestId);
+
+        // Get all the wordList where wordsTest equals to wordsTestId + 1
+        defaultWordShouldNotBeFound("wordsTestId.equals=" + (wordsTestId + 1));
     }
 
     /**

@@ -1,4 +1,5 @@
 import { ITag } from 'app/shared/model//tag.model';
+import { IWordsTest } from 'app/shared/model//words-test.model';
 
 export interface IWord {
     id?: number;
@@ -9,6 +10,7 @@ export interface IWord {
     note?: string;
     tags?: ITag[];
     rawTags?: string;
+    wordsTests?: IWordsTest[];
 }
 
 export class Word implements IWord {
@@ -20,6 +22,7 @@ export class Word implements IWord {
         public romaji?: string,
         public note?: string,
         public tags?: ITag[],
-        public rawTags?: string
+        public rawTags?: string,
+        public wordsTests?: IWordsTest[]
     ) {}
 }

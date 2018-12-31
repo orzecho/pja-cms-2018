@@ -40,6 +40,8 @@ public class WordCriteria implements Serializable {
 
     private LongFilter tagId;
 
+    private LongFilter wordsTestId;
+
     public WordCriteria() {
     }
 
@@ -99,6 +101,14 @@ public class WordCriteria implements Serializable {
         this.tagId = tagId;
     }
 
+    public LongFilter getWordsTestId() {
+        return wordsTestId;
+    }
+
+    public void setWordsTestId(LongFilter wordsTestId) {
+        this.wordsTestId = wordsTestId;
+    }
+
     @Override
     public String toString() {
         return "WordCriteria{" +
@@ -109,6 +119,7 @@ public class WordCriteria implements Serializable {
                 (romaji != null ? "romaji=" + romaji + ", " : "") +
                 (note != null ? "note=" + note + ", " : "") +
                 (tagId != null ? "tagId=" + tagId + ", " : "") +
+                (wordsTestId != null ? "wordsTestId=" + wordsTestId + ", " : "") +
             "}";
     }
 

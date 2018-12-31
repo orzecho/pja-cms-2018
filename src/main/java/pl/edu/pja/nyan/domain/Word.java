@@ -1,5 +1,6 @@
 package pl.edu.pja.nyan.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -49,6 +50,11 @@ public class Word implements Serializable {
                joinColumns = @JoinColumn(name = "words_id", referencedColumnName = "id"),
                inverseJoinColumns = @JoinColumn(name = "tags_id", referencedColumnName = "id"))
     private Set<Tag> tags = new HashSet<>();
+
+    @ManyToMany(mappedBy = "words")
+    @JsonIgnore
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<WordsTest> wordsTests = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -147,6 +153,31 @@ public class Word implements Serializable {
 
     public void setTags(Set<Tag> tags) {
         this.tags = tags;
+    }
+
+    public Set<WordsTest> getWordsTests() {
+        return wordsTests;
+    }
+
+    public Word wordsTests(Set<WordsTest> wordsTests) {
+        this.wordsTests = wordsTests;
+        return this;
+    }
+
+    public Word addWordsTest(WordsTest wordsTest) {
+        this.wordsTests.add(wordsTest);
+        wordsTest.getWords().add(this);
+        return this;
+    }
+
+    public Word removeWordsTest(WordsTest wordsTest) {
+        this.wordsTests.remove(wordsTest);
+        wordsTest.getWords().remove(this);
+        return this;
+    }
+
+    public void setWordsTests(Set<WordsTest> wordsTests) {
+        this.wordsTests = wordsTests;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
