@@ -1,14 +1,13 @@
 package pl.edu.pja.nyan.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
-import pl.edu.pja.nyan.service.WordsTestService;
-import pl.edu.pja.nyan.web.rest.errors.BadRequestAlertException;
-import pl.edu.pja.nyan.web.rest.util.HeaderUtil;
-import pl.edu.pja.nyan.web.rest.util.PaginationUtil;
-import pl.edu.pja.nyan.service.dto.WordsTestDTO;
-import pl.edu.pja.nyan.service.dto.WordsTestCriteria;
-import pl.edu.pja.nyan.service.WordsTestQueryService;
-import io.github.jhipster.web.util.ResponseUtil;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -16,14 +15,34 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.web.authentication.session.SessionAuthenticationException;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.net.URI;
-import java.net.URISyntaxException;
+import com.codahale.metrics.annotation.Timed;
 
-import java.util.List;
-import java.util.Optional;
+import io.github.jhipster.web.util.ResponseUtil;
+import pl.edu.pja.nyan.domain.Tag;
+import pl.edu.pja.nyan.domain.User;
+import pl.edu.pja.nyan.service.TagService;
+import pl.edu.pja.nyan.service.UserService;
+import pl.edu.pja.nyan.service.WordService;
+import pl.edu.pja.nyan.service.WordsTestQueryService;
+import pl.edu.pja.nyan.service.WordsTestService;
+import pl.edu.pja.nyan.service.dto.WordDTO;
+import pl.edu.pja.nyan.service.dto.WordsTestCriteria;
+import pl.edu.pja.nyan.service.dto.WordsTestDTO;
+import pl.edu.pja.nyan.service.util.RandomUtil;
+import pl.edu.pja.nyan.web.rest.errors.BadRequestAlertException;
+import pl.edu.pja.nyan.web.rest.util.HeaderUtil;
+import pl.edu.pja.nyan.web.rest.util.PaginationUtil;
 
 /**
  * REST controller for managing WordsTest.
@@ -40,9 +59,19 @@ public class WordsTestResource {
 
     private final WordsTestQueryService wordsTestQueryService;
 
-    public WordsTestResource(WordsTestService wordsTestService, WordsTestQueryService wordsTestQueryService) {
+    private final UserService userService;
+
+    private final TagService tagService;
+
+    private final WordService wordService;
+
+    public WordsTestResource(WordsTestService wordsTestService, WordsTestQueryService wordsTestQueryService,
+        UserService userService, TagService tagService, WordService wordService) {
         this.wordsTestService = wordsTestService;
         this.wordsTestQueryService = wordsTestQueryService;
+        this.userService = userService;
+        this.tagService = tagService;
+        this.wordService = wordService;
     }
 
     /**
@@ -54,15 +83,44 @@ public class WordsTestResource {
      */
     @PostMapping("/words-tests")
     @Timed
-    public ResponseEntity<WordsTestDTO> createWordsTest(@Valid @RequestBody WordsTestDTO wordsTestDTO) throws URISyntaxException {
+    public ResponseEntity<WordsTestDTO> createWordsTest(
+        @Valid @RequestBody WordsTestDTO wordsTestDTO,
+        @RequestParam(name = "tags", required = false) List<String> tagsToUseWordsFrom
+    ) throws URISyntaxException {
         log.debug("REST request to save WordsTest : {}", wordsTestDTO);
         if (wordsTestDTO.getId() != null) {
             throw new BadRequestAlertException("A new wordsTest cannot already have an ID", ENTITY_NAME, "idexists");
+        }
+        wordsTestDTO.setCreatorId(getCurrentUserId());
+        wordsTestDTO.setCode(generateTestCode());
+        if (tagsToUseWordsFrom != null) {
+            setWordsHavingTags(wordsTestDTO, tagsToUseWordsFrom);
         }
         WordsTestDTO result = wordsTestService.save(wordsTestDTO);
         return ResponseEntity.created(new URI("/api/words-tests/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
+    }
+
+    private void setWordsHavingTags(WordsTestDTO wordsTestDTO, List<String> tagsToUseWordsFrom) {
+        List<Tag> tags = tagService.findByTagNames(tagsToUseWordsFrom);
+        List<WordDTO> words = wordService.findByTags(tags);
+        wordsTestDTO.setWords(new HashSet<>(words));
+    }
+
+    private Long getCurrentUserId() {
+        User user = userService.getUserWithAuthorities().orElseThrow(() ->
+            new SessionAuthenticationException("User not logged in"));
+        return user.getId();
+    }
+
+    private String generateTestCode() {
+        while (true) {
+            String code = RandomUtil.generateTestCode();
+            if (!wordsTestService.testAlreadyExists(code)) {
+                return code;
+            }
+        }
     }
 
     /**
@@ -76,10 +134,16 @@ public class WordsTestResource {
      */
     @PutMapping("/words-tests")
     @Timed
-    public ResponseEntity<WordsTestDTO> updateWordsTest(@Valid @RequestBody WordsTestDTO wordsTestDTO) throws URISyntaxException {
+    public ResponseEntity<WordsTestDTO> updateWordsTest(
+        @Valid @RequestBody WordsTestDTO wordsTestDTO,
+        @RequestParam(name = "tags", required = false) List<String> tagsToUseWordsFrom
+    ) throws URISyntaxException {
         log.debug("REST request to update WordsTest : {}", wordsTestDTO);
         if (wordsTestDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+        }
+        if (tagsToUseWordsFrom != null) {
+            setWordsHavingTags(wordsTestDTO, tagsToUseWordsFrom);
         }
         WordsTestDTO result = wordsTestService.save(wordsTestDTO);
         return ResponseEntity.ok()

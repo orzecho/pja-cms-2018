@@ -6,9 +6,10 @@ import { JhiAlertService } from 'ng-jhipster';
 
 import { IWordsTest } from 'app/shared/model/words-test.model';
 import { WordsTestService } from './words-test.service';
-import { IUser, UserService } from 'app/core';
-import { IWord } from 'app/shared/model/word.model';
+import { UserService } from 'app/core';
 import { WordService } from 'app/entities/word';
+import { TagService } from 'app/entities/tag';
+import { Word } from 'app/shared/model/word.model';
 
 @Component({
     selector: 'jhi-words-test-update',
@@ -18,35 +19,32 @@ export class WordsTestUpdateComponent implements OnInit {
     private _wordsTest: IWordsTest;
     isSaving: boolean;
 
-    users: IUser[];
-
-    words: IWord[];
+    tags: string[];
+    availableTags: string[];
 
     constructor(
         private jhiAlertService: JhiAlertService,
         private wordsTestService: WordsTestService,
         private userService: UserService,
         private wordService: WordService,
-        private activatedRoute: ActivatedRoute
+        private activatedRoute: ActivatedRoute,
+        private tagService: TagService
     ) {}
 
     ngOnInit() {
         this.isSaving = false;
         this.activatedRoute.data.subscribe(({ wordsTest }) => {
             this.wordsTest = wordsTest;
+            if (this.wordsTest.words) {
+                this.tags = this.getTagsFromWords(this.wordsTest.words);
+            }
         });
-        this.userService.query().subscribe(
-            (res: HttpResponse<IUser[]>) => {
-                this.users = res.body;
-            },
-            (res: HttpErrorResponse) => this.onError(res.message)
-        );
-        this.wordService.query().subscribe(
-            (res: HttpResponse<IWord[]>) => {
-                this.words = res.body;
-            },
-            (res: HttpErrorResponse) => this.onError(res.message)
-        );
+    }
+
+    private getTagsFromWords(words: Word[]) {
+        const tag_names = [];
+        words.map(word => word.tags).forEach(tags => tags.forEach(tag => tag_names.push(tag.name)));
+        return Array.from(new Set(tag_names));
     }
 
     previousState() {
@@ -56,9 +54,9 @@ export class WordsTestUpdateComponent implements OnInit {
     save() {
         this.isSaving = true;
         if (this.wordsTest.id !== undefined) {
-            this.subscribeToSaveResponse(this.wordsTestService.update(this.wordsTest));
+            this.subscribeToSaveResponse(this.wordsTestService.update(this.wordsTest, this.tags));
         } else {
-            this.subscribeToSaveResponse(this.wordsTestService.create(this.wordsTest));
+            this.subscribeToSaveResponse(this.wordsTestService.create(this.wordsTest, this.tags));
         }
     }
 
@@ -79,24 +77,16 @@ export class WordsTestUpdateComponent implements OnInit {
         this.jhiAlertService.error(errorMessage, null, null);
     }
 
-    trackUserById(index: number, item: IUser) {
-        return item.id;
+    search(event) {
+        const req = {
+            'name.contains': event.query
+        };
+        this.tagService.query(req).subscribe(response => {
+            this.availableTags = response.body.map(tag => tag.name);
+            console.log(this.availableTags);
+        });
     }
 
-    trackWordById(index: number, item: IWord) {
-        return item.id;
-    }
-
-    getSelected(selectedVals: Array<any>, option: any) {
-        if (selectedVals) {
-            for (let i = 0; i < selectedVals.length; i++) {
-                if (option.id === selectedVals[i].id) {
-                    return selectedVals[i];
-                }
-            }
-        }
-        return option;
-    }
     get wordsTest() {
         return this._wordsTest;
     }

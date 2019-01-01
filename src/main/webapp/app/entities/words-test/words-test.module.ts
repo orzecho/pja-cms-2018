@@ -3,6 +3,8 @@ import { RouterModule } from '@angular/router';
 
 import { NyanSharedModule } from 'app/shared';
 import { NyanAdminModule } from 'app/admin/admin.module';
+import { AutoCompleteModule } from 'primeng/primeng';
+
 import {
     WordsTestComponent,
     WordsTestDetailComponent,
@@ -16,7 +18,7 @@ import {
 const ENTITY_STATES = [...wordsTestRoute, ...wordsTestPopupRoute];
 
 @NgModule({
-    imports: [NyanSharedModule, NyanAdminModule, RouterModule.forChild(ENTITY_STATES)],
+    imports: [NyanSharedModule, NyanAdminModule, AutoCompleteModule, RouterModule.forChild(ENTITY_STATES)],
     declarations: [
         WordsTestComponent,
         WordsTestDetailComponent,

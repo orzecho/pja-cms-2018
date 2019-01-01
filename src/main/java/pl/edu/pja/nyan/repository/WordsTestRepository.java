@@ -30,4 +30,6 @@ public interface WordsTestRepository extends JpaRepository<WordsTest, Long>, Jpa
     @Query("select words_test from WordsTest words_test left join fetch words_test.words where words_test.id =:id")
     Optional<WordsTest> findOneWithEagerRelationships(@Param("id") Long id);
 
+    Optional<WordsTest> findOneByCode(String code);
+
 }

@@ -38,4 +38,8 @@ public final class RandomUtil {
     public static String generateResetKey() {
         return RandomStringUtils.randomNumeric(DEF_COUNT);
     }
+
+    public static String generateTestCode() {
+        return RandomStringUtils.random(5, true, true);
+    }
 }

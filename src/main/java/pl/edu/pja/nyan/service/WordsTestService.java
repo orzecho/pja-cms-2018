@@ -90,4 +90,8 @@ public class WordsTestService {
         log.debug("Request to delete WordsTest : {}", id);
         wordsTestRepository.deleteById(id);
     }
+
+    public boolean testAlreadyExists(String testCode) {
+        return wordsTestRepository.findOneByCode(testCode).isPresent();
+    }
 }

@@ -86,6 +86,13 @@ public class WordService {
             .map(wordMapper::toDto);
     }
 
+    public List<WordDTO> findByTags(List<Tag> tags) {
+        return wordRepository.findAll().stream()
+            .filter(word -> word.getTags().stream().anyMatch(tags::contains))
+            .map(wordMapper::toDto)
+            .collect(Collectors.toList());
+    }
+
     /**
      * Delete the word by id.
      *

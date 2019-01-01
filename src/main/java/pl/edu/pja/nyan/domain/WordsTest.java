@@ -39,7 +39,9 @@ public class WordsTest implements Serializable {
     private TestType type;
 
     @NotNull
-    @Column(name = "code", nullable = false)
+    @Column(name = "code", nullable = false, unique = true)
+    @Size(min = 5, max = 5, message = "Code should be of fixed size 5")
+    @Pattern(regexp = "[a-zA-Z0-9]+", message = "Code should consist of numbers and/or letters")
     private String code;
 
     @ManyToOne

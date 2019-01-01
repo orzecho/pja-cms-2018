@@ -15,12 +15,30 @@ export class WordsTestService {
 
     constructor(private http: HttpClient) {}
 
-    create(wordsTest: IWordsTest): Observable<EntityResponseType> {
-        return this.http.post<IWordsTest>(this.resourceUrl, wordsTest, { observe: 'response' });
+    create(wordsTest: IWordsTest, tags?: string[]): Observable<EntityResponseType> {
+        if (tags == undefined) {
+            return this.http.post<IWordsTest>(this.resourceUrl, wordsTest, { observe: 'response' });
+        }
+
+        return this.http.post<IWordsTest>(this.resourceUrl, wordsTest, {
+            observe: 'response',
+            params: {
+                tags: tags
+            }
+        });
     }
 
-    update(wordsTest: IWordsTest): Observable<EntityResponseType> {
-        return this.http.put<IWordsTest>(this.resourceUrl, wordsTest, { observe: 'response' });
+    update(wordsTest: IWordsTest, tags?: string[]): Observable<EntityResponseType> {
+        if (tags == undefined) {
+            return this.http.put<IWordsTest>(this.resourceUrl, wordsTest, { observe: 'response' });
+        }
+
+        return this.http.put<IWordsTest>(this.resourceUrl, wordsTest, {
+            observe: 'response',
+            params: {
+                tags: tags
+            }
+        });
     }
 
     find(id: number): Observable<EntityResponseType> {

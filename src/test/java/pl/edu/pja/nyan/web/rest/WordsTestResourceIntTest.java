@@ -6,11 +6,11 @@ import pl.edu.pja.nyan.domain.WordsTest;
 import pl.edu.pja.nyan.domain.User;
 import pl.edu.pja.nyan.domain.Word;
 import pl.edu.pja.nyan.repository.WordsTestRepository;
+import pl.edu.pja.nyan.service.UserService;
 import pl.edu.pja.nyan.service.WordsTestService;
 import pl.edu.pja.nyan.service.dto.WordsTestDTO;
 import pl.edu.pja.nyan.service.mapper.WordsTestMapper;
 import pl.edu.pja.nyan.web.rest.errors.ExceptionTranslator;
-import pl.edu.pja.nyan.service.dto.WordsTestCriteria;
 import pl.edu.pja.nyan.service.WordsTestQueryService;
 
 import org.junit.Before;
@@ -21,7 +21,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -55,8 +54,8 @@ public class WordsTestResourceIntTest {
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBBB";
 
-    private static final TestType DEFAULT_TYPE = TestType.WRITTEN;
-    private static final TestType UPDATED_TYPE = TestType.FILLING_GAPS;
+    private static final TestType DEFAULT_TYPE = TestType.WRITTEN_PL;
+    private static final TestType UPDATED_TYPE = TestType.WRITTEN_MIXED;
 
     private static final String DEFAULT_CODE = "AAAAAAAAAA";
     private static final String UPDATED_CODE = "BBBBBBBBBB";
@@ -79,6 +78,9 @@ public class WordsTestResourceIntTest {
     private WordsTestQueryService wordsTestQueryService;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -97,7 +99,8 @@ public class WordsTestResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final WordsTestResource wordsTestResource = new WordsTestResource(wordsTestService, wordsTestQueryService);
+        final WordsTestResource wordsTestResource = new WordsTestResource(wordsTestService, wordsTestQueryService,
+            userService, tagService, wordService);
         this.restWordsTestMockMvc = MockMvcBuilders.standaloneSetup(wordsTestResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -239,7 +242,8 @@ public class WordsTestResourceIntTest {
     }
     
     public void getAllWordsTestsWithEagerRelationshipsIsEnabled() throws Exception {
-        WordsTestResource wordsTestResource = new WordsTestResource(wordsTestServiceMock, wordsTestQueryService);
+        WordsTestResource wordsTestResource = new WordsTestResource(wordsTestServiceMock, wordsTestQueryService,
+            userService, tagService, wordService);
         when(wordsTestServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
 
         MockMvc restWordsTestMockMvc = MockMvcBuilders.standaloneSetup(wordsTestResource)
@@ -255,7 +259,8 @@ public class WordsTestResourceIntTest {
     }
 
     public void getAllWordsTestsWithEagerRelationshipsIsNotEnabled() throws Exception {
-        WordsTestResource wordsTestResource = new WordsTestResource(wordsTestServiceMock, wordsTestQueryService);
+        WordsTestResource wordsTestResource = new WordsTestResource(wordsTestServiceMock, wordsTestQueryService,
+            userService, tagService, wordService);
             when(wordsTestServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
             MockMvc restWordsTestMockMvc = MockMvcBuilders.standaloneSetup(wordsTestResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
