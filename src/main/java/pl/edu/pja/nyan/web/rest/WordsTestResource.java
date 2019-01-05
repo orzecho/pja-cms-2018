@@ -2,7 +2,6 @@ package pl.edu.pja.nyan.web.rest;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -41,12 +40,10 @@ import pl.edu.pja.nyan.service.WordsTestService;
 import pl.edu.pja.nyan.service.dto.WordDTO;
 import pl.edu.pja.nyan.service.dto.WordsTestCriteria;
 import pl.edu.pja.nyan.service.dto.WordsTestDTO;
-import pl.edu.pja.nyan.service.dto.test.VocabularyTestItemDTO;
 import pl.edu.pja.nyan.service.util.RandomUtil;
 import pl.edu.pja.nyan.web.rest.errors.BadRequestAlertException;
 import pl.edu.pja.nyan.web.rest.util.HeaderUtil;
 import pl.edu.pja.nyan.web.rest.util.PaginationUtil;
-import springfox.documentation.swagger.readers.operation.ResponseHeaders;
 
 /**
  * REST controller for managing WordsTest.
@@ -69,17 +66,13 @@ public class WordsTestResource {
 
     private final WordService wordService;
 
-    private final VocabularyTestService vocabularyTestService;
-
     public WordsTestResource(WordsTestService wordsTestService, WordsTestQueryService wordsTestQueryService,
-        UserService userService, TagService tagService, WordService wordService,
-        VocabularyTestService vocabularyTestService) {
+        UserService userService, TagService tagService, WordService wordService) {
         this.wordsTestService = wordsTestService;
         this.wordsTestQueryService = wordsTestQueryService;
         this.userService = userService;
         this.tagService = tagService;
         this.wordService = wordService;
-        this.vocabularyTestService = vocabularyTestService;
     }
 
     /**
@@ -101,6 +94,7 @@ public class WordsTestResource {
         }
         wordsTestDTO.setCreatorId(getCurrentUserId());
         wordsTestDTO.setCode(generateTestCode());
+        wordsTestDTO.setTestUrl(getTestUrl(wordsTestDTO));
         if (tagsToUseWordsFrom != null) {
             setWordsHavingTags(wordsTestDTO, tagsToUseWordsFrom);
         }
@@ -128,6 +122,18 @@ public class WordsTestResource {
             if (!wordsTestService.testAlreadyExists(code)) {
                 return code;
             }
+        }
+    }
+
+    private String getTestUrl(WordsTestDTO wordsTest) {
+        switch (wordsTest.getType()) {
+            case WRITTEN_PL:
+            case WRITTEN_KANA:
+            case WRITTEN_KANJI:
+            case WRITTEN_MIXED:
+                return "/show-test/written/" + wordsTest.getCode();
+            default:
+                throw new IllegalArgumentException("Unknown test type: " + wordsTest.getType());
         }
     }
 

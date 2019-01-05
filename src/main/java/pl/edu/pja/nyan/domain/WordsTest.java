@@ -3,6 +3,7 @@ package pl.edu.pja.nyan.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -43,6 +44,10 @@ public class WordsTest implements Serializable {
     @Size(min = 5, max = 5, message = "Code should be of fixed size 5")
     @Pattern(regexp = "[a-zA-Z0-9]+", message = "Code should consist of numbers and/or letters")
     private String code;
+
+    @NotNull
+    @Column(name = "testUrl", nullable = false, unique = true)
+    private String testUrl;
 
     @ManyToOne
     @JsonIgnoreProperties("")
@@ -116,6 +121,19 @@ public class WordsTest implements Serializable {
         this.creator = user;
     }
 
+    public String getTestUrl() {
+        return testUrl;
+    }
+
+    public void setTestUrl(String testUrl) {
+        this.testUrl = testUrl;
+    }
+
+    public WordsTest testUrl(String testUrl) {
+        this.testUrl = testUrl;
+        return this;
+    }
+
     public Set<Word> getWords() {
         return words;
     }
@@ -169,6 +187,7 @@ public class WordsTest implements Serializable {
             ", name='" + getName() + "'" +
             ", type='" + getType() + "'" +
             ", code='" + getCode() + "'" +
+            ", testUrl='" + getTestUrl() + "'" +
             "}";
     }
 }

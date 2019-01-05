@@ -22,6 +22,8 @@ public class WordsTestDTO implements Serializable {
 
     private String code;
 
+    private String testUrl;
+
     private Long creatorId;
 
     private String creatorLogin;
@@ -84,6 +86,14 @@ public class WordsTestDTO implements Serializable {
         this.words = words;
     }
 
+    public String getTestUrl() {
+        return testUrl;
+    }
+
+    public void setTestUrl(String testUrl) {
+        this.testUrl = testUrl;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -112,8 +122,9 @@ public class WordsTestDTO implements Serializable {
             ", name='" + getName() + "'" +
             ", type='" + getType() + "'" +
             ", code='" + getCode() + "'" +
-            ", creator=" + getCreatorId() +
-            ", creator='" + getCreatorLogin() + "'" +
+            ", testUrl='" + getTestUrl() + "'" +
+            ", creatorId=" + getCreatorId() +
+            ", creatorLogin='" + getCreatorLogin() + "'" +
             "}";
     }
 }

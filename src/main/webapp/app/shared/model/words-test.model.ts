@@ -13,6 +13,7 @@ export interface IWordsTest {
     name?: string;
     type?: TestType;
     code?: string;
+    testUrl?: string;
     creatorLogin?: string;
     creatorId?: number;
     words?: IWord[];
@@ -24,6 +25,7 @@ export class WordsTest implements IWordsTest {
         public name?: string,
         public type?: TestType,
         public code?: string,
+        public testUrl?: string,
         public creatorLogin?: string,
         public creatorId?: number,
         public words?: IWord[]

@@ -1,17 +1,9 @@
 package pl.edu.pja.nyan.web.rest;
 
-import pl.edu.pja.nyan.NyanApp;
+import java.util.ArrayList;
+import java.util.List;
 
-import pl.edu.pja.nyan.domain.WordsTest;
-import pl.edu.pja.nyan.domain.User;
-import pl.edu.pja.nyan.domain.Word;
-import pl.edu.pja.nyan.repository.WordsTestRepository;
-import pl.edu.pja.nyan.service.UserService;
-import pl.edu.pja.nyan.service.WordsTestService;
-import pl.edu.pja.nyan.service.dto.WordsTestDTO;
-import pl.edu.pja.nyan.service.mapper.WordsTestMapper;
-import pl.edu.pja.nyan.web.rest.errors.ExceptionTranslator;
-import pl.edu.pja.nyan.service.WordsTestQueryService;
+import javax.persistence.EntityManager;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,19 +21,34 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.List;
-
-
-import static pl.edu.pja.nyan.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import pl.edu.pja.nyan.NyanApp;
+import pl.edu.pja.nyan.domain.User;
+import pl.edu.pja.nyan.domain.Word;
+import pl.edu.pja.nyan.domain.WordsTest;
 import pl.edu.pja.nyan.domain.enumeration.TestType;
+import pl.edu.pja.nyan.repository.WordsTestRepository;
+import pl.edu.pja.nyan.service.TagService;
+import pl.edu.pja.nyan.service.UserService;
+import pl.edu.pja.nyan.service.WordService;
+import pl.edu.pja.nyan.service.WordsTestQueryService;
+import pl.edu.pja.nyan.service.WordsTestService;
+import pl.edu.pja.nyan.service.dto.WordsTestDTO;
+import pl.edu.pja.nyan.service.mapper.WordsTestMapper;
+import static pl.edu.pja.nyan.web.rest.TestUtil.createFormattingConversionService;
+import pl.edu.pja.nyan.web.rest.errors.ExceptionTranslator;
 /**
  * Test class for the WordsTestResource REST controller.
  *
@@ -54,11 +61,14 @@ public class WordsTestResourceIntTest {
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBBB";
 
+    private static final String DEFAULT_URL = "AAAAAAAAAA";
+    private static final String UPDATED_URL = "BBBBBBBBBB";
+
     private static final TestType DEFAULT_TYPE = TestType.WRITTEN_PL;
     private static final TestType UPDATED_TYPE = TestType.WRITTEN_MIXED;
 
-    private static final String DEFAULT_CODE = "AAAAAAAAAA";
-    private static final String UPDATED_CODE = "BBBBBBBBBB";
+    private static final String DEFAULT_CODE = "AAAAA";
+    private static final String UPDATED_CODE = "BBBBB";
 
     @Autowired
     private WordsTestRepository wordsTestRepository;
@@ -90,6 +100,12 @@ public class WordsTestResourceIntTest {
     private ExceptionTranslator exceptionTranslator;
 
     @Autowired
+    private TagService tagService;
+
+    @Autowired
+    private WordService wordService;
+
+    @Autowired
     private EntityManager em;
 
     private MockMvc restWordsTestMockMvc;
@@ -100,7 +116,7 @@ public class WordsTestResourceIntTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         final WordsTestResource wordsTestResource = new WordsTestResource(wordsTestService, wordsTestQueryService,
-            userService, tagService, wordService, vocabularyTestService);
+            userService, tagService, wordService);
         this.restWordsTestMockMvc = MockMvcBuilders.standaloneSetup(wordsTestResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -118,7 +134,8 @@ public class WordsTestResourceIntTest {
         WordsTest wordsTest = new WordsTest()
             .name(DEFAULT_NAME)
             .type(DEFAULT_TYPE)
-            .code(DEFAULT_CODE);
+            .code(DEFAULT_CODE)
+            .testUrl(DEFAULT_URL);
         return wordsTest;
     }
 
@@ -243,7 +260,7 @@ public class WordsTestResourceIntTest {
     
     public void getAllWordsTestsWithEagerRelationshipsIsEnabled() throws Exception {
         WordsTestResource wordsTestResource = new WordsTestResource(wordsTestServiceMock, wordsTestQueryService,
-            userService, tagService, wordService, vocabularyTestService);
+            userService, tagService, wordService);
         when(wordsTestServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
 
         MockMvc restWordsTestMockMvc = MockMvcBuilders.standaloneSetup(wordsTestResource)
@@ -260,7 +277,7 @@ public class WordsTestResourceIntTest {
 
     public void getAllWordsTestsWithEagerRelationshipsIsNotEnabled() throws Exception {
         WordsTestResource wordsTestResource = new WordsTestResource(wordsTestServiceMock, wordsTestQueryService,
-            userService, tagService, wordService, vocabularyTestService);
+            userService, tagService, wordService);
             when(wordsTestServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
             MockMvc restWordsTestMockMvc = MockMvcBuilders.standaloneSetup(wordsTestResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)

@@ -40,7 +40,7 @@ describe('Component Tests', () => {
                     tick(); // simulate async
 
                     // THEN
-                    expect(service.update).toHaveBeenCalledWith(entity);
+                    expect(service.update).toHaveBeenCalledWith(entity, undefined);
                     expect(comp.isSaving).toEqual(false);
                 })
             );
@@ -57,7 +57,7 @@ describe('Component Tests', () => {
                     tick(); // simulate async
 
                     // THEN
-                    expect(service.create).toHaveBeenCalledWith(entity);
+                    expect(service.create).toHaveBeenCalledWith(entity, undefined);
                     expect(comp.isSaving).toEqual(false);
                 })
             );
