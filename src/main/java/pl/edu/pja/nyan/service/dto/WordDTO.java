@@ -35,7 +35,7 @@ public class WordDTO implements Serializable {
 
     private String note;
 
-    private List<TagDTO> tags = new ArrayList<>();
+    private List<TagDTO> tags;
 
     private String rawTags;
 

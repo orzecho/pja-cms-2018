@@ -100,7 +100,7 @@ public class WordsTestResourceIntTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         final WordsTestResource wordsTestResource = new WordsTestResource(wordsTestService, wordsTestQueryService,
-            userService, tagService, wordService);
+            userService, tagService, wordService, vocabularyTestService);
         this.restWordsTestMockMvc = MockMvcBuilders.standaloneSetup(wordsTestResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -243,7 +243,7 @@ public class WordsTestResourceIntTest {
     
     public void getAllWordsTestsWithEagerRelationshipsIsEnabled() throws Exception {
         WordsTestResource wordsTestResource = new WordsTestResource(wordsTestServiceMock, wordsTestQueryService,
-            userService, tagService, wordService);
+            userService, tagService, wordService, vocabularyTestService);
         when(wordsTestServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
 
         MockMvc restWordsTestMockMvc = MockMvcBuilders.standaloneSetup(wordsTestResource)
@@ -260,7 +260,7 @@ public class WordsTestResourceIntTest {
 
     public void getAllWordsTestsWithEagerRelationshipsIsNotEnabled() throws Exception {
         WordsTestResource wordsTestResource = new WordsTestResource(wordsTestServiceMock, wordsTestQueryService,
-            userService, tagService, wordService);
+            userService, tagService, wordService, vocabularyTestService);
             when(wordsTestServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
             MockMvc restWordsTestMockMvc = MockMvcBuilders.standaloneSetup(wordsTestResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)

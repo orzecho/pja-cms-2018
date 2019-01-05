@@ -1,44 +1,43 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { ActivatedRoute, Router } from '@angular/router';
-import { JhiAlertService, JhiParseLinks } from 'ng-jhipster';
-
-import { ITag } from 'app/shared/model/tag.model';
-import { Principal } from 'app/core';
-import { TestService } from 'app/entities/test/test.service';
+import { ActivatedRoute } from '@angular/router';
 import { IVocabularyTestItem, VocabularyTestItem } from 'app/shared/model/vocabulary-test-item.model';
+import { ITag } from 'app/shared/model/tag.model';
 import { Word } from 'app/shared/model/word.model';
+import { JhiAlertService, JhiParseLinks } from 'ng-jhipster';
+import { Principal } from 'app/core';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { WordsTestService } from 'app/entities/words-test';
 
 @Component({
-    selector: 'jhi-vocabulary-test',
-    templateUrl: './vocabulary-test.component.html',
-    styleUrls: ['./vocabulary-test.component.css']
+    selector: 'jhi-show-written-test',
+    templateUrl: './show-written-test.component.html',
+    styleUrls: ['./show-written-test.component.css']
 })
-export class VocabularyTestComponent implements OnInit {
+export class ShowWrittenTestComponent implements OnInit {
     currentAccount: any;
-    tags: string;
-    testType: string;
-    vocabularyTestItems: VocabularyTestItem[];
+
     error: any;
     success: any;
 
+    vocabularyTestItems: VocabularyTestItem[];
+    testCode: string;
+
     constructor(
-        private testService: TestService,
+        private wordsTestService: WordsTestService,
         private parseLinks: JhiParseLinks,
         private jhiAlertService: JhiAlertService,
         private principal: Principal,
         private activatedRoute: ActivatedRoute
     ) {
         this.activatedRoute.params.subscribe(params => {
-            this.testType = params.type;
-            this.tags = params.tags;
+            this.testCode = params.code;
             this.loadAll();
         });
     }
 
     loadAll() {
-        this.testService
-            .getVocabulary(this.testType, this.tags.split(','))
+        this.wordsTestService
+            .generateWrittenTest(this.testCode)
             .subscribe(
                 (res: HttpResponse<IVocabularyTestItem[]>) => (this.vocabularyTestItems = res.body),
                 (res: HttpErrorResponse) => this.onError(res.message)
@@ -50,10 +49,6 @@ export class VocabularyTestComponent implements OnInit {
         this.principal.identity().then(account => {
             this.currentAccount = account;
         });
-    }
-
-    trackId(index: number, item: ITag) {
-        return item.id;
     }
 
     private onError(errorMessage: string) {

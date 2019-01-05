@@ -12,6 +12,7 @@ import { WordsTestDetailComponent } from './words-test-detail.component';
 import { WordsTestUpdateComponent } from './words-test-update.component';
 import { WordsTestDeletePopupComponent } from './words-test-delete-dialog.component';
 import { IWordsTest } from 'app/shared/model/words-test.model';
+import { ShowWrittenTestComponent } from './display/show-written-test.component';
 
 @Injectable({ providedIn: 'root' })
 export class WordsTestResolve implements Resolve<IWordsTest> {
@@ -22,6 +23,13 @@ export class WordsTestResolve implements Resolve<IWordsTest> {
         if (id) {
             return this.service.find(id).pipe(map((wordsTest: HttpResponse<WordsTest>) => wordsTest.body));
         }
+        // const code = route.params['code'] ? route.params['code'] : null;
+        // if (code) {
+        //     //TODO uwzgłędniać przypadek, w którym testu o podanym kodzie nie istnieje
+        //     return this.service.query({
+        //         'code.equals': code
+        //     }).pipe(map((wordsTest: HttpResponse<WordsTest[]>) => wordsTest.body[0]));
+        // }
         return of(new WordsTest());
     }
 }
@@ -91,5 +99,19 @@ export const wordsTestPopupRoute: Routes = [
         },
         canActivate: [UserRouteAccessService],
         outlet: 'popup'
+    }
+];
+
+export const showWrittenTestRoute: Routes = [
+    {
+        path: 'show-test/written/:code',
+        component: ShowWrittenTestComponent,
+        resolve: {
+            wordsTest: WordsTestResolve
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'WordsTest'
+        }
     }
 ];

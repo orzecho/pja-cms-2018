@@ -21,13 +21,6 @@ import pl.edu.pja.nyan.service.dto.test.VocabularyTestItemDTO;
 public class TestResource {
     private final VocabularyTestService vocabularyTestService;
     private final FillingGapsTestItemService fillingGapsTestItemService;
-    private final TagService tagService;
-
-    @GetMapping("/vocabulary/{type}/{tags}")
-    public List<VocabularyTestItemDTO> generateVocabularyTest(@PathVariable String type, @PathVariable String tags) {
-        return vocabularyTestService.generateTest(tagService.findByTagNames(tags),
-            VocabularyTestService.VocabularyTestType.valueOf(type));
-    }
 
     @GetMapping("/gaps/{tags}")
     public List<FillingGapsTestItemDTO> generateFillingGapsTest(@PathVariable String tags) {

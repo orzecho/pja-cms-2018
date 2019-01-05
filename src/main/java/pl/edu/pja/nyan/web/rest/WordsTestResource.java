@@ -2,6 +2,7 @@ package pl.edu.pja.nyan.web.rest;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -33,16 +34,19 @@ import pl.edu.pja.nyan.domain.Tag;
 import pl.edu.pja.nyan.domain.User;
 import pl.edu.pja.nyan.service.TagService;
 import pl.edu.pja.nyan.service.UserService;
+import pl.edu.pja.nyan.service.VocabularyTestService;
 import pl.edu.pja.nyan.service.WordService;
 import pl.edu.pja.nyan.service.WordsTestQueryService;
 import pl.edu.pja.nyan.service.WordsTestService;
 import pl.edu.pja.nyan.service.dto.WordDTO;
 import pl.edu.pja.nyan.service.dto.WordsTestCriteria;
 import pl.edu.pja.nyan.service.dto.WordsTestDTO;
+import pl.edu.pja.nyan.service.dto.test.VocabularyTestItemDTO;
 import pl.edu.pja.nyan.service.util.RandomUtil;
 import pl.edu.pja.nyan.web.rest.errors.BadRequestAlertException;
 import pl.edu.pja.nyan.web.rest.util.HeaderUtil;
 import pl.edu.pja.nyan.web.rest.util.PaginationUtil;
+import springfox.documentation.swagger.readers.operation.ResponseHeaders;
 
 /**
  * REST controller for managing WordsTest.
@@ -65,13 +69,17 @@ public class WordsTestResource {
 
     private final WordService wordService;
 
+    private final VocabularyTestService vocabularyTestService;
+
     public WordsTestResource(WordsTestService wordsTestService, WordsTestQueryService wordsTestQueryService,
-        UserService userService, TagService tagService, WordService wordService) {
+        UserService userService, TagService tagService, WordService wordService,
+        VocabularyTestService vocabularyTestService) {
         this.wordsTestService = wordsTestService;
         this.wordsTestQueryService = wordsTestQueryService;
         this.userService = userService;
         this.tagService = tagService;
         this.wordService = wordService;
+        this.vocabularyTestService = vocabularyTestService;
     }
 
     /**

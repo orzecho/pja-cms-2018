@@ -81,6 +81,13 @@ public class WordsTestService {
             .map(wordsTestMapper::toDto);
     }
 
+    @Transactional(readOnly = true)
+    public Optional<WordsTestDTO> findByCode(String code) {
+        log.debug("Request to get WordsTest by code: {}", code);
+        return wordsTestRepository.findOneByCode(code)
+            .map(wordsTestMapper::toDto);
+    }
+
     /**
      * Delete the wordsTest by id.
      *

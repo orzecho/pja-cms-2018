@@ -1,0 +1,67 @@
+<div>
+    <h2 id="page-heading">
+        <span>Test słownictwa</span>
+    </h2>
+    <jhi-alert></jhi-alert>
+    <br/>
+
+    <div *ngFor="let item of this.vocabularyTestItems" class="ui-g ui-fluid">
+        <div class="ui-g-12 ui-md-3">
+            <div class="ui-inputgroup">
+                <input type="text"
+                       [class]="item.translationCorrect ? 'good-answer ng-pristine ng-valid ui-inputtext ui-corner-all ui-state-default ui-widget' :
+                       'bad-answer ng-pristine ng-valid ui-inputtext ui-corner-all ui-state-default ui-widget'" pInputText
+                       placeholder="tłumaczenie"
+                       [(ngModel)]="item.translationFromUser" (ngModelChange)="checkTranslation(item)">
+                <ng-template [ngIf]="item.translationCorrect" [ngIfElse]="translationNotCorrect">
+                    <fa-icon class="ui-inputgroup-addon" [icon]="'check'"></fa-icon>
+                </ng-template>
+                <ng-template #translationNotCorrect>
+                    <fa-icon class="ui-inputgroup-addon" [icon]="'times'"></fa-icon>
+                </ng-template>
+            </div>
+        </div>
+
+        <div class="ui-g-12 ui-md-3">
+            <div class="ui-inputgroup">
+                <input type="text" [class]="item.kanaCorrect ? 'good-answer ng-pristine ng-valid ui-inputtext ui-corner-all ui-state-default ui-widget' :
+                       'bad-answer ng-pristine ng-valid ui-inputtext ui-corner-all ui-state-default ui-widget'" pInputText placeholder="kana"
+                       [(ngModel)]="item.kanaFromUser" (ngModelChange)="checkKana(item)">
+                <ng-template [ngIf]="item.kanaCorrect" [ngIfElse]="kanaNotCorrect">
+                    <fa-icon class="ui-inputgroup-addon" [icon]="'check'"></fa-icon>
+                </ng-template>
+                <ng-template #kanaNotCorrect>
+                    <fa-icon class="ui-inputgroup-addon" [icon]="'times'"></fa-icon>
+                </ng-template>
+            </div>
+        </div>
+
+        <div class="ui-g-12 ui-md-3">
+            <div class="ui-inputgroup">
+                <input type="text" [class]="item.kanjiCorrect ? 'good-answer ng-pristine ng-valid ui-inputtext ui-corner-all ui-state-default ui-widget' :
+                       'bad-answer ng-pristine ng-valid ui-inputtext ui-corner-all ui-state-default ui-widget'" pInputText placeholder="kanji"
+                       [(ngModel)]="item.kanjiFromUser" (ngModelChange)="checkKanji(item)">
+                <ng-template [ngIf]="item.kanjiCorrect" [ngIfElse]="kanjiNotCorrect">
+                    <fa-icon class="ui-inputgroup-addon" [icon]="'check'"></fa-icon>
+                </ng-template>
+                <ng-template #kanjiNotCorrect>
+                    <fa-icon class="ui-inputgroup-addon" [icon]="'times'"></fa-icon>
+                </ng-template>
+            </div>
+        </div>
+        <div class="ui-g-12 ui-md-3">
+            <span>
+                <a [routerLink]="['/word', item.word.id, 'view' ]">Słowo w Nyango</a> |
+                <a target="_blank"
+                   [href]="getJishoLink(item.word)">
+                    Słowo w Jisho</a>
+            </span>
+        </div>
+    </div>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Powrót</span>
+    </button>
+</div>

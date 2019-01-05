@@ -5,6 +5,7 @@ import { NyanSharedModule } from 'app/shared';
 import { NyanAdminModule } from 'app/admin/admin.module';
 import { AutoCompleteModule } from 'primeng/primeng';
 
+import { ShowWrittenTestComponent } from './display/show-written-test.component';
 import {
     WordsTestComponent,
     WordsTestDetailComponent,
@@ -12,10 +13,11 @@ import {
     WordsTestDeletePopupComponent,
     WordsTestDeleteDialogComponent,
     wordsTestRoute,
-    wordsTestPopupRoute
+    wordsTestPopupRoute,
+    showWrittenTestRoute
 } from './';
 
-const ENTITY_STATES = [...wordsTestRoute, ...wordsTestPopupRoute];
+const ENTITY_STATES = [...wordsTestRoute, ...wordsTestPopupRoute, ...showWrittenTestRoute];
 
 @NgModule({
     imports: [NyanSharedModule, NyanAdminModule, AutoCompleteModule, RouterModule.forChild(ENTITY_STATES)],
@@ -24,7 +26,8 @@ const ENTITY_STATES = [...wordsTestRoute, ...wordsTestPopupRoute];
         WordsTestDetailComponent,
         WordsTestUpdateComponent,
         WordsTestDeleteDialogComponent,
-        WordsTestDeletePopupComponent
+        WordsTestDeletePopupComponent,
+        ShowWrittenTestComponent
     ],
     entryComponents: [WordsTestComponent, WordsTestUpdateComponent, WordsTestDeleteDialogComponent, WordsTestDeletePopupComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

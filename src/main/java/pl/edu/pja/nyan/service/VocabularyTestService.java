@@ -1,5 +1,6 @@
 package pl.edu.pja.nyan.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -12,52 +13,46 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.common.collect.ImmutableMap;
 
 import lombok.RequiredArgsConstructor;
-import pl.edu.pja.nyan.domain.Tag;
-import pl.edu.pja.nyan.domain.Word;
-import pl.edu.pja.nyan.repository.WordRepository;
+import pl.edu.pja.nyan.domain.WordsTest;
+import pl.edu.pja.nyan.domain.enumeration.TestType;
+import pl.edu.pja.nyan.service.dto.WordDTO;
+import pl.edu.pja.nyan.service.dto.WordsTestDTO;
 import pl.edu.pja.nyan.service.dto.test.VocabularyTestItemDTO;
-import pl.edu.pja.nyan.service.mapper.WordMapper;
 
 @Service
 @RequiredArgsConstructor
 public class VocabularyTestService {
 
-    private final WordRepository wordRepository;
-    private final WordMapper wordMapper;
-
-    public enum VocabularyTestType {
-        TRANSLATION, KANA, KANJI, MIXED
-    }
-
-    private Map<VocabularyTestType, Function<List<Word>, List<VocabularyTestItemDTO>>> testGenerators =
+    private Map<TestType, Function<List<WordDTO>, List<VocabularyTestItemDTO>>> testGenerators =
         ImmutableMap.of(
-            VocabularyTestType.TRANSLATION, this::getTestItemsForSimpleTranslationTest,
-            VocabularyTestType.KANA, this::getTestItemsForKanaTest,
-            VocabularyTestType.KANJI, this::getTestItemsForKanjiTest,
-            VocabularyTestType.MIXED, this::getTestItemsForMixedTest
+            TestType.WRITTEN_PL, this::getTestItemsForSimpleTranslationTest,
+            TestType.WRITTEN_KANA, this::getTestItemsForKanaTest,
+            TestType.WRITTEN_KANJI, this::getTestItemsForKanjiTest,
+            TestType.WRITTEN_MIXED, this::getTestItemsForMixedTest
         );
 
+    public boolean isWrittenTypeOfTest(TestType testType) {
+        return testGenerators.containsKey(testType);
+    }
+
     @Transactional
-    public List<VocabularyTestItemDTO> generateTest(List<Tag> tags, VocabularyTestType type) {
-        List<Word> words = getWordByTags(tags);
+    public List<VocabularyTestItemDTO> generateTest(WordsTestDTO test) {
+        Function<List<WordDTO>, List<VocabularyTestItemDTO>> generator = testGenerators.get(test.getType());
+        if (generator == null) {
+            throw new IllegalArgumentException("This service doesn't support "
+                + "the generation such kind of tests: " + test.getType());
+        }
 
-        return testGenerators.get(type).apply(words);
+        return generator.apply(new ArrayList<>(test.getWords()));
     }
 
-    private List<Word> getWordByTags(List<Tag> tags) {
-        //TODO być może da się to sensownie zrobić w bazie, ale na razie nie mam pomysłu jak bez QueryDSL
-        return wordRepository.findAll().stream()
-            .filter(word -> word.getTags().stream().anyMatch(tags::contains))
-            .collect(Collectors.toList());
-    }
-
-    private List<VocabularyTestItemDTO> getTestItemsForSimpleTranslationTest(List<Word> words) {
+    private List<VocabularyTestItemDTO> getTestItemsForSimpleTranslationTest(List<WordDTO> words) {
         return words.stream()
             .map(this::buildForSimpleTranslationTest)
             .collect(Collectors.toList());
     }
 
-    private VocabularyTestItemDTO buildForSimpleTranslationTest(Word word) {
+    private VocabularyTestItemDTO buildForSimpleTranslationTest(WordDTO word) {
         return VocabularyTestItemDTO.builder()
             .kanaFromSystem(word.getKana())
             .kanaFromUser("")
@@ -68,17 +63,17 @@ public class VocabularyTestService {
             .kanjiFromSystem(word.getKanji())
             .kanjiFromUser("")
             .kanjiCorrect(false)
-            .word(wordMapper.toDto(word))
+            .word(word)
             .build();
     }
 
-    private List<VocabularyTestItemDTO> getTestItemsForKanaTest(List<Word> words) {
+    private List<VocabularyTestItemDTO> getTestItemsForKanaTest(List<WordDTO> words) {
         return words.stream()
             .map(this::buildForKanaTest)
             .collect(Collectors.toList());
     }
 
-    private VocabularyTestItemDTO buildForKanaTest(Word word) {
+    private VocabularyTestItemDTO buildForKanaTest(WordDTO word) {
         return VocabularyTestItemDTO.builder()
             .kanaFromSystem(word.getKana())
             .kanaFromUser(word.getKana())
@@ -89,17 +84,17 @@ public class VocabularyTestService {
             .kanjiFromSystem(word.getKanji())
             .kanjiFromUser("")
             .kanjiCorrect(false)
-            .word(wordMapper.toDto(word))
+            .word(word)
             .build();
     }
 
-    private List<VocabularyTestItemDTO> getTestItemsForKanjiTest(List<Word> words) {
+    private List<VocabularyTestItemDTO> getTestItemsForKanjiTest(List<WordDTO> words) {
         return words.stream()
             .map(this::buildForKanjiTest)
             .collect(Collectors.toList());
     }
 
-    private VocabularyTestItemDTO buildForKanjiTest(Word word) {
+    private VocabularyTestItemDTO buildForKanjiTest(WordDTO word) {
         return VocabularyTestItemDTO.builder()
             .kanaFromSystem(word.getKana())
             .kanaFromUser("")
@@ -110,11 +105,11 @@ public class VocabularyTestService {
             .kanjiFromSystem(word.getKanji())
             .kanjiFromUser(word.getKanji())
             .kanjiCorrect(true)
-            .word(wordMapper.toDto(word))
+            .word(word)
             .build();
     }
 
-    private List<VocabularyTestItemDTO> getTestItemsForMixedTest(List<Word> words) {
+    private List<VocabularyTestItemDTO> getTestItemsForMixedTest(List<WordDTO> words) {
         return words.stream()
             .map(word -> {
                 Random random = new Random();

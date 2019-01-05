@@ -1,9 +1,11 @@
 import { IWord } from 'app/shared/model//word.model';
 
 export const enum TestType {
-    WRITTEN = 'WRITTEN',
-    FILLING_GAPS = 'FILLING_GAPS',
-    TRUE_FALSE = 'TRUE_FALSE'
+    WRITTEN_MIXED,
+    WRITTEN_PL,
+    WRITTEN_KANA,
+    WRITTEN_KANJI,
+    TRUE_FALSE
 }
 
 export interface IWordsTest {

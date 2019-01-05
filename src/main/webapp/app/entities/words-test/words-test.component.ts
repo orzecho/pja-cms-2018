@@ -107,6 +107,8 @@ export class WordsTestComponent implements OnInit, OnDestroy {
         return item.id;
     }
 
+    getTestLink() {}
+
     registerChangeInWordsTests() {
         this.eventSubscriber = this.eventManager.subscribe('wordsTestListModification', response => this.loadAll());
     }
