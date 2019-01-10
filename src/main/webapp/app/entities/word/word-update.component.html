@@ -1,7 +1,7 @@
 <div class="row justify-content-center">
     <div class="col-8">
         <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
-            <h2 id="jhi-word-heading">Create or edit a Word</h2>
+            <h2 id="jhi-word-heading">Utwórz lub edytuj słowo</h2>
             <div>
                 <jhi-alert-error></jhi-alert-error>
                 <div class="form-group" [hidden]="!word.id">
@@ -10,13 +10,13 @@
                         [(ngModel)]="word.id" readonly />
                 </div>
                 <div class="form-group">
-                    <label class="form-control-label" for="field_translation">Translation</label>
+                    <label class="form-control-label" for="field_translation">Tłumaczenie</label>
                     <input type="text" class="form-control" name="translation" id="field_translation"
                         [(ngModel)]="word.translation" required/>
                     <div [hidden]="!(editForm.controls.translation?.dirty && editForm.controls.translation?.invalid)">
                         <small class="form-text text-danger"
                         [hidden]="!editForm.controls.translation?.errors?.required">
-                        This field is required.
+                        To pole jest wymagane.
                         </small>
                     </div>
                 </div>
@@ -27,7 +27,7 @@
                     <div [hidden]="!(editForm.controls.kana?.dirty && editForm.controls.kana?.invalid)">
                         <small class="form-text text-danger"
                         [hidden]="!editForm.controls.kana?.errors?.required">
-                        This field is required.
+                        To pole jest wymagane.
                         </small>
                     </div>
                 </div>
@@ -42,13 +42,13 @@
                         [(ngModel)]="word.romaji" />
                 </div>
                 <div class="form-group">
-                    <label class="form-control-label" for="field_note">Note</label>
+                    <label class="form-control-label" for="field_note">Uwagi</label>
                     <input type="text" class="form-control" name="note" id="field_note"
                         [(ngModel)]="word.note" />
                 </div>
 
                 <div class="form-group">
-                    <label for="field_tag">Tag</label>
+                    <label for="field_tag">Tagi</label>
                     <select class="form-control" id="field_tag" multiple name="tag" [(ngModel)]="word.tags">
                         <option [ngValue]="getSelected(word.tags, tagOption)" *ngFor="let tagOption of tags; trackBy: trackTagById">{{tagOption.name}}</option>
                     </select>
@@ -56,10 +56,10 @@
             </div>
             <div>
                 <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
-                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span>Cancel</span>
+                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span>Anuluj</span>
                 </button>
                 <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
-                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span>Save</span>
+                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span>Zapisz</span>
                 </button>
             </div>
         </form>

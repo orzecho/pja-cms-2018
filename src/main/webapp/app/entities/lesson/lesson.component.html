@@ -1,10 +1,10 @@
 <div>
     <h2 id="page-heading">
-        <span>Lessons</span>
+        <span>Lekcje</span>
         <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-lesson" [routerLink]="['/lesson/new']">
             <fa-icon [icon]="'plus'"></fa-icon>
             <span >
-            Create new Lesson
+            Utwórz nową lekcję
             </span>
         </button>
     </h2>
@@ -21,17 +21,15 @@
         <table class="table table-striped">
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
-            <th jhiSortBy="id"><span>ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="name"><span>Name</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="description"><span>Description</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="name"><span>Nazwa</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="description"><span>Opis</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th><span>Tagi</span></th>
             <th></th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let lesson of lessons ;trackBy: trackId">
-                <td><a [routerLink]="['/lesson', lesson.id, 'view' ]">{{lesson.id}}</a></td>
-                <td>{{lesson.name}}</td>
+                <td><a [routerLink]="['/lesson', lesson.id, 'view' ]">{{lesson.name}}</a></td>
                 <td>{{lesson.description}}</td>
                 <td><a [routerLink]="['/tag', tag?.id, 'view' ]"
                        class="badge badge-pill badge-primary"
@@ -42,13 +40,13 @@
                                 [routerLink]="['/lesson', lesson.id, 'view' ]"
                                 class="btn btn-info btn-sm">
                             <fa-icon [icon]="'eye'"></fa-icon>
-                            <span class="d-none d-md-inline">View</span>
+                            <span class="d-none d-md-inline">Szczegóły</span>
                         </button>
                         <button type="submit"
                                 [routerLink]="['/lesson', lesson.id, 'edit']"
                                 class="btn btn-primary btn-sm">
                             <fa-icon [icon]="'pencil-alt'"></fa-icon>
-                            <span class="d-none d-md-inline">Edit</span>
+                            <span class="d-none d-md-inline">Edytuj</span>
                         </button>
                         <button type="submit"
                                 [routerLink]="['/', { outlets: { popup: 'lesson/'+ lesson.id + '/delete'} }]"
@@ -56,7 +54,7 @@
                                 queryParamsHandling="merge"
                                 class="btn btn-danger btn-sm">
                             <fa-icon [icon]="'times'"></fa-icon>
-                            <span class="d-none d-md-inline">Delete</span>
+                            <span class="d-none d-md-inline">Usuń</span>
                         </button>
                     </div>
                 </td>

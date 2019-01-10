@@ -1,7 +1,7 @@
 <div class="row justify-content-center">
     <div class="col-8">
         <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
-            <h2 id="jhi-tag-heading">Create or edit a Tag</h2>
+            <h2 id="jhi-tag-heading">Dodaj lub edytuj tag</h2>
             <div>
                 <jhi-alert-error></jhi-alert-error>
                 <div class="form-group" [hidden]="!tag.id">
@@ -10,19 +10,19 @@
                         [(ngModel)]="tag.id" readonly />
                 </div>
                 <div class="form-group">
-                    <label class="form-control-label" for="field_name">Name</label>
+                    <label class="form-control-label" for="field_name">Nazwa</label>
                     <input type="text" class="form-control" name="name" id="field_name"
                         [(ngModel)]="tag.name" required/>
                     <div [hidden]="!(editForm.controls.name?.dirty && editForm.controls.name?.invalid)">
                         <small class="form-text text-danger"
                         [hidden]="!editForm.controls.name?.errors?.required">
-                        This field is required.
+                            To pole jest wymagane
                         </small>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="field_lesson">Lesson</label>
+                    <label for="field_lesson">Lekcje</label>
                     <select class="form-control" id="field_lesson" multiple name="lesson" [(ngModel)]="tag.lessons">
                         <option [ngValue]="getSelected(tag.lessons, lessonOption)" *ngFor="let lessonOption of lessons; trackBy: trackLessonById">{{lessonOption.name}}</option>
                     </select>
@@ -30,10 +30,10 @@
             </div>
             <div>
                 <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
-                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span>Cancel</span>
+                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span>Anuluj</span>
                 </button>
                 <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
-                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span>Save</span>
+                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span>Zapisz</span>
                 </button>
             </div>
         </form>
