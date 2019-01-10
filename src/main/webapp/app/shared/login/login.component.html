@@ -1,5 +1,5 @@
 <div class="modal-header">
-    <h4 class="modal-title">Sign in</h4>
+    <h4 class="modal-title">Zaloguj</h4>
     <button aria-label="Close" data-dismiss="modal" class="close" type="button" (click)="activeModal.dismiss('closed')"><span aria-hidden="true">x</span>
     </button>
 </div>
@@ -7,7 +7,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="alert alert-danger" *ngIf="authenticationError">
-                <strong>Failed to sign in!</strong> Please check your credentials and try again.
+                <strong>Logowanie zakończone niepowodzeniem.</strong> Sprawdź login i hasło i spróbuj ponownie.
             </div>
         </div>
         <div class="col-md-8">
@@ -18,25 +18,25 @@
                     [(ngModel)]="username">
                 </div>
                 <div class="form-group">
-                    <label for="password">Password</label>
+                    <label for="password">Hasło</label>
                     <input type="password" class="form-control" name="password" id="password" placeholder="Your password"
                            [(ngModel)]="password">
                 </div>
                 <div class="form-check">
                     <label class="form-check-label" for="rememberMe">
                         <input class="form-check-input" type="checkbox" name="rememberMe" id="rememberMe" [(ngModel)]="rememberMe" checked>
-                        <span>Remember me</span>
+                        <span>Pamiętaj mnie</span>
                     </label>
                 </div>
-                <button type="submit" class="btn btn-primary">Sign in</button>
+                <button type="submit" class="btn btn-primary">Zaloguj</button>
             </form>
             <p></p>
             <div class="alert alert-warning">
-                <a class="alert-link" (click)="requestResetPassword()">Did you forget your password?</a>
+                <a class="alert-link" (click)="requestResetPassword()">Zapomniałeś hasła?</a>
             </div>
             <div class="alert alert-warning">
-                <span>You don't have an account yet?</span>
-                <a class="alert-link" (click)="register()">Register a new account</a>
+                <span>Nie masz konta?</span>
+                <a class="alert-link" (click)="register()">Zarejestruj</a>
             </div>
         </div>
     </div>
