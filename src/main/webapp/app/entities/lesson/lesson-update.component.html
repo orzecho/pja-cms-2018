@@ -51,9 +51,9 @@
                             </button>
                 </div>
                 <div>
-                        <ul>
-                                <li ng-repeat="f in filesToUpload">{{f}}</li>
-                            </ul>
+                        <li *ngFor="let f of filesToUpload">
+                            {{f.name}}
+                        </li>
                 </div>
                     <div class="row col-sm">
                         <p-listbox [options]="availableFiles"

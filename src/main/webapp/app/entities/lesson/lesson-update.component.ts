@@ -90,7 +90,11 @@ export class LessonUpdateComponent implements OnInit {
 
     upload() {
         console.log('uplołd');
-        this.filesToUpload.push(this.lessonFile);
+        this.filesToUpload.push({
+            name: this.lessonFile.name,
+            content: this.lessonFile.content,
+            contentContentType: this.lessonFile.contentContentType
+        });
     }
 
     save() {
@@ -116,16 +120,19 @@ export class LessonUpdateComponent implements OnInit {
     }
 
     private subscribeToSaveResponseFile(result: Observable<HttpResponse<ILessonFile>>) {
+        console.log('Subskrajb to rispons');
         result.subscribe((res: HttpResponse<ILesson>) => this.onSaveSuccessFile(), (res: HttpErrorResponse) => this.onSaveError());
     }
 
     private onSaveSuccessLesson() {
         for (let f of this.filesToUpload) {
-            console.log('chuj dupa cipa : ' + f.name);
+            console.log('Nazwa pliku: ' + f.name + ' Id lekcji: ' + f.lessonId + ' ContentType: ' + f.contentContentType);
         }
-        console.log('dlugosc: ' + this.filesToUpload.length);
+
         for (let f of this.filesToUpload) {
+            console.log('Czy tu dochodzi:  ' + f.name);
             this.subscribeToSaveResponseFile(this.lessonFileService.create(f));
+            //this.lessonFileService.create(f);
         }
     }
 
