@@ -2,7 +2,7 @@ import { Component, forwardRef, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { JhiAlertService } from 'ng-jhipster';
+import { JhiAlertService, JhiDataUtils } from 'ng-jhipster';
 
 import { ILesson } from 'app/shared/model/lesson.model';
 import { LessonService } from './lesson.service';
@@ -19,6 +19,7 @@ import { Word } from 'app/shared/model/word.model';
 })
 export class LessonUpdateComponent implements OnInit {
     private _lesson: ILesson;
+    private _lessonFile: ILessonFile;
     isSaving: boolean;
 
     tags: ITag[];
@@ -31,6 +32,8 @@ export class LessonUpdateComponent implements OnInit {
 
     foundTags: string[];
 
+    filesToUpload: Array<ILessonFile> = [];
+
     cols: [
         { field: 'translation'; header: 'Vin' },
         { field: 'kana'; header: 'Year' },
@@ -42,11 +45,19 @@ export class LessonUpdateComponent implements OnInit {
 
     constructor(
         private jhiAlertService: JhiAlertService,
+        private dataUtils: JhiDataUtils,
         private lessonService: LessonService,
         private tagService: TagService,
         private activatedRoute: ActivatedRoute,
         private lessonFileService: LessonFileService
-    ) {}
+    ) {
+        this.lessonFile = {
+            name: '',
+            content: '',
+            contentContentType: '',
+            lessonId: null
+        };
+    }
 
     ngOnInit() {
         this.isSaving = false;
@@ -77,13 +88,62 @@ export class LessonUpdateComponent implements OnInit {
         window.history.back();
     }
 
+    upload() {
+        console.log('uplołd');
+        this.filesToUpload.push(this.lessonFile);
+    }
+
     save() {
         this.isSaving = true;
         if (this.lesson.id !== undefined) {
-            this.subscribeToSaveResponse(this.lessonService.update(this.lesson));
+            this.subscribeToSaveResponseLesson(this.lessonService.update(this.lesson));
         } else {
-            this.subscribeToSaveResponse(this.lessonService.create(this.lesson));
+            this.subscribeToSaveResponseLesson(this.lessonService.create(this.lesson));
         }
+    }
+
+    private subscribeToSaveResponseLesson(result: Observable<HttpResponse<ILesson>>) {
+        result.subscribe(
+            (res: HttpResponse<ILesson>) => {
+                console.log('ID lekcji' + res.body.id);
+                for (let f of this.filesToUpload) {
+                    f.lessonId = res.body.id;
+                }
+                this.onSaveSuccessLesson();
+            },
+            (res: HttpErrorResponse) => this.onSaveError()
+        );
+    }
+
+    private subscribeToSaveResponseFile(result: Observable<HttpResponse<ILessonFile>>) {
+        result.subscribe((res: HttpResponse<ILesson>) => this.onSaveSuccessFile(), (res: HttpErrorResponse) => this.onSaveError());
+    }
+
+    private onSaveSuccessLesson() {
+        for (let f of this.filesToUpload) {
+            console.log('chuj dupa cipa : ' + f.name);
+        }
+        console.log('dlugosc: ' + this.filesToUpload.length);
+        for (let f of this.filesToUpload) {
+            this.subscribeToSaveResponseFile(this.lessonFileService.create(f));
+        }
+    }
+
+    private onSaveSuccessFile() {
+        console.log('koniec sejwa ;)');
+        this.isSaving = false;
+        this.previousState();
+    }
+
+    setFileData(event, entity, field, isImage) {
+        this.dataUtils.setFileData(event, entity, field, isImage);
+    }
+    get lessonFile() {
+        return this._lessonFile;
+    }
+
+    set lessonFile(lessonFile: ILessonFile) {
+        this._lessonFile = lessonFile;
     }
 
     private subscribeToSaveResponse(result: Observable<HttpResponse<ILesson>>) {
