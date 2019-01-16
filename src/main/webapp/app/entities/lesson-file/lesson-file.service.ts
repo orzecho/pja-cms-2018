@@ -16,6 +16,7 @@ export class LessonFileService {
     constructor(private http: HttpClient) {}
 
     create(lessonFile: ILessonFile): Observable<EntityResponseType> {
+        console.log('Czy tu dochodzi: Serwis: ' + lessonFile.name);
         return this.http.post<ILessonFile>(this.resourceUrl, lessonFile, { observe: 'response' });
     }
 
