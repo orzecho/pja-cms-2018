@@ -31,7 +31,7 @@ public class FillingGapsTestItem implements Serializable {
     @Column(name = "question", nullable = false)
     private String question;
 
-    @OneToMany(mappedBy = "testItem")
+    @OneToMany(mappedBy = "testItem", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<GapItem> gapItems = new HashSet<>();
 
