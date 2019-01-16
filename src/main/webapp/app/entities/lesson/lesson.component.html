@@ -42,6 +42,7 @@
                             <fa-icon [icon]="'eye'"></fa-icon>
                             <span class="d-none d-md-inline">Szczegóły</span>
                         </button>
+                        <div *jhiHasAnyAuthority="'ROLE_ADMIN'">
                         <button type="submit"
                                 [routerLink]="['/lesson', lesson.id, 'edit']"
                                 class="btn btn-primary btn-sm">
@@ -56,6 +57,7 @@
                             <fa-icon [icon]="'times'"></fa-icon>
                             <span class="d-none d-md-inline">Usuń</span>
                         </button>
+                    </div>
                     </div>
                 </td>
             </tr>
