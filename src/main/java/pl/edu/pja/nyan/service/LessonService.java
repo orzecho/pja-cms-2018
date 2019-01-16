@@ -96,13 +96,16 @@ public class LessonService {
     }
 
     /**
-     * Delete the lesson by id.
+     * Delete the lesson and unlink tags and lesson files.
      *
      * @param id the id of the entity
      */
     public void delete(Long id) {
         log.debug("Request to delete Lesson : {}", id);
-        lessonRepository.deleteById(id);
+        Lesson lesson = lessonRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        lesson.getTags().forEach(tag -> tag.getLessons().remove(lesson));
+        lesson.getLessonFiles().forEach(lessonFile -> lessonFile.setLesson(null));
+        lessonRepository.delete(lesson);
     }
 
     private Lesson deleteOldTags(Lesson l, Set<Tag> parsedTags) {
