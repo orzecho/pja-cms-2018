@@ -35,6 +35,26 @@
                 </div>
                 <div class="form-group">
                     <label class="form-control-label" for="field_lesson_files">Pliki lekcji</label>
+                    
+                <div class="form-group">
+                    <label class="form-control-label" for="field_description">Nazwa pliku </label>
+                    <input type="text" class="form-control" name="rawTags" id="field_raw_tags" [(ngModel)]="lessonFile.name" />
+                </div>
+
+                <div class="form-group">
+                        <input id="cin" name="cin" type="file" (change)="setFileData($event, lessonFile, 'content', false)" placeholder="Upload a file..." multiple/>
+                    
+                </div>
+                <div>
+                        <button type="button" class="btn btn-success btn-s" (click)="upload()">
+                                <i class="glyphicon glyphicon-open-file"></i>&nbsp;Upload
+                            </button>
+                </div>
+                <div>
+                        <ul>
+                                <li ng-repeat="f in filesToUpload">{{f}}</li>
+                            </ul>
+                </div>
                     <div class="row col-sm">
                         <p-listbox [options]="availableFiles"
                                    optionLabel="name"
