@@ -116,16 +116,16 @@ export class LessonUpdateComponent implements OnInit {
     }
 
     private subscribeToSaveResponseFile(result: Observable<HttpResponse<ILessonFile>>) {
-        console.log('Subskrajb to rispons');
+        this.isSaving = true;
         result.subscribe((res: HttpResponse<ILesson>) => this.onSaveSuccessFile(), (res: HttpErrorResponse) => this.onSaveError());
     }
 
     private onSaveSuccessLesson() {
         this.filesToUpload.forEach(file => this.subscribeToSaveResponseFile(this.lessonFileService.create(file)));
+        this.isSaving = false;
     }
 
     private onSaveSuccessFile() {
-        console.log('koniec sejwa ;)');
         this.isSaving = false;
         this.previousState();
     }
