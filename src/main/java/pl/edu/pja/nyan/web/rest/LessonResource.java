@@ -13,6 +13,7 @@ import pl.edu.pja.nyan.service.LessonQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -133,6 +134,7 @@ public class LessonResource {
     @DeleteMapping("/lessons/{id}")
     @Timed
     @Secured({AuthoritiesConstants.ADMIN, AuthoritiesConstants.TEACHER})
+    @CacheEvict
     public ResponseEntity<Void> deleteLesson(@PathVariable Long id) {
         log.debug("REST request to delete Lesson : {}", id);
         lessonService.delete(id);

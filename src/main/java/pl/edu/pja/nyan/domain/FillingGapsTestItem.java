@@ -1,16 +1,26 @@
 package pl.edu.pja.nyan.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import javax.persistence.*;
-import javax.validation.constraints.*;
-
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * A FillingGapsTestItem.
@@ -31,7 +41,7 @@ public class FillingGapsTestItem implements Serializable {
     @Column(name = "question", nullable = false)
     private String question;
 
-    @OneToMany(mappedBy = "testItem")
+    @OneToMany(mappedBy = "testItem", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<GapItem> gapItems = new HashSet<>();
 
@@ -84,7 +94,11 @@ public class FillingGapsTestItem implements Serializable {
     }
 
     public void setGapItems(Set<GapItem> gapItems) {
-        this.gapItems = gapItems;
+        if (this.gapItems == null) {
+            this.gapItems = gapItems;
+        } else {
+            this.gapItems.addAll(gapItems);
+        }
     }
 
     public Set<Tag> getTags() {

@@ -6,9 +6,12 @@ import pl.edu.pja.nyan.domain.Word;
 import pl.edu.pja.nyan.repository.TagRepository;
 import pl.edu.pja.nyan.service.dto.TagDTO;
 import pl.edu.pja.nyan.service.mapper.TagMapper;
+
+import org.ehcache.core.Ehcache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -94,6 +97,9 @@ public class TagService {
      *
      * @param id the id of the entity
      */
+
+    @CacheEvict(value={"pl.edu.pja.nyan.domain.Lesson.tags", "pl.edu.pja.nyan.domain.FillingGapsTestItem.tags",
+        "pl.edu.pja.nyan.domain.Word.tags"}, allEntries=true)
     public void delete(Long id) {
         log.debug("Request to delete Tag : {}", id);
         tagRepository.deleteById(id);
