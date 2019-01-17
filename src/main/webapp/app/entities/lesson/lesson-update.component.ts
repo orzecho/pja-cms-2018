@@ -89,7 +89,6 @@ export class LessonUpdateComponent implements OnInit {
     }
 
     upload() {
-        console.log('uplołd');
         this.filesToUpload.push({
             name: this.lessonFile.name,
             content: this.lessonFile.content,
@@ -109,10 +108,7 @@ export class LessonUpdateComponent implements OnInit {
     private subscribeToSaveResponseLesson(result: Observable<HttpResponse<ILesson>>) {
         result.subscribe(
             (res: HttpResponse<ILesson>) => {
-                console.log('ID lekcji' + res.body.id);
-                for (let f of this.filesToUpload) {
-                    f.lessonId = res.body.id;
-                }
+                this.filesToUpload.forEach(file => (file.lessonId = res.body.id));
                 this.onSaveSuccessLesson();
             },
             (res: HttpErrorResponse) => this.onSaveError()
@@ -125,15 +121,7 @@ export class LessonUpdateComponent implements OnInit {
     }
 
     private onSaveSuccessLesson() {
-        for (let f of this.filesToUpload) {
-            console.log('Nazwa pliku: ' + f.name + ' Id lekcji: ' + f.lessonId + ' ContentType: ' + f.contentContentType);
-        }
-
-        for (let f of this.filesToUpload) {
-            console.log('Czy tu dochodzi:  ' + f.name);
-            this.subscribeToSaveResponseFile(this.lessonFileService.create(f));
-            //this.lessonFileService.create(f);
-        }
+        this.filesToUpload.forEach(file => this.subscribeToSaveResponseFile(this.lessonFileService.create(file)));
     }
 
     private onSaveSuccessFile() {
