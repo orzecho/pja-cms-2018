@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <!--
+        Added the constraints for entity TrueFalseAnswer.
+    -->
+    <changeSet id="20190120160658-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="src_word_id"
+                                 baseTableName="true_false_answer"
+                                 constraintName="fk_true_false_answer_src_word_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="word"/>
+
+        <addForeignKeyConstraint baseColumnNames="target_word_id"
+                                 baseTableName="true_false_answer"
+                                 constraintName="fk_true_false_answer_target_word_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="word"/>
+
+        <addForeignKeyConstraint baseColumnNames="exam_id"
+                                 baseTableName="true_false_answer"
+                                 constraintName="fk_true_false_answer_exam_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="exam_result"/>
+
+    </changeSet>
+</databaseChangeLog>

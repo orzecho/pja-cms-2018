@@ -7,6 +7,10 @@ import { NyanLessonFileModule } from './lesson-file/lesson-file.module';
 import { NyanTestModule } from 'app/entities/test/test.module';
 import { NyanFillingGapsTestItemModule } from './filling-gaps-test-item/filling-gaps-test-item.module';
 import { NyanGapItemModule } from './gap-item/gap-item.module';
+import { NyanExamModule } from './exam/exam.module';
+import { NyanExamResultModule } from './exam-result/exam-result.module';
+import { NyanWrittenAnswerModule } from './written-answer/written-answer.module';
+import { NyanTrueFalseAnswerModule } from './true-false-answer/true-false-answer.module';
 /* jhipster-needle-add-entity-module-import - JHipster will add entity modules imports here */
 
 @NgModule({
@@ -19,6 +23,10 @@ import { NyanGapItemModule } from './gap-item/gap-item.module';
         NyanTestModule,
         NyanFillingGapsTestItemModule,
         NyanGapItemModule,
+        NyanExamModule,
+        NyanExamResultModule,
+        NyanWrittenAnswerModule,
+        NyanTrueFalseAnswerModule,
         /* jhipster-needle-add-entity-module - JHipster will add entity modules here */
     ],
     declarations: [],

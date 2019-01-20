@@ -1,0 +1,59 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="writtenAnswer">
+            <h2><span>Written Answer</span> {{writtenAnswer.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span>Translation From</span></dt>
+                <dd>
+                    <span>{{writtenAnswer.translationFrom}}</span>
+                </dd>
+                <dt><span>Translation</span></dt>
+                <dd>
+                    <span>{{writtenAnswer.translation}}</span>
+                </dd>
+                <dt><span>Kana</span></dt>
+                <dd>
+                    <span>{{writtenAnswer.kana}}</span>
+                </dd>
+                <dt><span>Kanji</span></dt>
+                <dd>
+                    <span>{{writtenAnswer.kanji}}</span>
+                </dd>
+                <dt><span>Romaji</span></dt>
+                <dd>
+                    <span>{{writtenAnswer.romaji}}</span>
+                </dd>
+                <dt><span>Is Right Answer</span></dt>
+                <dd>
+                    <span>{{writtenAnswer.isRightAnswer}}</span>
+                </dd>
+                <dt><span>Answer</span></dt>
+                <dd>
+                    <div *ngIf="writtenAnswer.answerId">
+                        <a [routerLink]="['/word', writtenAnswer.answerId, 'view']">{{writtenAnswer.answerId}}</a>
+                    </div>
+                </dd>
+                <dt><span>Exam</span></dt>
+                <dd>
+                    <div *ngIf="writtenAnswer.examId">
+                        <a [routerLink]="['/exam-result', writtenAnswer.examId, 'view']">{{writtenAnswer.examId}}</a>
+                    </div>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/written-answer', writtenAnswer.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

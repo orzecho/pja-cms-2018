@@ -36,6 +36,13 @@
             "otherEntityName": "tag",
             "otherEntityField": "name",
             "ownerSide": true
+        },
+        {
+            "relationshipType": "many-to-many",
+            "relationshipName": "exam",
+            "otherEntityName": "exam",
+            "ownerSide": false,
+            "otherEntityRelationshipName": "word"
         }
     ],
     "changelogDate": "20181108154458",

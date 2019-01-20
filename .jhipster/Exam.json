@@ -1,0 +1,59 @@
+{
+    "name": "Exam",
+    "fields": [
+        {
+            "fieldName": "name",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "type",
+            "fieldType": "TestType",
+            "fieldValues": "WRITTEN,FILLING_GAPS,TRUE_FALSE",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "code",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "results",
+            "otherEntityName": "examResult",
+            "otherEntityRelationshipName": "exam"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "creator",
+            "otherEntityName": "user",
+            "otherEntityField": "login"
+        },
+        {
+            "relationshipType": "many-to-many",
+            "otherEntityRelationshipName": "exam",
+            "relationshipName": "word",
+            "otherEntityName": "word",
+            "otherEntityField": "translation",
+            "ownerSide": true
+        }
+    ],
+    "changelogDate": "20190120160655",
+    "javadoc": "EXAM ENTITIES",
+    "entityTableName": "exam",
+    "dto": "mapstruct",
+    "pagination": "pagination",
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": true,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
+}
