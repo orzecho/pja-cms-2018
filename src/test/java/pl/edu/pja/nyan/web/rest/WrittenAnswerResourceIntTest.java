@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,12 +33,14 @@ import pl.edu.pja.nyan.domain.ExamResult;
 import pl.edu.pja.nyan.domain.Word;
 import pl.edu.pja.nyan.domain.WrittenAnswer;
 import pl.edu.pja.nyan.repository.WrittenAnswerRepository;
+import pl.edu.pja.nyan.service.UserService;
 import pl.edu.pja.nyan.service.WrittenAnswerQueryService;
 import pl.edu.pja.nyan.service.WrittenAnswerService;
 import pl.edu.pja.nyan.service.dto.WrittenAnswerDTO;
 import pl.edu.pja.nyan.service.mapper.WrittenAnswerMapper;
 import static pl.edu.pja.nyan.web.rest.TestUtil.createFormattingConversionService;
 import pl.edu.pja.nyan.web.rest.errors.ExceptionTranslator;
+import pl.edu.pja.nyan.web.rest.errors.UserNotLoggedInException;
 
 /**
  * Test class for the WrittenAnswerResource REST controller.
@@ -69,10 +72,8 @@ public class WrittenAnswerResourceIntTest {
     @Autowired
     private WrittenAnswerRepository writtenAnswerRepository;
 
-
     @Autowired
     private WrittenAnswerMapper writtenAnswerMapper;
-    
 
     @Autowired
     private WrittenAnswerService writtenAnswerService;
@@ -88,6 +89,9 @@ public class WrittenAnswerResourceIntTest {
 
     @Autowired
     private ExceptionTranslator exceptionTranslator;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private EntityManager em;
@@ -487,7 +491,10 @@ public class WrittenAnswerResourceIntTest {
      * Executes the search, and checks that the default entity is returned
      */
     private void defaultWrittenAnswerShouldBeFound(String filter) throws Exception {
+        System.out.println("Current user: " + userService.getUserWithAuthorities().orElseThrow(
+            UserNotLoggedInException::new));
         restWrittenAnswerMockMvc.perform(get("/api/written-answers?sort=id,desc&" + filter))
+            .andDo(MockMvcResultHandlers.log())
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(writtenAnswer.getId().intValue())))

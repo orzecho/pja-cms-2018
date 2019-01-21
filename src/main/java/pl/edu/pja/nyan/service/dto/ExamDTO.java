@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.Singular;
 import pl.edu.pja.nyan.domain.enumeration.TestType;
 
 /**
@@ -25,15 +26,16 @@ public class ExamDTO implements Serializable {
     @NotNull
     private TestType type;
 
-    @NotNull
     private String code;
 
     private Long creatorId;
 
     private String creatorLogin;
 
+    @Singular
     private Set<WordDTO> words;
 
+    @Singular
     private List<ExamResultDTO> results;
 
 }

@@ -24,9 +24,9 @@ export class Exam implements IExam {
         public name?: string,
         public type?: TestType,
         public code?: string,
-        public results?: IExamResult[],
+        public results: IExamResult[] = [],
         public creatorLogin?: string,
         public creatorId?: number,
-        public words?: IWord[]
+        public words: IWord[] = []
     ) {}
 }

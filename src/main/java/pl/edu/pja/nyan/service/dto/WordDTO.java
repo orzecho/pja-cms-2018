@@ -13,6 +13,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.Singular;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -35,7 +36,8 @@ public class WordDTO implements Serializable {
 
     private String note;
 
-    private List<TagDTO> tags = new ArrayList<>();
+    @Singular
+    private List<TagDTO> tags;
 
     private String rawTags;
 

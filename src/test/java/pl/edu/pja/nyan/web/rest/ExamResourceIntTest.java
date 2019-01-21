@@ -1,18 +1,9 @@
 package pl.edu.pja.nyan.web.rest;
 
-import pl.edu.pja.nyan.NyanApp;
+import java.util.ArrayList;
+import java.util.List;
 
-import pl.edu.pja.nyan.domain.Exam;
-import pl.edu.pja.nyan.domain.ExamResult;
-import pl.edu.pja.nyan.domain.User;
-import pl.edu.pja.nyan.domain.Word;
-import pl.edu.pja.nyan.repository.ExamRepository;
-import pl.edu.pja.nyan.service.ExamService;
-import pl.edu.pja.nyan.service.dto.ExamDTO;
-import pl.edu.pja.nyan.service.mapper.ExamMapper;
-import pl.edu.pja.nyan.web.rest.errors.ExceptionTranslator;
-import pl.edu.pja.nyan.service.dto.ExamCriteria;
-import pl.edu.pja.nyan.service.ExamQueryService;
+import javax.persistence.EntityManager;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +13,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -31,19 +21,35 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.List;
-
-
-import static pl.edu.pja.nyan.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import pl.edu.pja.nyan.NyanApp;
+import pl.edu.pja.nyan.domain.Exam;
+import pl.edu.pja.nyan.domain.ExamResult;
+import pl.edu.pja.nyan.domain.User;
+import pl.edu.pja.nyan.domain.Word;
 import pl.edu.pja.nyan.domain.enumeration.TestType;
+import pl.edu.pja.nyan.repository.ExamRepository;
+import pl.edu.pja.nyan.service.ExamQueryService;
+import pl.edu.pja.nyan.service.ExamService;
+import pl.edu.pja.nyan.service.TagService;
+import pl.edu.pja.nyan.service.UserService;
+import pl.edu.pja.nyan.service.WordService;
+import pl.edu.pja.nyan.service.dto.ExamDTO;
+import pl.edu.pja.nyan.service.mapper.ExamMapper;
+import static pl.edu.pja.nyan.web.rest.TestUtil.createFormattingConversionService;
+import pl.edu.pja.nyan.web.rest.errors.ExceptionTranslator;
 /**
  * Test class for the ExamResource REST controller.
  *
@@ -56,11 +62,11 @@ public class ExamResourceIntTest {
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBBB";
 
-    private static final TestType DEFAULT_TYPE = TestType.WRITTEN;
-    private static final TestType UPDATED_TYPE = TestType.FILLING_GAPS;
+    private static final TestType DEFAULT_TYPE = TestType.WRITTEN_PL;
+    private static final TestType UPDATED_TYPE = TestType.WRITTEN_MIXED;
 
-    private static final String DEFAULT_CODE = "AAAAAAAAAA";
-    private static final String UPDATED_CODE = "BBBBBBBBBB";
+    private static final String DEFAULT_CODE = "AAAAA";
+    private static final String UPDATED_CODE = "BBBBB";
 
     @Autowired
     private ExamRepository examRepository;
@@ -75,6 +81,15 @@ public class ExamResourceIntTest {
 
     @Autowired
     private ExamService examService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private TagService tagService;
+
+    @Autowired
+    private WordService wordService;
 
     @Autowired
     private ExamQueryService examQueryService;
@@ -98,7 +113,8 @@ public class ExamResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final ExamResource examResource = new ExamResource(examService, examQueryService);
+        final ExamResource examResource = new ExamResource(examService,
+            examQueryService, userService, tagService, wordService);
         this.restExamMockMvc = MockMvcBuilders.standaloneSetup(examResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -240,7 +256,8 @@ public class ExamResourceIntTest {
     }
     
     public void getAllExamsWithEagerRelationshipsIsEnabled() throws Exception {
-        ExamResource examResource = new ExamResource(examServiceMock, examQueryService);
+        ExamResource examResource = new ExamResource(examServiceMock,
+            examQueryService, userService, tagService, wordService);
         when(examServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
 
         MockMvc restExamMockMvc = MockMvcBuilders.standaloneSetup(examResource)
@@ -256,7 +273,8 @@ public class ExamResourceIntTest {
     }
 
     public void getAllExamsWithEagerRelationshipsIsNotEnabled() throws Exception {
-        ExamResource examResource = new ExamResource(examServiceMock, examQueryService);
+        ExamResource examResource = new ExamResource(examServiceMock,
+            examQueryService, userService, tagService, wordService);
             when(examServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
             MockMvc restExamMockMvc = MockMvcBuilders.standaloneSetup(examResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
@@ -579,9 +597,9 @@ public class ExamResourceIntTest {
     @Transactional
     public void dtoEqualsVerifier() throws Exception {
         TestUtil.equalsVerifier(ExamDTO.class);
-        ExamDTO examDTO1 = new ExamDTO();
+        ExamDTO examDTO1 = ExamDTO.builder().build();
         examDTO1.setId(1L);
-        ExamDTO examDTO2 = new ExamDTO();
+        ExamDTO examDTO2 = ExamDTO.builder().build();
         assertThat(examDTO1).isNotEqualTo(examDTO2);
         examDTO2.setId(examDTO1.getId());
         assertThat(examDTO1).isEqualTo(examDTO2);

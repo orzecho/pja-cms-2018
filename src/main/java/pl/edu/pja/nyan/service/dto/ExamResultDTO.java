@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.Singular;
 
 /**
  * A DTO for the ExamResult entity.
@@ -30,8 +31,10 @@ public class ExamResultDTO implements Serializable {
 
     private Long examId;
 
+    @Singular
     private List<WrittenAnswerDTO> writtenAnswers;
 
+    @Singular
     private List<TrueFalseAnswerDTO> trueFalseAnswers;
 
 }

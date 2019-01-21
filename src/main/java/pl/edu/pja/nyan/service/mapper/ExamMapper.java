@@ -20,7 +20,6 @@ import pl.edu.pja.nyan.service.dto.ExamDTO;
 public class ExamMapper implements EntityMapper<ExamDTO, Exam> {
 
     private final ExamRepository examRepository;
-    private final UserMapper userMapper;
     private final ExamResultMapper examResultMapper;
     private final WordMapper wordMapper;
     private final UserService userService;
@@ -38,9 +37,11 @@ public class ExamMapper implements EntityMapper<ExamDTO, Exam> {
         entity.setCreator(userService.getUserWithAuthorities(dto.getCreatorId())
                 .orElseThrow(EntityNotFoundException::new));
         entity.setName(dto.getName());
-        entity.setResults(new HashSet<>(examResultMapper.toEntity(dto.getResults())));
+        entity.setResults(dto.getResults() == null ? null :
+            new HashSet<>(examResultMapper.toEntity(dto.getResults())));
         entity.setType(dto.getType());
-        entity.setWords(new HashSet<>(wordMapper.toEntity(dto.getWords())));
+        entity.setWords(dto.getWords() == null ? null :
+            new HashSet<>(wordMapper.toEntity(dto.getWords())));
         return entity;
     }
 
@@ -49,11 +50,13 @@ public class ExamMapper implements EntityMapper<ExamDTO, Exam> {
         return ExamDTO.builder()
             .id(entity.getId())
             .code(entity.getCode())
+            .creatorLogin(entity.getCreator().getLogin())
             .creatorId(entity.getCreator().getId())
             .name(entity.getName())
             .results(examResultMapper.toDto(entity.getResults()))
             .type(entity.getType())
-            .words(new HashSet<>(wordMapper.toDto(entity.getWords())))
+            .words(entity.getWords() == null ? null :
+                new HashSet<>(wordMapper.toDto(entity.getWords())))
             .build();
     }
 

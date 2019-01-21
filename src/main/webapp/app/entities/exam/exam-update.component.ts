@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { JhiAlertService } from 'ng-jhipster';
 
 import { IExam } from 'app/shared/model/exam.model';
 import { ExamService } from './exam.service';
 import { IUser, UserService } from 'app/core';
-import { IWord } from 'app/shared/model/word.model';
+import { Word } from 'app/shared/model/word.model';
 import { WordService } from 'app/entities/word';
+import { TagService } from 'app/entities/tag';
 
 @Component({
     selector: 'jhi-exam-update',
@@ -20,14 +21,16 @@ export class ExamUpdateComponent implements OnInit {
 
     users: IUser[];
 
-    words: IWord[];
+    tags: string[];
+    availableTags: string[];
 
     constructor(
         private jhiAlertService: JhiAlertService,
         private examService: ExamService,
         private userService: UserService,
         private wordService: WordService,
-        private activatedRoute: ActivatedRoute
+        private activatedRoute: ActivatedRoute,
+        private tagService: TagService
     ) {}
 
     ngOnInit() {
@@ -35,18 +38,15 @@ export class ExamUpdateComponent implements OnInit {
         this.activatedRoute.data.subscribe(({ exam }) => {
             this.exam = exam;
         });
-        this.userService.query().subscribe(
-            (res: HttpResponse<IUser[]>) => {
-                this.users = res.body;
-            },
-            (res: HttpErrorResponse) => this.onError(res.message)
-        );
-        this.wordService.query().subscribe(
-            (res: HttpResponse<IWord[]>) => {
-                this.words = res.body;
-            },
-            (res: HttpErrorResponse) => this.onError(res.message)
-        );
+        if (this.exam.words) {
+            this.tags = this.getTagsFromWords(this.exam.words);
+        }
+    }
+
+    private getTagsFromWords(words: Word[]) {
+        const tag_names = [];
+        words.map(word => word.tags).forEach(tags => tags.forEach(tag => tag_names.push(tag.name)));
+        return Array.from(new Set(tag_names));
     }
 
     previousState() {
@@ -56,9 +56,9 @@ export class ExamUpdateComponent implements OnInit {
     save() {
         this.isSaving = true;
         if (this.exam.id !== undefined) {
-            this.subscribeToSaveResponse(this.examService.update(this.exam));
+            this.subscribeToSaveResponse(this.examService.update(this.exam, this.tags));
         } else {
-            this.subscribeToSaveResponse(this.examService.create(this.exam));
+            this.subscribeToSaveResponse(this.examService.create(this.exam, this.tags));
         }
     }
 
@@ -79,24 +79,16 @@ export class ExamUpdateComponent implements OnInit {
         this.jhiAlertService.error(errorMessage, null, null);
     }
 
-    trackUserById(index: number, item: IUser) {
-        return item.id;
+    search(event) {
+        const req = {
+            'name.contains': event.query
+        };
+        this.tagService.query(req).subscribe(response => {
+            this.availableTags = response.body.map(tag => tag.name);
+            console.log(this.availableTags);
+        });
     }
 
-    trackWordById(index: number, item: IWord) {
-        return item.id;
-    }
-
-    getSelected(selectedVals: Array<any>, option: any) {
-        if (selectedVals) {
-            for (let i = 0; i < selectedVals.length; i++) {
-                if (option.id === selectedVals[i].id) {
-                    return selectedVals[i];
-                }
-            }
-        }
-        return option;
-    }
     get exam() {
         return this._exam;
     }

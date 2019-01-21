@@ -1,7 +1,7 @@
 <div class="row justify-content-center">
     <div class="col-8">
         <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
-            <h2 id="jhi-exam-heading">Create or edit a Exam</h2>
+            <h2 id="jhi-exam-heading">Utworz lub edytuj egzamin</h2>
             <div>
                 <jhi-alert-error></jhi-alert-error>
                 <div class="form-group" [hidden]="!exam.id">
@@ -10,62 +10,55 @@
                         [(ngModel)]="exam.id" readonly />
                 </div>
                 <div class="form-group">
-                    <label class="form-control-label" for="field_name">Name</label>
+                    <label class="form-control-label" for="field_name">Nazwa egzaminu</label>
                     <input type="text" class="form-control" name="name" id="field_name"
                         [(ngModel)]="exam.name" required/>
                     <div [hidden]="!(editForm.controls.name?.dirty && editForm.controls.name?.invalid)">
                         <small class="form-text text-danger"
                         [hidden]="!editForm.controls.name?.errors?.required">
-                        This field is required.
+                        To pole nie może być puste.
                         </small>
                     </div>
                 </div>
+                <label class="form-control-label" for="field_tags">Tagi do generowania egzaminu</label>
+                <br>
                 <div class="form-group">
-                    <label class="form-control-label" for="field_type">Type</label>
+                    <p-autoComplete [(ngModel)]="tags"
+                                    [suggestions]="availableTags"
+                                    (completeMethod)="search($event)"
+                                    name="tags"
+                                    id="field_tags"
+                                    [multiple]="true" required>
+                    </p-autoComplete>
+                    <div [hidden]="!(editForm.controls.tags?.dirty && editForm.controls.tags?.invalid)">
+                        <small class="form-text text-danger"
+                               [hidden]="!editForm.controls.tags?.errors?.required">
+                            To pole nie może być puste.
+                        </small>
+                    </div>
+                    </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_type">Typ examinu</label>
                     <select class="form-control" name="type" [(ngModel)]="exam.type" id="field_type"  required>
-                        <option value="WRITTEN">WRITTEN</option>
-                        <option value="FILLING_GAPS">FILLING_GAPS</option>
-                        <option value="TRUE_FALSE">TRUE_FALSE</option>
+                        <option value="WRITTEN_MIXED">Test pisemny - mieszany</option>
+                        <option value="WRITTEN_PL">Test pisemny - polski</option>
+                        <option value="WRITTEN_KANA">Test pisemny - kana</option>
+                        <option value="WRITTEN_KANJI">Test pisemny - kanji</option>
                     </select>
                     <div [hidden]="!(editForm.controls.type?.dirty && editForm.controls.type?.invalid)">
                         <small class="form-text text-danger"
                         [hidden]="!editForm.controls.type?.errors?.required">
-                        This field is required.
+                        To pole nie może być puste.
                         </small>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" for="field_code">Code</label>
-                    <input type="text" class="form-control" name="code" id="field_code"
-                        [(ngModel)]="exam.code" required/>
-                    <div [hidden]="!(editForm.controls.code?.dirty && editForm.controls.code?.invalid)">
-                        <small class="form-text text-danger"
-                        [hidden]="!editForm.controls.code?.errors?.required">
-                        This field is required.
-                        </small>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-control-label" for="field_creator">Creator</label>
-                    <select class="form-control" id="field_creator" name="creator" [(ngModel)]="exam.creatorId" >
-                        <option [ngValue]="null"></option>
-                        <option [ngValue]="userOption.id" *ngFor="let userOption of users; trackBy: trackUserById">{{userOption.login}}</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="field_word">Word</label>
-                    <select class="form-control" id="field_word" multiple name="word" [(ngModel)]="exam.words">
-                        <option [ngValue]="getSelected(exam.words, wordOption)" *ngFor="let wordOption of words; trackBy: trackWordById">{{wordOption.translation}}</option>
-                    </select>
                 </div>
             </div>
             <div>
                 <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
-                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span>Cancel</span>
+                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span>Anuluj</span>
                 </button>
                 <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
-                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span>Save</span>
+                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span>Zapisz</span>
                 </button>
             </div>
         </form>

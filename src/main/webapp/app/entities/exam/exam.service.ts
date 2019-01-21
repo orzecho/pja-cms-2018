@@ -15,12 +15,30 @@ export class ExamService {
 
     constructor(private http: HttpClient) {}
 
-    create(exam: IExam): Observable<EntityResponseType> {
-        return this.http.post<IExam>(this.resourceUrl, exam, { observe: 'response' });
+    create(exam: IExam, tags?: string[]): Observable<EntityResponseType> {
+        if (tags === undefined) {
+            return this.http.post<IExam>(this.resourceUrl, exam, { observe: 'response' });
+        }
+
+        return this.http.post<IExam>(this.resourceUrl, exam, {
+            observe: 'response',
+            params: {
+                tags: tags
+            }
+        });
     }
 
-    update(exam: IExam): Observable<EntityResponseType> {
-        return this.http.put<IExam>(this.resourceUrl, exam, { observe: 'response' });
+    update(exam: IExam, tags?: string[]): Observable<EntityResponseType> {
+        if (tags === undefined) {
+            return this.http.put<IExam>(this.resourceUrl, exam, { observe: 'response' });
+        }
+
+        return this.http.put<IExam>(this.resourceUrl, exam, {
+            observe: 'response',
+            params: {
+                tags: tags
+            }
+        });
     }
 
     find(id: number): Observable<EntityResponseType> {

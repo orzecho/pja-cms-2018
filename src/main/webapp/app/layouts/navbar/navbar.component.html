@@ -38,6 +38,11 @@
                 </a>
             </li>
             <li *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_TEACHER']" class="nav-item" >
+                <a class="nav-link" routerLink="exam" (click)="collapseNavbar()">
+                    <span>Examiny</span>
+                </a>
+            </li>
+            <li *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_TEACHER']" class="nav-item" >
                 <a class="nav-link" routerLink="filling-gaps-test-item" routerLinkActive="active"
                    [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
                     <fa-icon [icon]="'book'" [fixedWidth]="true"></fa-icon>
