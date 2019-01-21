@@ -1,17 +1,8 @@
 package pl.edu.pja.nyan.web.rest;
 
-import pl.edu.pja.nyan.NyanApp;
+import java.util.List;
 
-import pl.edu.pja.nyan.domain.WrittenAnswer;
-import pl.edu.pja.nyan.domain.Word;
-import pl.edu.pja.nyan.domain.ExamResult;
-import pl.edu.pja.nyan.repository.WrittenAnswerRepository;
-import pl.edu.pja.nyan.service.WrittenAnswerService;
-import pl.edu.pja.nyan.service.dto.WrittenAnswerDTO;
-import pl.edu.pja.nyan.service.mapper.WrittenAnswerMapper;
-import pl.edu.pja.nyan.web.rest.errors.ExceptionTranslator;
-import pl.edu.pja.nyan.service.dto.WrittenAnswerCriteria;
-import pl.edu.pja.nyan.service.WrittenAnswerQueryService;
+import javax.persistence.EntityManager;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -27,15 +18,26 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import java.util.List;
-
-
-import static pl.edu.pja.nyan.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import pl.edu.pja.nyan.NyanApp;
+import pl.edu.pja.nyan.domain.ExamResult;
+import pl.edu.pja.nyan.domain.Word;
+import pl.edu.pja.nyan.domain.WrittenAnswer;
+import pl.edu.pja.nyan.repository.WrittenAnswerRepository;
+import pl.edu.pja.nyan.service.WrittenAnswerQueryService;
+import pl.edu.pja.nyan.service.WrittenAnswerService;
+import pl.edu.pja.nyan.service.dto.WrittenAnswerDTO;
+import pl.edu.pja.nyan.service.mapper.WrittenAnswerMapper;
+import static pl.edu.pja.nyan.web.rest.TestUtil.createFormattingConversionService;
+import pl.edu.pja.nyan.web.rest.errors.ExceptionTranslator;
 
 /**
  * Test class for the WrittenAnswerResource REST controller.
@@ -148,7 +150,7 @@ public class WrittenAnswerResourceIntTest {
         assertThat(testWrittenAnswer.getKana()).isEqualTo(DEFAULT_KANA);
         assertThat(testWrittenAnswer.getKanji()).isEqualTo(DEFAULT_KANJI);
         assertThat(testWrittenAnswer.getRomaji()).isEqualTo(DEFAULT_ROMAJI);
-        assertThat(testWrittenAnswer.isIsRightAnswer()).isEqualTo(DEFAULT_IS_RIGHT_ANSWER);
+        assertThat(testWrittenAnswer.isRightAnswer()).isEqualTo(DEFAULT_IS_RIGHT_ANSWER);
     }
 
     @Test
@@ -448,12 +450,12 @@ public class WrittenAnswerResourceIntTest {
     @Transactional
     public void getAllWrittenAnswersByAnswerIsEqualToSomething() throws Exception {
         // Initialize the database
-        Word answer = WordResourceIntTest.createEntity(em);
-        em.persist(answer);
+        Word word = WordResourceIntTest.createEntity(em);
+        em.persist(word);
         em.flush();
-        writtenAnswer.setAnswer(answer);
+        writtenAnswer.setWord(word);
         writtenAnswerRepository.saveAndFlush(writtenAnswer);
-        Long answerId = answer.getId();
+        Long answerId = word.getId();
 
         // Get all the writtenAnswerList where answer equals to answerId
         defaultWrittenAnswerShouldBeFound("answerId.equals=" + answerId);
@@ -551,7 +553,7 @@ public class WrittenAnswerResourceIntTest {
         assertThat(testWrittenAnswer.getKana()).isEqualTo(UPDATED_KANA);
         assertThat(testWrittenAnswer.getKanji()).isEqualTo(UPDATED_KANJI);
         assertThat(testWrittenAnswer.getRomaji()).isEqualTo(UPDATED_ROMAJI);
-        assertThat(testWrittenAnswer.isIsRightAnswer()).isEqualTo(UPDATED_IS_RIGHT_ANSWER);
+        assertThat(testWrittenAnswer.isRightAnswer()).isEqualTo(UPDATED_IS_RIGHT_ANSWER);
     }
 
     @Test
@@ -610,9 +612,9 @@ public class WrittenAnswerResourceIntTest {
     @Transactional
     public void dtoEqualsVerifier() throws Exception {
         TestUtil.equalsVerifier(WrittenAnswerDTO.class);
-        WrittenAnswerDTO writtenAnswerDTO1 = new WrittenAnswerDTO();
+        WrittenAnswerDTO writtenAnswerDTO1 = WrittenAnswerDTO.builder().build();
         writtenAnswerDTO1.setId(1L);
-        WrittenAnswerDTO writtenAnswerDTO2 = new WrittenAnswerDTO();
+        WrittenAnswerDTO writtenAnswerDTO2 = WrittenAnswerDTO.builder().build();
         assertThat(writtenAnswerDTO1).isNotEqualTo(writtenAnswerDTO2);
         writtenAnswerDTO2.setId(writtenAnswerDTO1.getId());
         assertThat(writtenAnswerDTO1).isEqualTo(writtenAnswerDTO2);

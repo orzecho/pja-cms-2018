@@ -1,28 +1,68 @@
 package pl.edu.pja.nyan.service.mapper;
 
-import pl.edu.pja.nyan.domain.*;
-import pl.edu.pja.nyan.service.dto.ExamResultDTO;
+import java.util.HashSet;
 
-import org.mapstruct.*;
+import javax.persistence.EntityNotFoundException;
+
+import org.springframework.stereotype.Service;
+
+import lombok.RequiredArgsConstructor;
+import pl.edu.pja.nyan.domain.ExamResult;
+import pl.edu.pja.nyan.repository.ExamRepository;
+import pl.edu.pja.nyan.repository.ExamResultRepository;
+import pl.edu.pja.nyan.service.dto.ExamResultDTO;
 
 /**
  * Mapper for the entity ExamResult and its DTO ExamResultDTO.
  */
-@Mapper(componentModel = "spring", uses = {UserMapper.class, ExamMapper.class})
-public interface ExamResultMapper extends EntityMapper<ExamResultDTO, ExamResult> {
+@Service
+@RequiredArgsConstructor
+public class ExamResultMapper implements EntityMapper<ExamResultDTO, ExamResult> {
 
-    @Mapping(source = "student.id", target = "studentId")
-    @Mapping(source = "student.login", target = "studentLogin")
-    @Mapping(source = "exam.id", target = "examId")
-    ExamResultDTO toDto(ExamResult examResult);
+    private final ExamResultRepository examResultRepository;
+    private final ExamRepository examRepository;
+    private final UserMapper userMapper;
+    private final WrittenAnswerMapper writtenAnswerMapper;
+    private final TrueFalseAnswerMapper trueFalseAnswerMapper;
 
-    @Mapping(target = "writtenAnswers", ignore = true)
-    @Mapping(target = "trueFalseAnswers", ignore = true)
-    @Mapping(source = "studentId", target = "student")
-    @Mapping(source = "examId", target = "exam")
-    ExamResult toEntity(ExamResultDTO examResultDTO);
+    @Override
+    public ExamResult toEntity(ExamResultDTO dto) {
+        ExamResult entity;
+        if (dto.getId() == null) {
+            entity = new ExamResult();
+        } else {
+            entity = examResultRepository.findById(dto.getId())
+                .orElseThrow(EntityNotFoundException::new);
+        }
 
-    default ExamResult fromId(Long id) {
+        entity.setId(dto.getId());
+        entity.setExam(examRepository.findById(dto.getExamId())
+            .orElseThrow(EntityNotFoundException::new));
+        entity.setWrittenAnswers(new HashSet<>(
+            writtenAnswerMapper.toEntity(dto.getWrittenAnswers())));
+        entity.setTrueFalseAnswers(new HashSet<>(
+            trueFalseAnswerMapper.toEntity(dto.getTrueFalseAnswers())));
+        entity.setDate(dto.getDate());
+        entity.setResult(dto.getResult());
+        entity.setStudent(userMapper.userDTOToUser(dto.getStudent()));
+
+        return entity;
+    }
+
+    @Override
+    public ExamResultDTO toDto(ExamResult entity) {
+        return ExamResultDTO.builder()
+            .id(entity.getId())
+            .examId(entity.getExam().getId())
+            .writtenAnswers(writtenAnswerMapper.toDto(entity.getWrittenAnswers()))
+            .trueFalseAnswers(trueFalseAnswerMapper.toDto(entity.getTrueFalseAnswers()))
+            .date(entity.getDate())
+            .result(entity.getResult())
+            .student(userMapper.userToUserDTO(entity.getStudent()))
+            .build();
+    }
+
+    public ExamResult fromId(Long id) {
         if (id == null) {
             return null;
         }
@@ -30,4 +70,5 @@ public interface ExamResultMapper extends EntityMapper<ExamResultDTO, ExamResult
         examResult.setId(id);
         return examResult;
     }
+
 }

@@ -45,7 +45,7 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="answer_id" type="bigint">
+            <column name="word_id" type="bigint">
                 <constraints nullable="true" />
             </column>
 

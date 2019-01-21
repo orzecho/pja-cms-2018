@@ -1,13 +1,21 @@
 package pl.edu.pja.nyan.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.io.Serializable;
+import java.util.Objects;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import javax.persistence.*;
-
-import java.io.Serializable;
-import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * A WrittenAnswer.
@@ -44,7 +52,7 @@ public class WrittenAnswer implements Serializable {
 
     @ManyToOne
     @JsonIgnoreProperties("")
-    private Word answer;
+    private Word word;
 
     @ManyToOne
     @JsonIgnoreProperties("writtenAnswers")
@@ -124,7 +132,7 @@ public class WrittenAnswer implements Serializable {
         this.romaji = romaji;
     }
 
-    public Boolean isIsRightAnswer() {
+    public Boolean isRightAnswer() {
         return isRightAnswer;
     }
 
@@ -137,17 +145,17 @@ public class WrittenAnswer implements Serializable {
         this.isRightAnswer = isRightAnswer;
     }
 
-    public Word getAnswer() {
-        return answer;
+    public Word getWord() {
+        return word;
     }
 
-    public WrittenAnswer answer(Word word) {
-        this.answer = word;
+    public WrittenAnswer word(Word word) {
+        this.word = word;
         return this;
     }
 
-    public void setAnswer(Word word) {
-        this.answer = word;
+    public void setWord(Word word) {
+        this.word = word;
     }
 
     public ExamResult getExam() {
@@ -193,7 +201,7 @@ public class WrittenAnswer implements Serializable {
             ", kana='" + getKana() + "'" +
             ", kanji='" + getKanji() + "'" +
             ", romaji='" + getRomaji() + "'" +
-            ", isRightAnswer='" + isIsRightAnswer() + "'" +
+            ", isRightAnswer='" + isRightAnswer() + "'" +
             "}";
     }
 }

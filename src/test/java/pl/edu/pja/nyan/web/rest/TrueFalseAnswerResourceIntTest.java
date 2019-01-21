@@ -1,18 +1,8 @@
 package pl.edu.pja.nyan.web.rest;
 
-import pl.edu.pja.nyan.NyanApp;
+import java.util.List;
 
-import pl.edu.pja.nyan.domain.TrueFalseAnswer;
-import pl.edu.pja.nyan.domain.Word;
-import pl.edu.pja.nyan.domain.Word;
-import pl.edu.pja.nyan.domain.ExamResult;
-import pl.edu.pja.nyan.repository.TrueFalseAnswerRepository;
-import pl.edu.pja.nyan.service.TrueFalseAnswerService;
-import pl.edu.pja.nyan.service.dto.TrueFalseAnswerDTO;
-import pl.edu.pja.nyan.service.mapper.TrueFalseAnswerMapper;
-import pl.edu.pja.nyan.web.rest.errors.ExceptionTranslator;
-import pl.edu.pja.nyan.service.dto.TrueFalseAnswerCriteria;
-import pl.edu.pja.nyan.service.TrueFalseAnswerQueryService;
+import javax.persistence.EntityManager;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -28,15 +18,26 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import java.util.List;
-
-
-import static pl.edu.pja.nyan.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import pl.edu.pja.nyan.NyanApp;
+import pl.edu.pja.nyan.domain.ExamResult;
+import pl.edu.pja.nyan.domain.TrueFalseAnswer;
+import pl.edu.pja.nyan.domain.Word;
+import pl.edu.pja.nyan.repository.TrueFalseAnswerRepository;
+import pl.edu.pja.nyan.service.TrueFalseAnswerQueryService;
+import pl.edu.pja.nyan.service.TrueFalseAnswerService;
+import pl.edu.pja.nyan.service.dto.TrueFalseAnswerDTO;
+import pl.edu.pja.nyan.service.mapper.TrueFalseAnswerMapper;
+import static pl.edu.pja.nyan.web.rest.TestUtil.createFormattingConversionService;
+import pl.edu.pja.nyan.web.rest.errors.ExceptionTranslator;
 
 /**
  * Test class for the TrueFalseAnswerResource REST controller.
@@ -129,7 +130,7 @@ public class TrueFalseAnswerResourceIntTest {
         assertThat(trueFalseAnswerList).hasSize(databaseSizeBeforeCreate + 1);
         TrueFalseAnswer testTrueFalseAnswer = trueFalseAnswerList.get(trueFalseAnswerList.size() - 1);
         assertThat(testTrueFalseAnswer.getTranslationFrom()).isEqualTo(DEFAULT_TRANSLATION_FROM);
-        assertThat(testTrueFalseAnswer.isIsRightAnswer()).isEqualTo(DEFAULT_IS_RIGHT_ANSWER);
+        assertThat(testTrueFalseAnswer.isRightAnswer()).isEqualTo(DEFAULT_IS_RIGHT_ANSWER);
     }
 
     @Test
@@ -375,7 +376,7 @@ public class TrueFalseAnswerResourceIntTest {
         assertThat(trueFalseAnswerList).hasSize(databaseSizeBeforeUpdate);
         TrueFalseAnswer testTrueFalseAnswer = trueFalseAnswerList.get(trueFalseAnswerList.size() - 1);
         assertThat(testTrueFalseAnswer.getTranslationFrom()).isEqualTo(UPDATED_TRANSLATION_FROM);
-        assertThat(testTrueFalseAnswer.isIsRightAnswer()).isEqualTo(UPDATED_IS_RIGHT_ANSWER);
+        assertThat(testTrueFalseAnswer.isRightAnswer()).isEqualTo(UPDATED_IS_RIGHT_ANSWER);
     }
 
     @Test
@@ -434,9 +435,9 @@ public class TrueFalseAnswerResourceIntTest {
     @Transactional
     public void dtoEqualsVerifier() throws Exception {
         TestUtil.equalsVerifier(TrueFalseAnswerDTO.class);
-        TrueFalseAnswerDTO trueFalseAnswerDTO1 = new TrueFalseAnswerDTO();
+        TrueFalseAnswerDTO trueFalseAnswerDTO1 = TrueFalseAnswerDTO.builder().build();
         trueFalseAnswerDTO1.setId(1L);
-        TrueFalseAnswerDTO trueFalseAnswerDTO2 = new TrueFalseAnswerDTO();
+        TrueFalseAnswerDTO trueFalseAnswerDTO2 = TrueFalseAnswerDTO.builder().build();
         assertThat(trueFalseAnswerDTO1).isNotEqualTo(trueFalseAnswerDTO2);
         trueFalseAnswerDTO2.setId(trueFalseAnswerDTO1.getId());
         assertThat(trueFalseAnswerDTO1).isEqualTo(trueFalseAnswerDTO2);

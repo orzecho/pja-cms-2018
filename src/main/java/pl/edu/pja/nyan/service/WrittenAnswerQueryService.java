@@ -11,12 +11,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.github.jhipster.service.QueryService;
-
+import pl.edu.pja.nyan.domain.ExamResult_;
+import pl.edu.pja.nyan.domain.Word_;
 import pl.edu.pja.nyan.domain.WrittenAnswer;
-import pl.edu.pja.nyan.domain.*; // for static metamodels
+import pl.edu.pja.nyan.domain.WrittenAnswer_;
 import pl.edu.pja.nyan.repository.WrittenAnswerRepository;
 import pl.edu.pja.nyan.service.dto.WrittenAnswerCriteria;
-
 import pl.edu.pja.nyan.service.dto.WrittenAnswerDTO;
 import pl.edu.pja.nyan.service.mapper.WrittenAnswerMapper;
 
@@ -95,7 +95,8 @@ public class WrittenAnswerQueryService extends QueryService<WrittenAnswer> {
                 specification = specification.and(buildSpecification(criteria.getIsRightAnswer(), WrittenAnswer_.isRightAnswer));
             }
             if (criteria.getAnswerId() != null) {
-                specification = specification.and(buildReferringEntitySpecification(criteria.getAnswerId(), WrittenAnswer_.answer, Word_.id));
+                specification = specification.and(buildReferringEntitySpecification(criteria.getAnswerId(),
+                    WrittenAnswer_.word, Word_.id));
             }
             if (criteria.getExamId() != null) {
                 specification = specification.and(buildReferringEntitySpecification(criteria.getExamId(), WrittenAnswer_.exam, ExamResult_.id));

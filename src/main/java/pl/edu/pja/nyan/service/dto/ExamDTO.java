@@ -1,15 +1,20 @@
 package pl.edu.pja.nyan.service.dto;
 
-import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-import java.util.Objects;
+
+import javax.validation.constraints.NotNull;
+
+import lombok.Builder;
+import lombok.Data;
 import pl.edu.pja.nyan.domain.enumeration.TestType;
 
 /**
  * A DTO for the Exam entity.
  */
+@Data
+@Builder
 public class ExamDTO implements Serializable {
 
     private Long id;
@@ -27,94 +32,8 @@ public class ExamDTO implements Serializable {
 
     private String creatorLogin;
 
-    private Set<WordDTO> words = new HashSet<>();
+    private Set<WordDTO> words;
 
-    public Long getId() {
-        return id;
-    }
+    private List<ExamResultDTO> results;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public TestType getType() {
-        return type;
-    }
-
-    public void setType(TestType type) {
-        this.type = type;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public Long getCreatorId() {
-        return creatorId;
-    }
-
-    public void setCreatorId(Long userId) {
-        this.creatorId = userId;
-    }
-
-    public String getCreatorLogin() {
-        return creatorLogin;
-    }
-
-    public void setCreatorLogin(String userLogin) {
-        this.creatorLogin = userLogin;
-    }
-
-    public Set<WordDTO> getWords() {
-        return words;
-    }
-
-    public void setWords(Set<WordDTO> words) {
-        this.words = words;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        ExamDTO examDTO = (ExamDTO) o;
-        if (examDTO.getId() == null || getId() == null) {
-            return false;
-        }
-        return Objects.equals(getId(), examDTO.getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(getId());
-    }
-
-    @Override
-    public String toString() {
-        return "ExamDTO{" +
-            "id=" + getId() +
-            ", name='" + getName() + "'" +
-            ", type='" + getType() + "'" +
-            ", code='" + getCode() + "'" +
-            ", creator=" + getCreatorId() +
-            ", creator='" + getCreatorLogin() + "'" +
-            "}";
-    }
 }

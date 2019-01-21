@@ -1,25 +1,63 @@
 package pl.edu.pja.nyan.service.mapper;
 
-import pl.edu.pja.nyan.domain.*;
-import pl.edu.pja.nyan.service.dto.ExamDTO;
+import java.util.HashSet;
 
-import org.mapstruct.*;
+import javax.persistence.EntityNotFoundException;
+
+import org.springframework.stereotype.Service;
+
+import lombok.RequiredArgsConstructor;
+import pl.edu.pja.nyan.domain.Exam;
+import pl.edu.pja.nyan.repository.ExamRepository;
+import pl.edu.pja.nyan.service.UserService;
+import pl.edu.pja.nyan.service.dto.ExamDTO;
 
 /**
  * Mapper for the entity Exam and its DTO ExamDTO.
  */
-@Mapper(componentModel = "spring", uses = {UserMapper.class, WordMapper.class})
-public interface ExamMapper extends EntityMapper<ExamDTO, Exam> {
+@Service
+@RequiredArgsConstructor
+public class ExamMapper implements EntityMapper<ExamDTO, Exam> {
 
-    @Mapping(source = "creator.id", target = "creatorId")
-    @Mapping(source = "creator.login", target = "creatorLogin")
-    ExamDTO toDto(Exam exam);
+    private final ExamRepository examRepository;
+    private final UserMapper userMapper;
+    private final ExamResultMapper examResultMapper;
+    private final WordMapper wordMapper;
+    private final UserService userService;
 
-    @Mapping(target = "results", ignore = true)
-    @Mapping(source = "creatorId", target = "creator")
-    Exam toEntity(ExamDTO examDTO);
+    @Override
+    public Exam toEntity(ExamDTO dto) {
+        Exam entity;
+        if (dto.getId() == null) {
+            entity = new Exam();
+        } else {
+            entity = examRepository.findById(dto.getId())
+                .orElseThrow(EntityNotFoundException::new);
+        }
+        entity.setCode(dto.getCode());
+        entity.setCreator(userService.getUserWithAuthorities(dto.getCreatorId())
+                .orElseThrow(EntityNotFoundException::new));
+        entity.setName(dto.getName());
+        entity.setResults(new HashSet<>(examResultMapper.toEntity(dto.getResults())));
+        entity.setType(dto.getType());
+        entity.setWords(new HashSet<>(wordMapper.toEntity(dto.getWords())));
+        return entity;
+    }
 
-    default Exam fromId(Long id) {
+    @Override
+    public ExamDTO toDto(Exam entity) {
+        return ExamDTO.builder()
+            .id(entity.getId())
+            .code(entity.getCode())
+            .creatorId(entity.getCreator().getId())
+            .name(entity.getName())
+            .results(examResultMapper.toDto(entity.getResults()))
+            .type(entity.getType())
+            .words(new HashSet<>(wordMapper.toDto(entity.getWords())))
+            .build();
+    }
+
+    public Exam fromId(Long id) {
         if (id == null) {
             return null;
         }
@@ -27,4 +65,5 @@ public interface ExamMapper extends EntityMapper<ExamDTO, Exam> {
         exam.setId(id);
         return exam;
     }
+
 }

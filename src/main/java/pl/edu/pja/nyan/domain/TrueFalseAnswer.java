@@ -1,13 +1,21 @@
 package pl.edu.pja.nyan.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.io.Serializable;
+import java.util.Objects;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import javax.persistence.*;
-
-import java.io.Serializable;
-import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * A TrueFalseAnswer.
@@ -64,7 +72,7 @@ public class TrueFalseAnswer implements Serializable {
         this.translationFrom = translationFrom;
     }
 
-    public Boolean isIsRightAnswer() {
+    public Boolean isRightAnswer() {
         return isRightAnswer;
     }
 
@@ -142,7 +150,7 @@ public class TrueFalseAnswer implements Serializable {
         return "TrueFalseAnswer{" +
             "id=" + getId() +
             ", translationFrom='" + getTranslationFrom() + "'" +
-            ", isRightAnswer='" + isIsRightAnswer() + "'" +
+            ", isRightAnswer='" + isRightAnswer() + "'" +
             "}";
     }
 }
