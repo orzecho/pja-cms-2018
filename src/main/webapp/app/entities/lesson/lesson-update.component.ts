@@ -131,6 +131,8 @@ export class LessonUpdateComponent implements OnInit {
     }
 
     setFileData(event, entity, field, isImage) {
+        let file = event.target.files[0];
+        this.lessonFile.name = file.name;
         this.dataUtils.setFileData(event, entity, field, isImage);
     }
     get lessonFile() {
