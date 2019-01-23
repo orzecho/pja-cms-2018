@@ -26,6 +26,7 @@ public class ExamDTO implements Serializable {
     @NotNull
     private TestType type;
 
+    @NotNull
     private String code;
 
     private Long creatorId;

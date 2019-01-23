@@ -6,7 +6,7 @@ export interface IWrittenAnswer {
     kanji?: string;
     romaji?: string;
     isRightAnswer?: boolean;
-    answerId?: number;
+    wordId?: number;
     examId?: number;
 }
 
@@ -19,7 +19,7 @@ export class WrittenAnswer implements IWrittenAnswer {
         public kanji?: string,
         public romaji?: string,
         public isRightAnswer?: boolean,
-        public answerId?: number,
+        public wordId?: number,
         public examId?: number
     ) {
         this.isRightAnswer = this.isRightAnswer || false;

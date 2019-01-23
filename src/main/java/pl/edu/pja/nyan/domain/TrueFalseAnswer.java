@@ -1,21 +1,14 @@
 package pl.edu.pja.nyan.domain;
 
-import java.io.Serializable;
-import java.util.Objects;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import javax.persistence.*;
+import javax.validation.constraints.*;
+
+import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * A TrueFalseAnswer.
@@ -32,21 +25,26 @@ public class TrueFalseAnswer implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
-    @Column(name = "translation_from")
+    @NotNull
+    @Column(name = "translation_from", nullable = false)
     private String translationFrom;
 
-    @Column(name = "is_right_answer")
+    @NotNull
+    @Column(name = "is_right_answer", nullable = false)
     private Boolean isRightAnswer;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
+    @NotNull
     @JsonIgnoreProperties("")
     private Word srcWord;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
+    @NotNull
     @JsonIgnoreProperties("")
     private Word targetWord;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
+    @NotNull
     @JsonIgnoreProperties("trueFalseAnswers")
     private ExamResult exam;
 

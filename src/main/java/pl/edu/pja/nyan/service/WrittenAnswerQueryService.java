@@ -94,8 +94,8 @@ public class WrittenAnswerQueryService extends QueryService<WrittenAnswer> {
             if (criteria.getIsRightAnswer() != null) {
                 specification = specification.and(buildSpecification(criteria.getIsRightAnswer(), WrittenAnswer_.isRightAnswer));
             }
-            if (criteria.getAnswerId() != null) {
-                specification = specification.and(buildReferringEntitySpecification(criteria.getAnswerId(),
+            if (criteria.getWordId() != null) {
+                specification = specification.and(buildReferringEntitySpecification(criteria.getWordId(),
                     WrittenAnswer_.word, Word_.id));
             }
             if (criteria.getExamId() != null) {

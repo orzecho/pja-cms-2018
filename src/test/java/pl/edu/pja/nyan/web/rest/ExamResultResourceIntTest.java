@@ -1,10 +1,19 @@
 package pl.edu.pja.nyan.web.rest;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
+import pl.edu.pja.nyan.NyanApp;
 
-import javax.persistence.EntityManager;
+import pl.edu.pja.nyan.domain.ExamResult;
+import pl.edu.pja.nyan.domain.WrittenAnswer;
+import pl.edu.pja.nyan.domain.TrueFalseAnswer;
+import pl.edu.pja.nyan.domain.User;
+import pl.edu.pja.nyan.domain.Exam;
+import pl.edu.pja.nyan.repository.ExamResultRepository;
+import pl.edu.pja.nyan.service.ExamResultService;
+import pl.edu.pja.nyan.service.dto.ExamResultDTO;
+import pl.edu.pja.nyan.service.mapper.ExamResultMapper;
+import pl.edu.pja.nyan.web.rest.errors.ExceptionTranslator;
+import pl.edu.pja.nyan.service.dto.ExamResultCriteria;
+import pl.edu.pja.nyan.service.ExamResultQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -20,28 +29,17 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+
+
+import static pl.edu.pja.nyan.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import pl.edu.pja.nyan.NyanApp;
-import pl.edu.pja.nyan.domain.Exam;
-import pl.edu.pja.nyan.domain.ExamResult;
-import pl.edu.pja.nyan.domain.TrueFalseAnswer;
-import pl.edu.pja.nyan.domain.User;
-import pl.edu.pja.nyan.domain.WrittenAnswer;
-import pl.edu.pja.nyan.repository.ExamResultRepository;
-import pl.edu.pja.nyan.service.ExamResultQueryService;
-import pl.edu.pja.nyan.service.ExamResultService;
-import pl.edu.pja.nyan.service.dto.ExamResultDTO;
-import pl.edu.pja.nyan.service.mapper.ExamResultMapper;
-import static pl.edu.pja.nyan.web.rest.TestUtil.createFormattingConversionService;
-import pl.edu.pja.nyan.web.rest.errors.ExceptionTranslator;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Test class for the ExamResultResource REST controller.
@@ -109,6 +107,16 @@ public class ExamResultResourceIntTest {
         ExamResult examResult = new ExamResult()
             .date(DEFAULT_DATE)
             .result(DEFAULT_RESULT);
+        // Add required entity
+        User user = UserResourceIntTest.createEntity(em);
+        em.persist(user);
+        em.flush();
+        examResult.setStudent(user);
+        // Add required entity
+        Exam exam = ExamResourceIntTest.createEntity(em);
+        em.persist(exam);
+        em.flush();
+        examResult.setExam(exam);
         return examResult;
     }
 
@@ -522,7 +530,6 @@ public class ExamResultResourceIntTest {
     @Test
     @Transactional
     public void dtoEqualsVerifier() throws Exception {
-        TestUtil.equalsVerifier(ExamResultDTO.class);
         ExamResultDTO examResultDTO1 = ExamResultDTO.builder().build();
         examResultDTO1.setId(1L);
         ExamResultDTO examResultDTO2 = ExamResultDTO.builder().build();

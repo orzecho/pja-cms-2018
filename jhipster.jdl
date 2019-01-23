@@ -49,24 +49,24 @@ entity ExamResult {
 }
 
 entity WrittenAnswer {
-	translationFrom String
-    translation String
-    kana String
-    kanji String
-    romaji String
-    isRightAnswer Boolean
+	translationFrom String required
+    translation String required
+    kana String required
+    kanji String required
+    romaji String required
+    isRightAnswer Boolean required
 }
 
 entity TrueFalseAnswer {
-	translationFrom String
-    isRightAnswer Boolean
+	translationFrom String required
+    isRightAnswer Boolean required
 }
 
 relationship OneToMany {
-    ExamResult{writtenAnswers} to WrittenAnswer{exam}
-    ExamResult{trueFalseAnswers} to TrueFalseAnswer{exam}
+    ExamResult{writtenAnswers} to WrittenAnswer{exam required}
+    ExamResult{trueFalseAnswers} to TrueFalseAnswer{exam required}
 
-    Exam{results(name)} to ExamResult{exam}
+    Exam{results(name)} to ExamResult{exam required}
 }
 
 relationship ManyToMany {
@@ -74,12 +74,12 @@ relationship ManyToMany {
 }
 
 relationship ManyToOne {
-	WrittenAnswer{answer} to Word
-	TrueFalseAnswer{srcWord} to Word
-    TrueFalseAnswer{targetWord} to Word
+	WrittenAnswer{word required} to Word
+	TrueFalseAnswer{srcWord required} to Word
+    TrueFalseAnswer{targetWord required} to Word
 
-	Exam{creator(login)} to User{createdExaminations(name)}
-    ExamResult{student(login)} to User{examResult}
+	Exam{creator(login) required} to User{createdExaminations(name)}
+    ExamResult{student(login) required} to User{examResult}
 }
 
 /* FILLING GAPS TEST */

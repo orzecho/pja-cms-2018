@@ -29,10 +29,10 @@
                 <dd>
                     <span>{{writtenAnswer.isRightAnswer}}</span>
                 </dd>
-                <dt><span>Answer</span></dt>
+                <dt><span>Word</span></dt>
                 <dd>
-                    <div *ngIf="writtenAnswer.answerId">
-                        <a [routerLink]="['/word', writtenAnswer.answerId, 'view']">{{writtenAnswer.answerId}}</a>
+                    <div *ngIf="writtenAnswer.wordId">
+                        <a [routerLink]="['/word', writtenAnswer.wordId, 'view']">{{writtenAnswer.wordId}}</a>
                     </div>
                 </dd>
                 <dt><span>Exam</span></dt>

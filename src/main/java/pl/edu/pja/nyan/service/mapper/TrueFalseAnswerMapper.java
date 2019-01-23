@@ -1,14 +1,20 @@
 package pl.edu.pja.nyan.service.mapper;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import pl.edu.pja.nyan.domain.TrueFalseAnswer;
+import pl.edu.pja.nyan.domain.WrittenAnswer;
 import pl.edu.pja.nyan.repository.ExamResultRepository;
 import pl.edu.pja.nyan.repository.TrueFalseAnswerRepository;
 import pl.edu.pja.nyan.service.dto.TrueFalseAnswerDTO;
+import pl.edu.pja.nyan.service.dto.WrittenAnswerDTO;
 
 /**
  * Mapper for the entity TrueFalseAnswer and its DTO TrueFalseAnswerDTO.
@@ -60,5 +66,16 @@ public class TrueFalseAnswerMapper implements EntityMapper<TrueFalseAnswerDTO, T
             .translationFrom(entity.getTranslationFrom())
             .build();
     }
+
+    @Override
+    public List<TrueFalseAnswer> toEntity(Collection<TrueFalseAnswerDTO> dtoList) {
+        return dtoList.stream().map(this::toEntity).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<TrueFalseAnswerDTO> toDto(Collection<TrueFalseAnswer> entityList) {
+        return entityList.stream().map(this::toDto).collect(Collectors.toList());
+    }
+
 
 }

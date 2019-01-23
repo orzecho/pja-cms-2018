@@ -12,34 +12,64 @@
                 <div class="form-group">
                     <label class="form-control-label" for="field_translationFrom">Translation From</label>
                     <input type="text" class="form-control" name="translationFrom" id="field_translationFrom"
-                        [(ngModel)]="trueFalseAnswer.translationFrom" />
+                        [(ngModel)]="trueFalseAnswer.translationFrom" required/>
+                    <div [hidden]="!(editForm.controls.translationFrom?.dirty && editForm.controls.translationFrom?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.translationFrom?.errors?.required">
+                        This field is required.
+                        </small>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label class="form-control-label" for="field_isRightAnswer">Is Right Answer</label>
                     <input type="checkbox" class="form-control" name="isRightAnswer" id="field_isRightAnswer"
                         [(ngModel)]="trueFalseAnswer.isRightAnswer" />
+                    <div [hidden]="!(editForm.controls.isRightAnswer?.dirty && editForm.controls.isRightAnswer?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.isRightAnswer?.errors?.required">
+                        This field is required.
+                        </small>
+                    </div>
                 </div>
 
                 <div class="form-group">
                     <label class="form-control-label" for="field_srcWord">Src Word</label>
-                    <select class="form-control" id="field_srcWord" name="srcWord" [(ngModel)]="trueFalseAnswer.srcWordId" >
-                        <option [ngValue]="null"></option>
+                    <select class="form-control" id="field_srcWord" name="srcWord" [(ngModel)]="trueFalseAnswer.srcWordId"  required>
+                        <option *ngIf="!editForm.value.srcWord" [ngValue]="null" selected></option>
                         <option [ngValue]="wordOption.id" *ngFor="let wordOption of words; trackBy: trackWordById">{{wordOption.id}}</option>
                     </select>
+                </div>
+                <div [hidden]="!(editForm.controls.srcWord?.dirty && editForm.controls.srcWord?.invalid)">
+                    <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.srcWord?.errors?.required">
+                        This field is required.
+                    </small>
                 </div>
                 <div class="form-group">
                     <label class="form-control-label" for="field_targetWord">Target Word</label>
-                    <select class="form-control" id="field_targetWord" name="targetWord" [(ngModel)]="trueFalseAnswer.targetWordId" >
-                        <option [ngValue]="null"></option>
+                    <select class="form-control" id="field_targetWord" name="targetWord" [(ngModel)]="trueFalseAnswer.targetWordId"  required>
+                        <option *ngIf="!editForm.value.targetWord" [ngValue]="null" selected></option>
                         <option [ngValue]="wordOption.id" *ngFor="let wordOption of words; trackBy: trackWordById">{{wordOption.id}}</option>
                     </select>
                 </div>
+                <div [hidden]="!(editForm.controls.targetWord?.dirty && editForm.controls.targetWord?.invalid)">
+                    <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.targetWord?.errors?.required">
+                        This field is required.
+                    </small>
+                </div>
                 <div class="form-group">
                     <label class="form-control-label" for="field_exam">Exam</label>
-                    <select class="form-control" id="field_exam" name="exam" [(ngModel)]="trueFalseAnswer.examId" >
-                        <option [ngValue]="null"></option>
+                    <select class="form-control" id="field_exam" name="exam" [(ngModel)]="trueFalseAnswer.examId"  required>
+                        <option *ngIf="!editForm.value.exam" [ngValue]="null" selected></option>
                         <option [ngValue]="examResultOption.id" *ngFor="let examResultOption of examresults; trackBy: trackExamResultById">{{examResultOption.id}}</option>
                     </select>
+                </div>
+                <div [hidden]="!(editForm.controls.exam?.dirty && editForm.controls.exam?.invalid)">
+                    <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.exam?.errors?.required">
+                        This field is required.
+                    </small>
                 </div>
             </div>
             <div>

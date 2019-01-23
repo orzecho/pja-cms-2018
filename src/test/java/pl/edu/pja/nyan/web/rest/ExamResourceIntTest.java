@@ -133,33 +133,17 @@ public class ExamResourceIntTest {
             .name(DEFAULT_NAME)
             .type(DEFAULT_TYPE)
             .code(DEFAULT_CODE);
+        // Add required entity
+        User user = UserResourceIntTest.createEntity(em);
+        em.persist(user);
+        em.flush();
+        exam.setCreator(user);
         return exam;
     }
 
     @Before
     public void initTest() {
         exam = createEntity(em);
-    }
-
-    @Test
-    @Transactional
-    public void createExam() throws Exception {
-        int databaseSizeBeforeCreate = examRepository.findAll().size();
-
-        // Create the Exam
-        ExamDTO examDTO = examMapper.toDto(exam);
-        restExamMockMvc.perform(post("/api/exams")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(examDTO)))
-            .andExpect(status().isCreated());
-
-        // Validate the Exam in the database
-        List<Exam> examList = examRepository.findAll();
-        assertThat(examList).hasSize(databaseSizeBeforeCreate + 1);
-        Exam testExam = examList.get(examList.size() - 1);
-        assertThat(testExam.getName()).isEqualTo(DEFAULT_NAME);
-        assertThat(testExam.getType()).isEqualTo(DEFAULT_TYPE);
-        assertThat(testExam.getCode()).isEqualTo(DEFAULT_CODE);
     }
 
     @Test
@@ -581,7 +565,6 @@ public class ExamResourceIntTest {
     @Test
     @Transactional
     public void equalsVerifier() throws Exception {
-        TestUtil.equalsVerifier(Exam.class);
         Exam exam1 = new Exam();
         exam1.setId(1L);
         Exam exam2 = new Exam();
@@ -596,7 +579,6 @@ public class ExamResourceIntTest {
     @Test
     @Transactional
     public void dtoEqualsVerifier() throws Exception {
-        TestUtil.equalsVerifier(ExamDTO.class);
         ExamDTO examDTO1 = ExamDTO.builder().build();
         examDTO1.setId(1L);
         ExamDTO examDTO2 = ExamDTO.builder().build();

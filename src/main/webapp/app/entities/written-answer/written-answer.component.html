@@ -21,7 +21,7 @@
             <th jhiSortBy="kanji"><span>Kanji</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="romaji"><span>Romaji</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="isRightAnswer"><span>Is Right Answer</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="answerId"><span>Answer</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="wordId"><span>Word</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="examId"><span>Exam</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
@@ -36,8 +36,8 @@
                 <td>{{writtenAnswer.romaji}}</td>
                 <td>{{writtenAnswer.isRightAnswer}}</td>
                 <td>
-                    <div *ngIf="writtenAnswer.answerId">
-                        <a [routerLink]="['../word', writtenAnswer.answerId , 'view' ]" >{{writtenAnswer.answerId}}</a>
+                    <div *ngIf="writtenAnswer.wordId">
+                        <a [routerLink]="['../word', writtenAnswer.wordId , 'view' ]" >{{writtenAnswer.wordId}}</a>
                     </div>
                 </td>
                 <td>

@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -53,7 +54,7 @@ public class TrueFalseAnswerResource {
      */
     @PostMapping("/true-false-answers")
     @Timed
-    public ResponseEntity<TrueFalseAnswerDTO> createTrueFalseAnswer(@RequestBody TrueFalseAnswerDTO trueFalseAnswerDTO) throws URISyntaxException {
+    public ResponseEntity<TrueFalseAnswerDTO> createTrueFalseAnswer(@Valid @RequestBody TrueFalseAnswerDTO trueFalseAnswerDTO) throws URISyntaxException {
         log.debug("REST request to save TrueFalseAnswer : {}", trueFalseAnswerDTO);
         if (trueFalseAnswerDTO.getId() != null) {
             throw new BadRequestAlertException("A new trueFalseAnswer cannot already have an ID", ENTITY_NAME, "idexists");
@@ -75,7 +76,7 @@ public class TrueFalseAnswerResource {
      */
     @PutMapping("/true-false-answers")
     @Timed
-    public ResponseEntity<TrueFalseAnswerDTO> updateTrueFalseAnswer(@RequestBody TrueFalseAnswerDTO trueFalseAnswerDTO) throws URISyntaxException {
+    public ResponseEntity<TrueFalseAnswerDTO> updateTrueFalseAnswer(@Valid @RequestBody TrueFalseAnswerDTO trueFalseAnswerDTO) throws URISyntaxException {
         log.debug("REST request to update TrueFalseAnswer : {}", trueFalseAnswerDTO);
         if (trueFalseAnswerDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");

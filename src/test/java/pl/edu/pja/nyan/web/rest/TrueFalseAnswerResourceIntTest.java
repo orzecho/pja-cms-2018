@@ -1,8 +1,18 @@
 package pl.edu.pja.nyan.web.rest;
 
-import java.util.List;
+import pl.edu.pja.nyan.NyanApp;
 
-import javax.persistence.EntityManager;
+import pl.edu.pja.nyan.domain.TrueFalseAnswer;
+import pl.edu.pja.nyan.domain.Word;
+import pl.edu.pja.nyan.domain.Word;
+import pl.edu.pja.nyan.domain.ExamResult;
+import pl.edu.pja.nyan.repository.TrueFalseAnswerRepository;
+import pl.edu.pja.nyan.service.TrueFalseAnswerService;
+import pl.edu.pja.nyan.service.dto.TrueFalseAnswerDTO;
+import pl.edu.pja.nyan.service.mapper.TrueFalseAnswerMapper;
+import pl.edu.pja.nyan.web.rest.errors.ExceptionTranslator;
+import pl.edu.pja.nyan.service.dto.TrueFalseAnswerCriteria;
+import pl.edu.pja.nyan.service.TrueFalseAnswerQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -18,26 +28,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import java.util.List;
+
+
+import static pl.edu.pja.nyan.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import pl.edu.pja.nyan.NyanApp;
-import pl.edu.pja.nyan.domain.ExamResult;
-import pl.edu.pja.nyan.domain.TrueFalseAnswer;
-import pl.edu.pja.nyan.domain.Word;
-import pl.edu.pja.nyan.repository.TrueFalseAnswerRepository;
-import pl.edu.pja.nyan.service.TrueFalseAnswerQueryService;
-import pl.edu.pja.nyan.service.TrueFalseAnswerService;
-import pl.edu.pja.nyan.service.dto.TrueFalseAnswerDTO;
-import pl.edu.pja.nyan.service.mapper.TrueFalseAnswerMapper;
-import static pl.edu.pja.nyan.web.rest.TestUtil.createFormattingConversionService;
-import pl.edu.pja.nyan.web.rest.errors.ExceptionTranslator;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Test class for the TrueFalseAnswerResource REST controller.
@@ -105,6 +104,18 @@ public class TrueFalseAnswerResourceIntTest {
         TrueFalseAnswer trueFalseAnswer = new TrueFalseAnswer()
             .translationFrom(DEFAULT_TRANSLATION_FROM)
             .isRightAnswer(DEFAULT_IS_RIGHT_ANSWER);
+        // Add required entity
+        Word word = WordResourceIntTest.createEntity(em);
+        em.persist(word);
+        em.flush();
+        trueFalseAnswer.setSrcWord(word);
+        // Add required entity
+        trueFalseAnswer.setTargetWord(word);
+        // Add required entity
+        ExamResult examResult = ExamResultResourceIntTest.createEntity(em);
+        em.persist(examResult);
+        em.flush();
+        trueFalseAnswer.setExam(examResult);
         return trueFalseAnswer;
     }
 
@@ -151,6 +162,44 @@ public class TrueFalseAnswerResourceIntTest {
         // Validate the TrueFalseAnswer in the database
         List<TrueFalseAnswer> trueFalseAnswerList = trueFalseAnswerRepository.findAll();
         assertThat(trueFalseAnswerList).hasSize(databaseSizeBeforeCreate);
+    }
+
+    @Test
+    @Transactional
+    public void checkTranslationFromIsRequired() throws Exception {
+        int databaseSizeBeforeTest = trueFalseAnswerRepository.findAll().size();
+        // set the field null
+        trueFalseAnswer.setTranslationFrom(null);
+
+        // Create the TrueFalseAnswer, which fails.
+        TrueFalseAnswerDTO trueFalseAnswerDTO = trueFalseAnswerMapper.toDto(trueFalseAnswer);
+
+        restTrueFalseAnswerMockMvc.perform(post("/api/true-false-answers")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(trueFalseAnswerDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<TrueFalseAnswer> trueFalseAnswerList = trueFalseAnswerRepository.findAll();
+        assertThat(trueFalseAnswerList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    public void checkIsRightAnswerIsRequired() throws Exception {
+        int databaseSizeBeforeTest = trueFalseAnswerRepository.findAll().size();
+        // set the field null
+        trueFalseAnswer.setIsRightAnswer(null);
+
+        // Create the TrueFalseAnswer, which fails.
+        TrueFalseAnswerDTO trueFalseAnswerDTO = trueFalseAnswerMapper.toDto(trueFalseAnswer);
+
+        restTrueFalseAnswerMockMvc.perform(post("/api/true-false-answers")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(trueFalseAnswerDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<TrueFalseAnswer> trueFalseAnswerList = trueFalseAnswerRepository.findAll();
+        assertThat(trueFalseAnswerList).hasSize(databaseSizeBeforeTest);
     }
 
     @Test
@@ -434,7 +483,6 @@ public class TrueFalseAnswerResourceIntTest {
     @Test
     @Transactional
     public void dtoEqualsVerifier() throws Exception {
-        TestUtil.equalsVerifier(TrueFalseAnswerDTO.class);
         TrueFalseAnswerDTO trueFalseAnswerDTO1 = TrueFalseAnswerDTO.builder().build();
         trueFalseAnswerDTO1.setId(1L);
         TrueFalseAnswerDTO trueFalseAnswerDTO2 = TrueFalseAnswerDTO.builder().build();

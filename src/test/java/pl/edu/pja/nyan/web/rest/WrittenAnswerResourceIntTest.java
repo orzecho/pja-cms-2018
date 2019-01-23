@@ -1,8 +1,17 @@
 package pl.edu.pja.nyan.web.rest;
 
-import java.util.List;
+import pl.edu.pja.nyan.NyanApp;
 
-import javax.persistence.EntityManager;
+import pl.edu.pja.nyan.domain.WrittenAnswer;
+import pl.edu.pja.nyan.domain.Word;
+import pl.edu.pja.nyan.domain.ExamResult;
+import pl.edu.pja.nyan.repository.WrittenAnswerRepository;
+import pl.edu.pja.nyan.service.WrittenAnswerService;
+import pl.edu.pja.nyan.service.dto.WrittenAnswerDTO;
+import pl.edu.pja.nyan.service.mapper.WrittenAnswerMapper;
+import pl.edu.pja.nyan.web.rest.errors.ExceptionTranslator;
+import pl.edu.pja.nyan.service.dto.WrittenAnswerCriteria;
+import pl.edu.pja.nyan.service.WrittenAnswerQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -15,32 +24,18 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import java.util.List;
+
+
+import static pl.edu.pja.nyan.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import pl.edu.pja.nyan.NyanApp;
-import pl.edu.pja.nyan.domain.ExamResult;
-import pl.edu.pja.nyan.domain.Word;
-import pl.edu.pja.nyan.domain.WrittenAnswer;
-import pl.edu.pja.nyan.repository.WrittenAnswerRepository;
-import pl.edu.pja.nyan.service.UserService;
-import pl.edu.pja.nyan.service.WrittenAnswerQueryService;
-import pl.edu.pja.nyan.service.WrittenAnswerService;
-import pl.edu.pja.nyan.service.dto.WrittenAnswerDTO;
-import pl.edu.pja.nyan.service.mapper.WrittenAnswerMapper;
-import static pl.edu.pja.nyan.web.rest.TestUtil.createFormattingConversionService;
-import pl.edu.pja.nyan.web.rest.errors.ExceptionTranslator;
-import pl.edu.pja.nyan.web.rest.errors.UserNotLoggedInException;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Test class for the WrittenAnswerResource REST controller.
@@ -72,8 +67,10 @@ public class WrittenAnswerResourceIntTest {
     @Autowired
     private WrittenAnswerRepository writtenAnswerRepository;
 
+
     @Autowired
     private WrittenAnswerMapper writtenAnswerMapper;
+    
 
     @Autowired
     private WrittenAnswerService writtenAnswerService;
@@ -89,9 +86,6 @@ public class WrittenAnswerResourceIntTest {
 
     @Autowired
     private ExceptionTranslator exceptionTranslator;
-
-    @Autowired
-    private UserService userService;
 
     @Autowired
     private EntityManager em;
@@ -125,6 +119,16 @@ public class WrittenAnswerResourceIntTest {
             .kanji(DEFAULT_KANJI)
             .romaji(DEFAULT_ROMAJI)
             .isRightAnswer(DEFAULT_IS_RIGHT_ANSWER);
+        // Add required entity
+        Word word = WordResourceIntTest.createEntity(em);
+        em.persist(word);
+        em.flush();
+        writtenAnswer.setWord(word);
+        // Add required entity
+        ExamResult examResult = ExamResultResourceIntTest.createEntity(em);
+        em.persist(examResult);
+        em.flush();
+        writtenAnswer.setExam(examResult);
         return writtenAnswer;
     }
 
@@ -175,6 +179,120 @@ public class WrittenAnswerResourceIntTest {
         // Validate the WrittenAnswer in the database
         List<WrittenAnswer> writtenAnswerList = writtenAnswerRepository.findAll();
         assertThat(writtenAnswerList).hasSize(databaseSizeBeforeCreate);
+    }
+
+    @Test
+    @Transactional
+    public void checkTranslationFromIsRequired() throws Exception {
+        int databaseSizeBeforeTest = writtenAnswerRepository.findAll().size();
+        // set the field null
+        writtenAnswer.setTranslationFrom(null);
+
+        // Create the WrittenAnswer, which fails.
+        WrittenAnswerDTO writtenAnswerDTO = writtenAnswerMapper.toDto(writtenAnswer);
+
+        restWrittenAnswerMockMvc.perform(post("/api/written-answers")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(writtenAnswerDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<WrittenAnswer> writtenAnswerList = writtenAnswerRepository.findAll();
+        assertThat(writtenAnswerList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    public void checkTranslationIsRequired() throws Exception {
+        int databaseSizeBeforeTest = writtenAnswerRepository.findAll().size();
+        // set the field null
+        writtenAnswer.setTranslation(null);
+
+        // Create the WrittenAnswer, which fails.
+        WrittenAnswerDTO writtenAnswerDTO = writtenAnswerMapper.toDto(writtenAnswer);
+
+        restWrittenAnswerMockMvc.perform(post("/api/written-answers")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(writtenAnswerDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<WrittenAnswer> writtenAnswerList = writtenAnswerRepository.findAll();
+        assertThat(writtenAnswerList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    public void checkKanaIsRequired() throws Exception {
+        int databaseSizeBeforeTest = writtenAnswerRepository.findAll().size();
+        // set the field null
+        writtenAnswer.setKana(null);
+
+        // Create the WrittenAnswer, which fails.
+        WrittenAnswerDTO writtenAnswerDTO = writtenAnswerMapper.toDto(writtenAnswer);
+
+        restWrittenAnswerMockMvc.perform(post("/api/written-answers")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(writtenAnswerDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<WrittenAnswer> writtenAnswerList = writtenAnswerRepository.findAll();
+        assertThat(writtenAnswerList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    public void checkKanjiIsRequired() throws Exception {
+        int databaseSizeBeforeTest = writtenAnswerRepository.findAll().size();
+        // set the field null
+        writtenAnswer.setKanji(null);
+
+        // Create the WrittenAnswer, which fails.
+        WrittenAnswerDTO writtenAnswerDTO = writtenAnswerMapper.toDto(writtenAnswer);
+
+        restWrittenAnswerMockMvc.perform(post("/api/written-answers")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(writtenAnswerDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<WrittenAnswer> writtenAnswerList = writtenAnswerRepository.findAll();
+        assertThat(writtenAnswerList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    public void checkRomajiIsRequired() throws Exception {
+        int databaseSizeBeforeTest = writtenAnswerRepository.findAll().size();
+        // set the field null
+        writtenAnswer.setRomaji(null);
+
+        // Create the WrittenAnswer, which fails.
+        WrittenAnswerDTO writtenAnswerDTO = writtenAnswerMapper.toDto(writtenAnswer);
+
+        restWrittenAnswerMockMvc.perform(post("/api/written-answers")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(writtenAnswerDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<WrittenAnswer> writtenAnswerList = writtenAnswerRepository.findAll();
+        assertThat(writtenAnswerList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    public void checkIsRightAnswerIsRequired() throws Exception {
+        int databaseSizeBeforeTest = writtenAnswerRepository.findAll().size();
+        // set the field null
+        writtenAnswer.setIsRightAnswer(null);
+
+        // Create the WrittenAnswer, which fails.
+        WrittenAnswerDTO writtenAnswerDTO = writtenAnswerMapper.toDto(writtenAnswer);
+
+        restWrittenAnswerMockMvc.perform(post("/api/written-answers")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(writtenAnswerDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<WrittenAnswer> writtenAnswerList = writtenAnswerRepository.findAll();
+        assertThat(writtenAnswerList).hasSize(databaseSizeBeforeTest);
     }
 
     @Test
@@ -452,20 +570,20 @@ public class WrittenAnswerResourceIntTest {
 
     @Test
     @Transactional
-    public void getAllWrittenAnswersByAnswerIsEqualToSomething() throws Exception {
+    public void getAllWrittenAnswersByWordIsEqualToSomething() throws Exception {
         // Initialize the database
         Word word = WordResourceIntTest.createEntity(em);
         em.persist(word);
         em.flush();
         writtenAnswer.setWord(word);
         writtenAnswerRepository.saveAndFlush(writtenAnswer);
-        Long answerId = word.getId();
+        Long wordId = word.getId();
 
-        // Get all the writtenAnswerList where answer equals to answerId
-        defaultWrittenAnswerShouldBeFound("answerId.equals=" + answerId);
+        // Get all the writtenAnswerList where word equals to wordId
+        defaultWrittenAnswerShouldBeFound("wordId.equals=" + wordId);
 
-        // Get all the writtenAnswerList where answer equals to answerId + 1
-        defaultWrittenAnswerShouldNotBeFound("answerId.equals=" + (answerId + 1));
+        // Get all the writtenAnswerList where word equals to wordId + 1
+        defaultWrittenAnswerShouldNotBeFound("wordId.equals=" + (wordId + 1));
     }
 
 
@@ -491,10 +609,7 @@ public class WrittenAnswerResourceIntTest {
      * Executes the search, and checks that the default entity is returned
      */
     private void defaultWrittenAnswerShouldBeFound(String filter) throws Exception {
-        System.out.println("Current user: " + userService.getUserWithAuthorities().orElseThrow(
-            UserNotLoggedInException::new));
         restWrittenAnswerMockMvc.perform(get("/api/written-answers?sort=id,desc&" + filter))
-            .andDo(MockMvcResultHandlers.log())
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(writtenAnswer.getId().intValue())))
@@ -603,7 +718,6 @@ public class WrittenAnswerResourceIntTest {
     @Test
     @Transactional
     public void equalsVerifier() throws Exception {
-        TestUtil.equalsVerifier(WrittenAnswer.class);
         WrittenAnswer writtenAnswer1 = new WrittenAnswer();
         writtenAnswer1.setId(1L);
         WrittenAnswer writtenAnswer2 = new WrittenAnswer();
@@ -618,7 +732,6 @@ public class WrittenAnswerResourceIntTest {
     @Test
     @Transactional
     public void dtoEqualsVerifier() throws Exception {
-        TestUtil.equalsVerifier(WrittenAnswerDTO.class);
         WrittenAnswerDTO writtenAnswerDTO1 = WrittenAnswerDTO.builder().build();
         writtenAnswerDTO1.setId(1L);
         WrittenAnswerDTO writtenAnswerDTO2 = WrittenAnswerDTO.builder().build();

@@ -40,7 +40,7 @@ public class WrittenAnswerCriteria implements Serializable {
 
     private BooleanFilter isRightAnswer;
 
-    private LongFilter answerId;
+    private LongFilter wordId;
 
     private LongFilter examId;
 
@@ -103,12 +103,12 @@ public class WrittenAnswerCriteria implements Serializable {
         this.isRightAnswer = isRightAnswer;
     }
 
-    public LongFilter getAnswerId() {
-        return answerId;
+    public LongFilter getWordId() {
+        return wordId;
     }
 
-    public void setAnswerId(LongFilter answerId) {
-        this.answerId = answerId;
+    public void setWordId(LongFilter wordId) {
+        this.wordId = wordId;
     }
 
     public LongFilter getExamId() {
@@ -129,7 +129,7 @@ public class WrittenAnswerCriteria implements Serializable {
                 (kanji != null ? "kanji=" + kanji + ", " : "") +
                 (romaji != null ? "romaji=" + romaji + ", " : "") +
                 (isRightAnswer != null ? "isRightAnswer=" + isRightAnswer + ", " : "") +
-                (answerId != null ? "answerId=" + answerId + ", " : "") +
+                (wordId != null ? "wordId=" + wordId + ", " : "") +
                 (examId != null ? "examId=" + examId + ", " : "") +
             "}";
     }

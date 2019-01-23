@@ -33,6 +33,7 @@
         },
         {
             "relationshipType": "many-to-one",
+            "relationshipValidateRules": "required",
             "relationshipName": "creator",
             "otherEntityName": "user",
             "otherEntityField": "login"

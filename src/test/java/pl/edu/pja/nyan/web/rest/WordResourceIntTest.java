@@ -424,19 +424,6 @@ public class WordResourceIntTest {
 
     @Test
     @Transactional
-    public void getAllWordsByRomajiIsNullOrNotNull() throws Exception {
-        // Initialize the database
-        wordRepository.saveAndFlush(word);
-
-        // Get all the wordList where romaji is not null
-        defaultWordShouldBeFound("romaji.specified=true");
-
-        // Get all the wordList where romaji is null
-        defaultWordShouldNotBeFound("romaji.specified=false");
-    }
-
-    @Test
-    @Transactional
     public void getAllWordsByNoteIsEqualToSomething() throws Exception {
         // Initialize the database
         wordRepository.saveAndFlush(word);
@@ -459,19 +446,6 @@ public class WordResourceIntTest {
 
         // Get all the wordList where note equals to UPDATED_NOTE
         defaultWordShouldNotBeFound("note.in=" + UPDATED_NOTE);
-    }
-
-    @Test
-    @Transactional
-    public void getAllWordsByNoteIsNullOrNotNull() throws Exception {
-        // Initialize the database
-        wordRepository.saveAndFlush(word);
-
-        // Get all the wordList where note is not null
-        defaultWordShouldBeFound("note.specified=true");
-
-        // Get all the wordList where note is null
-        defaultWordShouldNotBeFound("note.specified=false");
     }
 
     @Test

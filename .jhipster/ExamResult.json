@@ -31,12 +31,14 @@
         },
         {
             "relationshipType": "many-to-one",
+            "relationshipValidateRules": "required",
             "relationshipName": "student",
             "otherEntityName": "user",
             "otherEntityField": "login"
         },
         {
             "relationshipType": "many-to-one",
+            "relationshipValidateRules": "required",
             "relationshipName": "exam",
             "otherEntityName": "exam",
             "otherEntityField": "id"

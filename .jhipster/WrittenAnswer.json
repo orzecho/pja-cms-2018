@@ -3,38 +3,58 @@
     "fields": [
         {
             "fieldName": "translationFrom",
-            "fieldType": "String"
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
         },
         {
             "fieldName": "translation",
-            "fieldType": "String"
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
         },
         {
             "fieldName": "kana",
-            "fieldType": "String"
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
         },
         {
             "fieldName": "kanji",
-            "fieldType": "String"
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
         },
         {
             "fieldName": "romaji",
-            "fieldType": "String"
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
         },
         {
             "fieldName": "isRightAnswer",
-            "fieldType": "Boolean"
+            "fieldType": "Boolean",
+            "fieldValidateRules": [
+                "required"
+            ]
         }
     ],
     "relationships": [
         {
             "relationshipType": "many-to-one",
-            "relationshipName": "answer",
+            "relationshipValidateRules": "required",
+            "relationshipName": "word",
             "otherEntityName": "word",
             "otherEntityField": "id"
         },
         {
             "relationshipType": "many-to-one",
+            "relationshipValidateRules": "required",
             "relationshipName": "exam",
             "otherEntityName": "examResult",
             "otherEntityField": "id"

@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -53,7 +54,7 @@ public class WrittenAnswerResource {
      */
     @PostMapping("/written-answers")
     @Timed
-    public ResponseEntity<WrittenAnswerDTO> createWrittenAnswer(@RequestBody WrittenAnswerDTO writtenAnswerDTO) throws URISyntaxException {
+    public ResponseEntity<WrittenAnswerDTO> createWrittenAnswer(@Valid @RequestBody WrittenAnswerDTO writtenAnswerDTO) throws URISyntaxException {
         log.debug("REST request to save WrittenAnswer : {}", writtenAnswerDTO);
         if (writtenAnswerDTO.getId() != null) {
             throw new BadRequestAlertException("A new writtenAnswer cannot already have an ID", ENTITY_NAME, "idexists");
@@ -75,7 +76,7 @@ public class WrittenAnswerResource {
      */
     @PutMapping("/written-answers")
     @Timed
-    public ResponseEntity<WrittenAnswerDTO> updateWrittenAnswer(@RequestBody WrittenAnswerDTO writtenAnswerDTO) throws URISyntaxException {
+    public ResponseEntity<WrittenAnswerDTO> updateWrittenAnswer(@Valid @RequestBody WrittenAnswerDTO writtenAnswerDTO) throws URISyntaxException {
         log.debug("REST request to update WrittenAnswer : {}", writtenAnswerDTO);
         if (writtenAnswerDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
