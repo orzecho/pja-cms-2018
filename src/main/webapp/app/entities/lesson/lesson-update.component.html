@@ -34,13 +34,55 @@
                     </p-autoComplete>
                 </div>
                 <div class="form-group">
+                        <mat-checkbox 
+                        [checked]="addNewLessonFlie"
+                        (change)="addNewLessonFlie = !addNewLessonFlie">Dodaj nowy plik do lekcji</mat-checkbox>
+                        <mat-card *ngIf="addNewLessonFlie">
+                                <input id="cin" name="cin" type="file" (change)="setFileData($event, lessonFile, 'content', false)" placeholder="Upload a file..." />
+                                <button type="button" class="btn btn-success btn-s" (click)="upload()">
+                                        <i class="glyphicon glyphicon-open-file"></i>&nbsp;Upload
+                                 </button>
+                                 <div class="row col-sm">
+                                        <mat-list>
+                                            <mat-list-item *ngFor="let f of filesToUpload; let i = index"> 
+                                                    <button mat-button (click)="delete(f,i)">
+                                                            <mat-icon>delete</mat-icon>
+                                                        </button>
+                                                {{f.name}} 
+                                                <mat-list-item *ngFor="let f of filesToUpload">  
+                                        </mat-list> 
+                                 </div>                                           
+                        </mat-card>
+                 </div>
+                 <div class="form-group">
+                        <mat-checkbox 
+                        [checked]="addExistingFile"
+                        (change)="addExistingFile = !addExistingFile">Dodaj istniejący plik do lekcji</mat-checkbox>
+                        <mat-card *ngIf="addExistingFile">
+                                <p-listbox [options]="availableFiles"
+                                   optionLabel="name"
+                                   name="lessonFiles"
+                                   [(ngModel)]="lesson.lessonFiles"
+                                   id="field_lesson_files"
+                                   [filter]="true"
+                                   dataKey="id"
+                                   [checkbox]="true"
+                                   [multiple]="true"
+                        ></p-listbox>
+                        </mat-card>
+                 </div>
+                <!-- <div class="form-group">
                     <label class="form-control-label" for="field_lesson_files">Pliki lekcji</label>
+<<<<<<< adbc47c040c586d885a83b03929045ffc753b9f0
 
                 <div class="form-group">
                     <label class="form-control-label" for="field_description">Nazwa pliku </label>
                     <input type="text" class="form-control" name="rawTags" id="field_raw_tags" [(ngModel)]="lessonFile.name" />
                 </div>
 
+=======
+               
+>>>>>>> Usuwanie pliku i wyglad - mam nadzieje że pasuje
                 <div class="form-group">
                         <input id="cin" name="cin" type="file" (change)="setFileData($event, lessonFile, 'content', false)" placeholder="Upload a file..." multiple/>
 
@@ -67,7 +109,7 @@
                                    [multiple]="true"
                         ></p-listbox>
                     </div>
-                </div>
+                </div> -->
 
                 <div *ngIf="lesson.words && lesson.words.length !== 0; else noWords">
                     <p-table [value]="lesson.words" selectionMode="single" [(selection)]="selectedWord"

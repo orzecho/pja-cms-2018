@@ -30,6 +30,9 @@ export class LessonUpdateComponent implements OnInit {
     selectedWord: Word;
     newWord: boolean;
 
+    addNewLessonFlie: boolean;
+    addExistingFile: boolean;
+
     foundTags: string[];
 
     filesToUpload: Array<ILessonFile> = [];
@@ -129,7 +132,9 @@ export class LessonUpdateComponent implements OnInit {
         this.isSaving = false;
         this.previousState();
     }
-
+    delete(f, index) {
+        this.filesToUpload.splice(index, 1);
+    }
     setFileData(event, entity, field, isImage) {
         let file = event.target.files[0];
         this.lessonFile.name = file.name;
