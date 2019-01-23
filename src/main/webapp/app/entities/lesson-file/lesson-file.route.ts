@@ -36,7 +36,7 @@ export const lessonFileRoute: Routes = [
         data: {
             authorities: ['ROLE_USER'],
             defaultSort: 'id,asc',
-            pageTitle: 'LessonFiles'
+            pageTitle: 'Pliki'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -48,7 +48,7 @@ export const lessonFileRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'LessonFiles'
+            pageTitle: 'Pliki'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -59,8 +59,8 @@ export const lessonFileRoute: Routes = [
             lessonFile: LessonFileResolve
         },
         data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'LessonFiles'
+            authorities: ['ROLE_ADMIN', 'ROLE_TEACHER'],
+            pageTitle: 'Pliki'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -71,8 +71,8 @@ export const lessonFileRoute: Routes = [
             lessonFile: LessonFileResolve
         },
         data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'LessonFiles'
+            authorities: ['ROLE_ADMIN', 'ROLE_TEACHER'],
+            pageTitle: 'Pliki'
         },
         canActivate: [UserRouteAccessService]
     }
@@ -86,8 +86,8 @@ export const lessonFilePopupRoute: Routes = [
             lessonFile: LessonFileResolve
         },
         data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'LessonFiles'
+            authorities: ['ROLE_ADMIN', 'ROLE_TEACHER'],
+            pageTitle: 'Pliki'
         },
         canActivate: [UserRouteAccessService],
         outlet: 'popup'

@@ -134,7 +134,6 @@ public class LessonResource {
     @DeleteMapping("/lessons/{id}")
     @Timed
     @Secured({AuthoritiesConstants.ADMIN, AuthoritiesConstants.TEACHER})
-    @CacheEvict
     public ResponseEntity<Void> deleteLesson(@PathVariable Long id) {
         log.debug("REST request to delete Lesson : {}", id);
         lessonService.delete(id);
