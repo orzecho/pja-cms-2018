@@ -1,6 +1,7 @@
 import { IWord } from 'app/shared/model/word.model';
 
 export interface IVocabularyTestItem {
+    srcTranslationLanguage?: string;
     translationFromSystem?: string;
     kanaFromSystem?: string;
     kanjiFromSystem?: string;
@@ -15,6 +16,7 @@ export interface IVocabularyTestItem {
 
 export class VocabularyTestItem implements IVocabularyTestItem {
     constructor(
+        public srcTranslationLanguage?: string,
         public translationFromSystem?: string,
         public kanaFromSystem?: string,
         public kanjiFromSystem?: string,

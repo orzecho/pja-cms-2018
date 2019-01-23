@@ -1,11 +1,9 @@
 package pl.edu.pja.nyan.service.dto;
 
 import java.io.Serializable;
+
 import io.github.jhipster.service.filter.BooleanFilter;
-import io.github.jhipster.service.filter.DoubleFilter;
 import io.github.jhipster.service.filter.Filter;
-import io.github.jhipster.service.filter.FloatFilter;
-import io.github.jhipster.service.filter.IntegerFilter;
 import io.github.jhipster.service.filter.LongFilter;
 import io.github.jhipster.service.filter.StringFilter;
 
@@ -35,8 +33,6 @@ public class WrittenAnswerCriteria implements Serializable {
     private StringFilter kana;
 
     private StringFilter kanji;
-
-    private StringFilter romaji;
 
     private BooleanFilter isRightAnswer;
 
@@ -87,14 +83,6 @@ public class WrittenAnswerCriteria implements Serializable {
         this.kanji = kanji;
     }
 
-    public StringFilter getRomaji() {
-        return romaji;
-    }
-
-    public void setRomaji(StringFilter romaji) {
-        this.romaji = romaji;
-    }
-
     public BooleanFilter getIsRightAnswer() {
         return isRightAnswer;
     }
@@ -127,7 +115,6 @@ public class WrittenAnswerCriteria implements Serializable {
                 (translation != null ? "translation=" + translation + ", " : "") +
                 (kana != null ? "kana=" + kana + ", " : "") +
                 (kanji != null ? "kanji=" + kanji + ", " : "") +
-                (romaji != null ? "romaji=" + romaji + ", " : "") +
                 (isRightAnswer != null ? "isRightAnswer=" + isRightAnswer + ", " : "") +
                 (wordId != null ? "wordId=" + wordId + ", " : "") +
                 (examId != null ? "examId=" + examId + ", " : "") +

@@ -88,9 +88,6 @@ public class WrittenAnswerQueryService extends QueryService<WrittenAnswer> {
             if (criteria.getKanji() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getKanji(), WrittenAnswer_.kanji));
             }
-            if (criteria.getRomaji() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getRomaji(), WrittenAnswer_.romaji));
-            }
             if (criteria.getIsRightAnswer() != null) {
                 specification = specification.and(buildSpecification(criteria.getIsRightAnswer(), WrittenAnswer_.isRightAnswer));
             }

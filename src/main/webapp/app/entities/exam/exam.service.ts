@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { SERVER_API_URL } from 'app/app.constants';
 import { createRequestOption } from 'app/shared';
 import { IExam } from 'app/shared/model/exam.model';
+import { IVocabularyTestItem } from 'app/shared/model/vocabulary-test-item.model';
 
 type EntityResponseType = HttpResponse<IExam>;
 type EntityArrayResponseType = HttpResponse<IExam[]>;
@@ -12,6 +13,7 @@ type EntityArrayResponseType = HttpResponse<IExam[]>;
 @Injectable({ providedIn: 'root' })
 export class ExamService {
     private resourceUrl = SERVER_API_URL + 'api/exams';
+    private testGenerationUrl = SERVER_API_URL + 'api/generate-test/written/';
 
     constructor(private http: HttpClient) {}
 
@@ -52,5 +54,9 @@ export class ExamService {
 
     delete(id: number): Observable<HttpResponse<any>> {
         return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
+    }
+
+    generateWrittenTest(examCode: string): Observable<HttpResponse<IVocabularyTestItem[]>> {
+        return this.http.get<IVocabularyTestItem[]>(`${this.testGenerationUrl}/${examCode}`, { observe: 'response' });
     }
 }

@@ -18,6 +18,7 @@
             <th jhiSortBy="type"><span>Type</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="code"><span>Code</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="creatorLogin"><span>Creator</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th> Exam page </th>
             <th></th>
             </tr>
             </thead>
@@ -28,6 +29,9 @@
                 <td>{{exam.code}}</td>
                 <td>
                     {{exam.creatorLogin}}
+                </td>
+                <td>
+                    <a [routerLink]="['written/', exam.code]">Link</a>
                 </td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">

@@ -28,12 +28,9 @@ public class WrittenAnswerDTO implements Serializable {
     private String kanji;
 
     @NotNull
-    private String romaji;
-
-    @NotNull
     private Boolean isRightAnswer;
 
-    private WordDTO word;
+    private Long wordId;
 
     private Long answerId;
 

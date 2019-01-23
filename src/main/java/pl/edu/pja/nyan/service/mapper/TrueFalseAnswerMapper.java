@@ -10,11 +10,10 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import pl.edu.pja.nyan.domain.TrueFalseAnswer;
-import pl.edu.pja.nyan.domain.WrittenAnswer;
 import pl.edu.pja.nyan.repository.ExamResultRepository;
 import pl.edu.pja.nyan.repository.TrueFalseAnswerRepository;
+import pl.edu.pja.nyan.repository.WordRepository;
 import pl.edu.pja.nyan.service.dto.TrueFalseAnswerDTO;
-import pl.edu.pja.nyan.service.dto.WrittenAnswerDTO;
 
 /**
  * Mapper for the entity TrueFalseAnswer and its DTO TrueFalseAnswerDTO.
@@ -23,7 +22,7 @@ import pl.edu.pja.nyan.service.dto.WrittenAnswerDTO;
 @RequiredArgsConstructor
 public class TrueFalseAnswerMapper implements EntityMapper<TrueFalseAnswerDTO, TrueFalseAnswer> {
 
-    private final WordMapper wordMapper;
+    private final WordRepository wordRepository;
     private final TrueFalseAnswerRepository trueFalseAnswerRepository;
     private final ExamResultRepository examResultRepository;
 
@@ -49,8 +48,10 @@ public class TrueFalseAnswerMapper implements EntityMapper<TrueFalseAnswerDTO, T
         trueFalseAnswer.setExam(examResultRepository.findById(dto.getExamId())
                 .orElseThrow(EntityNotFoundException::new));
         trueFalseAnswer.setIsRightAnswer(dto.getIsRightAnswer());
-        trueFalseAnswer.setSrcWord(wordMapper.toEntity(dto.getSrcWord()));
-        trueFalseAnswer.setTargetWord(wordMapper.toEntity(dto.getTargetWord()));
+        trueFalseAnswer.setSrcWord(wordRepository.findById(dto.getSrcWordId())
+                .orElseThrow(EntityNotFoundException::new));
+        trueFalseAnswer.setTargetWord(wordRepository.findById(dto.getTargetWordId())
+            .orElseThrow(EntityNotFoundException::new));
         trueFalseAnswer.setTranslationFrom(dto.getTranslationFrom());
         return trueFalseAnswer;
     }
@@ -61,8 +62,8 @@ public class TrueFalseAnswerMapper implements EntityMapper<TrueFalseAnswerDTO, T
             .id(entity.getId())
             .examId(entity.getExam().getId())
             .isRightAnswer(entity.isRightAnswer())
-            .srcWord(wordMapper.toDto(entity.getSrcWord()))
-            .targetWord(wordMapper.toDto(entity.getTargetWord()))
+            .srcWordId(entity.getSrcWord().getId())
+            .targetWordId(entity.getTargetWord().getId())
             .translationFrom(entity.getTranslationFrom())
             .build();
     }

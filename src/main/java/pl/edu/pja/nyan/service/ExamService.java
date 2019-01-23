@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import pl.edu.pja.nyan.domain.Exam;
-import pl.edu.pja.nyan.domain.User;
 import pl.edu.pja.nyan.repository.ExamRepository;
 import pl.edu.pja.nyan.service.dto.ExamDTO;
 import pl.edu.pja.nyan.service.mapper.ExamMapper;
@@ -89,6 +88,19 @@ public class ExamService {
     }
 
     /**
+     * Get one exam by code.
+     *
+     * @param code the code of the entity
+     * @return the entity
+     */
+    @Transactional(readOnly = true)
+    public Optional<ExamDTO> findByCode(String code) {
+        log.debug("Request to get Exam by code : {}", code);
+        return examRepository.findOneByCodeWithEagerRelationships(code)
+            .map(examMapper::toDto);
+    }
+
+    /**
      * Delete the exam by id.
      *
      * @param id the id of the entity
@@ -99,7 +111,7 @@ public class ExamService {
     }
 
     public boolean examAlreadyExists(String testCode) {
-        return examRepository.findOneByCode(testCode).isPresent();
+        return findByCode(testCode).isPresent();
     }
 
 }

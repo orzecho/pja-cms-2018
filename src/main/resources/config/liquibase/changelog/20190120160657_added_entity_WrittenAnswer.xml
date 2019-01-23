@@ -37,10 +37,6 @@
                 <constraints nullable="false" />
             </column>
 
-            <column name="romaji" type="varchar(255)">
-                <constraints nullable="false" />
-            </column>
-
             <column name="is_right_answer" type="boolean">
                 <constraints nullable="false" />
             </column>

@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import pl.edu.pja.nyan.domain.ExamResult;
 import pl.edu.pja.nyan.repository.ExamRepository;
 import pl.edu.pja.nyan.repository.ExamResultRepository;
+import pl.edu.pja.nyan.service.UserService;
 import pl.edu.pja.nyan.service.dto.ExamResultDTO;
 
 /**
@@ -21,7 +22,7 @@ public class ExamResultMapper implements EntityMapper<ExamResultDTO, ExamResult>
 
     private final ExamResultRepository examResultRepository;
     private final ExamRepository examRepository;
-    private final UserMapper userMapper;
+    private final UserService userService;
     private final WrittenAnswerMapper writtenAnswerMapper;
     private final TrueFalseAnswerMapper trueFalseAnswerMapper;
 
@@ -38,13 +39,18 @@ public class ExamResultMapper implements EntityMapper<ExamResultDTO, ExamResult>
         entity.setId(dto.getId());
         entity.setExam(examRepository.findById(dto.getExamId())
             .orElseThrow(EntityNotFoundException::new));
-        entity.setWrittenAnswers(new HashSet<>(
-            writtenAnswerMapper.toEntity(dto.getWrittenAnswers())));
-        entity.setTrueFalseAnswers(new HashSet<>(
-            trueFalseAnswerMapper.toEntity(dto.getTrueFalseAnswers())));
+
+        if (dto.getId() != null) {
+            entity.setWrittenAnswers(new HashSet<>(
+                writtenAnswerMapper.toEntity(dto.getWrittenAnswers())));
+            entity.setTrueFalseAnswers(new HashSet<>(
+                trueFalseAnswerMapper.toEntity(dto.getTrueFalseAnswers())));
+        }
+
         entity.setDate(dto.getDate());
         entity.setResult(dto.getResult());
-        entity.setStudent(userMapper.userDTOToUser(dto.getStudent()));
+        entity.setStudent(userService.getUserWithAuthorities(dto.getStudentId())
+            .orElseThrow(EntityNotFoundException::new));
 
         return entity;
     }
@@ -58,7 +64,7 @@ public class ExamResultMapper implements EntityMapper<ExamResultDTO, ExamResult>
             .trueFalseAnswers(trueFalseAnswerMapper.toDto(entity.getTrueFalseAnswers()))
             .date(entity.getDate())
             .result(entity.getResult())
-            .student(userMapper.userToUserDTO(entity.getStudent()))
+            .studentId(entity.getStudent().getId())
             .build();
     }
 

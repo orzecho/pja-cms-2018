@@ -2,9 +2,10 @@ import { IExamResult } from 'app/shared/model//exam-result.model';
 import { IWord } from 'app/shared/model//word.model';
 
 export const enum TestType {
-    WRITTEN = 'WRITTEN',
-    FILLING_GAPS = 'FILLING_GAPS',
-    TRUE_FALSE = 'TRUE_FALSE'
+    WRITTEN_MIXED = 'WRITTEN_MIXED',
+    WRITTEN_PL = 'WRITTEN_PL',
+    WRITTEN_KANA = 'WRITTEN_KANA',
+    WRITTEN_KANJI = 'WRITTEN_KANJI'
 }
 
 export interface IExam {

@@ -11,6 +11,8 @@ import pl.edu.pja.nyan.service.dto.WordDTO;
 @NoArgsConstructor
 @Getter
 public class VocabularyTestItemDTO {
+    private String srcTranslationLanguage;
+
     private String translationFromSystem;
     private String translationFromUser;
     private Boolean translationCorrect;

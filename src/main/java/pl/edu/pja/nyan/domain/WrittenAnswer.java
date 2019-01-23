@@ -42,10 +42,6 @@ public class WrittenAnswer implements Serializable {
     private String kanji;
 
     @NotNull
-    @Column(name = "romaji", nullable = false)
-    private String romaji;
-
-    @NotNull
     @Column(name = "is_right_answer", nullable = false)
     private Boolean isRightAnswer;
 
@@ -120,19 +116,6 @@ public class WrittenAnswer implements Serializable {
         this.kanji = kanji;
     }
 
-    public String getRomaji() {
-        return romaji;
-    }
-
-    public WrittenAnswer romaji(String romaji) {
-        this.romaji = romaji;
-        return this;
-    }
-
-    public void setRomaji(String romaji) {
-        this.romaji = romaji;
-    }
-
     public Boolean isRightAnswer() {
         return isRightAnswer;
     }
@@ -201,7 +184,6 @@ public class WrittenAnswer implements Serializable {
             ", translation='" + getTranslation() + "'" +
             ", kana='" + getKana() + "'" +
             ", kanji='" + getKanji() + "'" +
-            ", romaji='" + getRomaji() + "'" +
             ", isRightAnswer='" + isRightAnswer() + "'" +
             "}";
     }

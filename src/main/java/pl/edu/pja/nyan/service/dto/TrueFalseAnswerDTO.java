@@ -22,9 +22,9 @@ public class TrueFalseAnswerDTO implements Serializable {
     @NotNull
     private Boolean isRightAnswer;
 
-    private WordDTO srcWord;
+    private Long srcWordId;
 
-    private WordDTO targetWord;
+    private Long targetWordId;
 
     private Long examId;
 

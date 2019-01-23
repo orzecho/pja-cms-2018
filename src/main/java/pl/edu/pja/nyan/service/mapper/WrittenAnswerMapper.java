@@ -1,19 +1,14 @@
 package pl.edu.pja.nyan.service.mapper;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import pl.edu.pja.nyan.domain.Word;
 import pl.edu.pja.nyan.domain.WrittenAnswer;
 import pl.edu.pja.nyan.repository.ExamResultRepository;
+import pl.edu.pja.nyan.repository.WordRepository;
 import pl.edu.pja.nyan.repository.WrittenAnswerRepository;
-import pl.edu.pja.nyan.service.dto.WordDTO;
 import pl.edu.pja.nyan.service.dto.WrittenAnswerDTO;
 
 /**
@@ -24,8 +19,8 @@ import pl.edu.pja.nyan.service.dto.WrittenAnswerDTO;
 public class WrittenAnswerMapper implements EntityMapper<WrittenAnswerDTO, WrittenAnswer> {
 
     public final WrittenAnswerRepository writtenAnswerRepository;
-    public final WordMapper wordMapper;
     public final ExamResultRepository examResultRepository;
+    public final WordRepository wordRepository;
 
     @Override
     public WrittenAnswer toEntity(WrittenAnswerDTO dto) {
@@ -36,13 +31,13 @@ public class WrittenAnswerMapper implements EntityMapper<WrittenAnswerDTO, Writt
             entity = writtenAnswerRepository.findById(dto.getId())
                 .orElseThrow(EntityNotFoundException::new);
         }
-        entity.setWord(wordMapper.toEntity(dto.getWord()));
+        entity.setWord(wordRepository.findById(dto.getWordId())
+                .orElseThrow(EntityNotFoundException::new));
         entity.setExam(examResultRepository.findById(dto.getExamId())
                 .orElseThrow(EntityNotFoundException::new));
         entity.setIsRightAnswer(dto.getIsRightAnswer());
         entity.setKana(dto.getKana());
         entity.setKanji(dto.getKanji());
-        entity.setRomaji(dto.getRomaji());
         entity.setTranslation(dto.getTranslation());
         entity.setTranslationFrom(dto.getTranslationFrom());
         return entity;
@@ -52,25 +47,14 @@ public class WrittenAnswerMapper implements EntityMapper<WrittenAnswerDTO, Writt
     public WrittenAnswerDTO toDto(WrittenAnswer entity) {
         return WrittenAnswerDTO.builder()
             .id(entity.getId())
-            .word(wordMapper.toDto(entity.getWord()))
+            .wordId(entity.getWord().getId())
             .examId(entity.getExam().getId())
             .isRightAnswer(entity.isRightAnswer())
             .kana(entity.getKana())
             .kanji(entity.getKanji())
-            .romaji(entity.getRomaji())
             .translation(entity.getTranslation())
             .translationFrom(entity.getTranslationFrom())
             .build();
-    }
-
-    @Override
-    public List<WrittenAnswer> toEntity(Collection<WrittenAnswerDTO> dtoList) {
-        return dtoList.stream().map(this::toEntity).collect(Collectors.toList());
-    }
-
-    @Override
-    public List<WrittenAnswerDTO> toDto(Collection<WrittenAnswer> entityList) {
-        return entityList.stream().map(this::toDto).collect(Collectors.toList());
     }
 
     public WrittenAnswer fromId(Long id) {

@@ -24,6 +24,15 @@ export const testRoute: Routes = [
         canActivate: [UserRouteAccessService]
     },
     {
+        path: 'exam/written/:examCode',
+        component: VocabularyTestComponent,
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'Examin na słownictwo'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
         path: 'test/GAPS/:tags',
         component: GapsTestComponent,
         data: {

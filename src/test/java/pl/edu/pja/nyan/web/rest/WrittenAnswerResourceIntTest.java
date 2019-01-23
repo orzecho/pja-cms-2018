@@ -1,17 +1,8 @@
 package pl.edu.pja.nyan.web.rest;
 
-import pl.edu.pja.nyan.NyanApp;
+import java.util.List;
 
-import pl.edu.pja.nyan.domain.WrittenAnswer;
-import pl.edu.pja.nyan.domain.Word;
-import pl.edu.pja.nyan.domain.ExamResult;
-import pl.edu.pja.nyan.repository.WrittenAnswerRepository;
-import pl.edu.pja.nyan.service.WrittenAnswerService;
-import pl.edu.pja.nyan.service.dto.WrittenAnswerDTO;
-import pl.edu.pja.nyan.service.mapper.WrittenAnswerMapper;
-import pl.edu.pja.nyan.web.rest.errors.ExceptionTranslator;
-import pl.edu.pja.nyan.service.dto.WrittenAnswerCriteria;
-import pl.edu.pja.nyan.service.WrittenAnswerQueryService;
+import javax.persistence.EntityManager;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -27,15 +18,26 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import java.util.List;
-
-
-import static pl.edu.pja.nyan.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import pl.edu.pja.nyan.NyanApp;
+import pl.edu.pja.nyan.domain.ExamResult;
+import pl.edu.pja.nyan.domain.Word;
+import pl.edu.pja.nyan.domain.WrittenAnswer;
+import pl.edu.pja.nyan.repository.WrittenAnswerRepository;
+import pl.edu.pja.nyan.service.WrittenAnswerQueryService;
+import pl.edu.pja.nyan.service.WrittenAnswerService;
+import pl.edu.pja.nyan.service.dto.WrittenAnswerDTO;
+import pl.edu.pja.nyan.service.mapper.WrittenAnswerMapper;
+import static pl.edu.pja.nyan.web.rest.TestUtil.createFormattingConversionService;
+import pl.edu.pja.nyan.web.rest.errors.ExceptionTranslator;
 
 /**
  * Test class for the WrittenAnswerResource REST controller.
@@ -57,9 +59,6 @@ public class WrittenAnswerResourceIntTest {
 
     private static final String DEFAULT_KANJI = "AAAAAAAAAA";
     private static final String UPDATED_KANJI = "BBBBBBBBBB";
-
-    private static final String DEFAULT_ROMAJI = "AAAAAAAAAA";
-    private static final String UPDATED_ROMAJI = "BBBBBBBBBB";
 
     private static final Boolean DEFAULT_IS_RIGHT_ANSWER = false;
     private static final Boolean UPDATED_IS_RIGHT_ANSWER = true;
@@ -117,7 +116,6 @@ public class WrittenAnswerResourceIntTest {
             .translation(DEFAULT_TRANSLATION)
             .kana(DEFAULT_KANA)
             .kanji(DEFAULT_KANJI)
-            .romaji(DEFAULT_ROMAJI)
             .isRightAnswer(DEFAULT_IS_RIGHT_ANSWER);
         // Add required entity
         Word word = WordResourceIntTest.createEntity(em);
@@ -157,7 +155,6 @@ public class WrittenAnswerResourceIntTest {
         assertThat(testWrittenAnswer.getTranslation()).isEqualTo(DEFAULT_TRANSLATION);
         assertThat(testWrittenAnswer.getKana()).isEqualTo(DEFAULT_KANA);
         assertThat(testWrittenAnswer.getKanji()).isEqualTo(DEFAULT_KANJI);
-        assertThat(testWrittenAnswer.getRomaji()).isEqualTo(DEFAULT_ROMAJI);
         assertThat(testWrittenAnswer.isRightAnswer()).isEqualTo(DEFAULT_IS_RIGHT_ANSWER);
     }
 
@@ -259,25 +256,6 @@ public class WrittenAnswerResourceIntTest {
 
     @Test
     @Transactional
-    public void checkRomajiIsRequired() throws Exception {
-        int databaseSizeBeforeTest = writtenAnswerRepository.findAll().size();
-        // set the field null
-        writtenAnswer.setRomaji(null);
-
-        // Create the WrittenAnswer, which fails.
-        WrittenAnswerDTO writtenAnswerDTO = writtenAnswerMapper.toDto(writtenAnswer);
-
-        restWrittenAnswerMockMvc.perform(post("/api/written-answers")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(writtenAnswerDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<WrittenAnswer> writtenAnswerList = writtenAnswerRepository.findAll();
-        assertThat(writtenAnswerList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
     public void checkIsRightAnswerIsRequired() throws Exception {
         int databaseSizeBeforeTest = writtenAnswerRepository.findAll().size();
         // set the field null
@@ -310,7 +288,6 @@ public class WrittenAnswerResourceIntTest {
             .andExpect(jsonPath("$.[*].translation").value(hasItem(DEFAULT_TRANSLATION.toString())))
             .andExpect(jsonPath("$.[*].kana").value(hasItem(DEFAULT_KANA.toString())))
             .andExpect(jsonPath("$.[*].kanji").value(hasItem(DEFAULT_KANJI.toString())))
-            .andExpect(jsonPath("$.[*].romaji").value(hasItem(DEFAULT_ROMAJI.toString())))
             .andExpect(jsonPath("$.[*].isRightAnswer").value(hasItem(DEFAULT_IS_RIGHT_ANSWER.booleanValue())));
     }
     
@@ -330,7 +307,6 @@ public class WrittenAnswerResourceIntTest {
             .andExpect(jsonPath("$.translation").value(DEFAULT_TRANSLATION.toString()))
             .andExpect(jsonPath("$.kana").value(DEFAULT_KANA.toString()))
             .andExpect(jsonPath("$.kanji").value(DEFAULT_KANJI.toString()))
-            .andExpect(jsonPath("$.romaji").value(DEFAULT_ROMAJI.toString()))
             .andExpect(jsonPath("$.isRightAnswer").value(DEFAULT_IS_RIGHT_ANSWER.booleanValue()));
     }
 
@@ -490,44 +466,6 @@ public class WrittenAnswerResourceIntTest {
         defaultWrittenAnswerShouldNotBeFound("kanji.specified=false");
     }
 
-    @Test
-    @Transactional
-    public void getAllWrittenAnswersByRomajiIsEqualToSomething() throws Exception {
-        // Initialize the database
-        writtenAnswerRepository.saveAndFlush(writtenAnswer);
-
-        // Get all the writtenAnswerList where romaji equals to DEFAULT_ROMAJI
-        defaultWrittenAnswerShouldBeFound("romaji.equals=" + DEFAULT_ROMAJI);
-
-        // Get all the writtenAnswerList where romaji equals to UPDATED_ROMAJI
-        defaultWrittenAnswerShouldNotBeFound("romaji.equals=" + UPDATED_ROMAJI);
-    }
-
-    @Test
-    @Transactional
-    public void getAllWrittenAnswersByRomajiIsInShouldWork() throws Exception {
-        // Initialize the database
-        writtenAnswerRepository.saveAndFlush(writtenAnswer);
-
-        // Get all the writtenAnswerList where romaji in DEFAULT_ROMAJI or UPDATED_ROMAJI
-        defaultWrittenAnswerShouldBeFound("romaji.in=" + DEFAULT_ROMAJI + "," + UPDATED_ROMAJI);
-
-        // Get all the writtenAnswerList where romaji equals to UPDATED_ROMAJI
-        defaultWrittenAnswerShouldNotBeFound("romaji.in=" + UPDATED_ROMAJI);
-    }
-
-    @Test
-    @Transactional
-    public void getAllWrittenAnswersByRomajiIsNullOrNotNull() throws Exception {
-        // Initialize the database
-        writtenAnswerRepository.saveAndFlush(writtenAnswer);
-
-        // Get all the writtenAnswerList where romaji is not null
-        defaultWrittenAnswerShouldBeFound("romaji.specified=true");
-
-        // Get all the writtenAnswerList where romaji is null
-        defaultWrittenAnswerShouldNotBeFound("romaji.specified=false");
-    }
 
     @Test
     @Transactional
@@ -617,7 +555,6 @@ public class WrittenAnswerResourceIntTest {
             .andExpect(jsonPath("$.[*].translation").value(hasItem(DEFAULT_TRANSLATION.toString())))
             .andExpect(jsonPath("$.[*].kana").value(hasItem(DEFAULT_KANA.toString())))
             .andExpect(jsonPath("$.[*].kanji").value(hasItem(DEFAULT_KANJI.toString())))
-            .andExpect(jsonPath("$.[*].romaji").value(hasItem(DEFAULT_ROMAJI.toString())))
             .andExpect(jsonPath("$.[*].isRightAnswer").value(hasItem(DEFAULT_IS_RIGHT_ANSWER.booleanValue())));
     }
 
@@ -657,7 +594,6 @@ public class WrittenAnswerResourceIntTest {
             .translation(UPDATED_TRANSLATION)
             .kana(UPDATED_KANA)
             .kanji(UPDATED_KANJI)
-            .romaji(UPDATED_ROMAJI)
             .isRightAnswer(UPDATED_IS_RIGHT_ANSWER);
         WrittenAnswerDTO writtenAnswerDTO = writtenAnswerMapper.toDto(updatedWrittenAnswer);
 
@@ -674,7 +610,6 @@ public class WrittenAnswerResourceIntTest {
         assertThat(testWrittenAnswer.getTranslation()).isEqualTo(UPDATED_TRANSLATION);
         assertThat(testWrittenAnswer.getKana()).isEqualTo(UPDATED_KANA);
         assertThat(testWrittenAnswer.getKanji()).isEqualTo(UPDATED_KANJI);
-        assertThat(testWrittenAnswer.getRomaji()).isEqualTo(UPDATED_ROMAJI);
         assertThat(testWrittenAnswer.isRightAnswer()).isEqualTo(UPDATED_IS_RIGHT_ANSWER);
     }
 

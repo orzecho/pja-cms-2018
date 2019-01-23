@@ -1,19 +1,10 @@
 package pl.edu.pja.nyan.web.rest;
 
-import pl.edu.pja.nyan.NyanApp;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 
-import pl.edu.pja.nyan.domain.ExamResult;
-import pl.edu.pja.nyan.domain.WrittenAnswer;
-import pl.edu.pja.nyan.domain.TrueFalseAnswer;
-import pl.edu.pja.nyan.domain.User;
-import pl.edu.pja.nyan.domain.Exam;
-import pl.edu.pja.nyan.repository.ExamResultRepository;
-import pl.edu.pja.nyan.service.ExamResultService;
-import pl.edu.pja.nyan.service.dto.ExamResultDTO;
-import pl.edu.pja.nyan.service.mapper.ExamResultMapper;
-import pl.edu.pja.nyan.web.rest.errors.ExceptionTranslator;
-import pl.edu.pja.nyan.service.dto.ExamResultCriteria;
-import pl.edu.pja.nyan.service.ExamResultQueryService;
+import javax.persistence.EntityManager;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,17 +20,30 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
-
-
-import static pl.edu.pja.nyan.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import pl.edu.pja.nyan.NyanApp;
+import pl.edu.pja.nyan.domain.Exam;
+import pl.edu.pja.nyan.domain.ExamResult;
+import pl.edu.pja.nyan.domain.TrueFalseAnswer;
+import pl.edu.pja.nyan.domain.User;
+import pl.edu.pja.nyan.domain.WrittenAnswer;
+import pl.edu.pja.nyan.repository.ExamResultRepository;
+import pl.edu.pja.nyan.service.ExamResultQueryService;
+import pl.edu.pja.nyan.service.ExamResultService;
+import pl.edu.pja.nyan.service.UserService;
+import pl.edu.pja.nyan.service.dto.ExamResultDTO;
+import pl.edu.pja.nyan.service.mapper.ExamResultMapper;
+import pl.edu.pja.nyan.service.mapper.UserMapper;
+import static pl.edu.pja.nyan.web.rest.TestUtil.createFormattingConversionService;
+import pl.edu.pja.nyan.web.rest.errors.ExceptionTranslator;
 
 /**
  * Test class for the ExamResultResource REST controller.
@@ -71,6 +75,12 @@ public class ExamResultResourceIntTest {
     private ExamResultQueryService examResultQueryService;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
+    private UserMapper userMapper;
+
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -89,7 +99,8 @@ public class ExamResultResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final ExamResultResource examResultResource = new ExamResultResource(examResultService, examResultQueryService);
+        final ExamResultResource examResultResource = new ExamResultResource(examResultService,
+            examResultQueryService, userService, userMapper);
         this.restExamResultMockMvc = MockMvcBuilders.standaloneSetup(examResultResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)

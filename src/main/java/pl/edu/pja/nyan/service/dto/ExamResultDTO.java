@@ -2,13 +2,15 @@ package pl.edu.pja.nyan.service.dto;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Singular;
+import lombok.Getter;
 
 /**
  * A DTO for the ExamResult entity.
@@ -19,22 +21,28 @@ public class ExamResultDTO implements Serializable {
 
     private Long id;
 
-    @NotNull
     private Instant date;
 
-    @NotNull
     private Integer result;
 
-    private UserDTO student;
+    private Long studentId;
 
     private String studentLogin;
 
+    @NotNull
     private Long examId;
 
-    @Singular
+    @Getter(AccessLevel.NONE)
     private List<WrittenAnswerDTO> writtenAnswers;
 
-    @Singular
+    @Getter(AccessLevel.NONE)
     private List<TrueFalseAnswerDTO> trueFalseAnswers;
 
+    public List<WrittenAnswerDTO> getWrittenAnswers() {
+        return writtenAnswers == null ? new ArrayList<>() : writtenAnswers;
+    }
+
+    public List<TrueFalseAnswerDTO> getTrueFalseAnswers() {
+        return trueFalseAnswers == null ? new ArrayList<>() : trueFalseAnswers;
+    }
 }
