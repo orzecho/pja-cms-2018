@@ -22,10 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -454,73 +452,6 @@ public class ExamResultResourceIntTest {
         // Get the examResult
         restExamResultMockMvc.perform(get("/api/exam-results/{id}", Long.MAX_VALUE))
             .andExpect(status().isNotFound());
-    }
-
-    @Test
-    @Transactional
-    public void updateExamResult() throws Exception {
-        // Initialize the database
-        examResultRepository.saveAndFlush(examResult);
-
-        int databaseSizeBeforeUpdate = examResultRepository.findAll().size();
-
-        // Update the examResult
-        ExamResult updatedExamResult = examResultRepository.findById(examResult.getId()).get();
-        // Disconnect from session so that the updates on updatedExamResult are not directly saved in db
-        em.detach(updatedExamResult);
-        updatedExamResult
-            .date(UPDATED_DATE)
-            .result(UPDATED_RESULT);
-        ExamResultDTO examResultDTO = examResultMapper.toDto(updatedExamResult);
-
-        restExamResultMockMvc.perform(put("/api/exam-results")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(examResultDTO)))
-            .andExpect(status().isOk());
-
-        // Validate the ExamResult in the database
-        List<ExamResult> examResultList = examResultRepository.findAll();
-        assertThat(examResultList).hasSize(databaseSizeBeforeUpdate);
-        ExamResult testExamResult = examResultList.get(examResultList.size() - 1);
-        assertThat(testExamResult.getDate()).isEqualTo(UPDATED_DATE);
-        assertThat(testExamResult.getResult()).isEqualTo(UPDATED_RESULT);
-    }
-
-    @Test
-    @Transactional
-    public void updateNonExistingExamResult() throws Exception {
-        int databaseSizeBeforeUpdate = examResultRepository.findAll().size();
-
-        // Create the ExamResult
-        ExamResultDTO examResultDTO = examResultMapper.toDto(examResult);
-
-        // If the entity doesn't have an ID, it will throw BadRequestAlertException 
-        restExamResultMockMvc.perform(put("/api/exam-results")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(examResultDTO)))
-            .andExpect(status().isBadRequest());
-
-        // Validate the ExamResult in the database
-        List<ExamResult> examResultList = examResultRepository.findAll();
-        assertThat(examResultList).hasSize(databaseSizeBeforeUpdate);
-    }
-
-    @Test
-    @Transactional
-    public void deleteExamResult() throws Exception {
-        // Initialize the database
-        examResultRepository.saveAndFlush(examResult);
-
-        int databaseSizeBeforeDelete = examResultRepository.findAll().size();
-
-        // Get the examResult
-        restExamResultMockMvc.perform(delete("/api/exam-results/{id}", examResult.getId())
-            .accept(TestUtil.APPLICATION_JSON_UTF8))
-            .andExpect(status().isOk());
-
-        // Validate the database is empty
-        List<ExamResult> examResultList = examResultRepository.findAll();
-        assertThat(examResultList).hasSize(databaseSizeBeforeDelete - 1);
     }
 
     @Test

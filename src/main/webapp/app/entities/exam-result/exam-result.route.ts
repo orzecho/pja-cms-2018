@@ -9,6 +9,7 @@ import { ExamResult, IExamResult } from 'app/shared/model/exam-result.model';
 import { ExamResultService } from './exam-result.service';
 import { ExamResultComponent } from './exam-result.component';
 import { ExamResultDetailComponent } from './exam-result-detail.component';
+import { ExamResultForTeacherComponent } from 'app/entities/exam-result/exam-result-for-teacher.component';
 
 @Injectable({ providedIn: 'root' })
 export class ExamResultResolve implements Resolve<IExamResult> {
@@ -44,7 +45,20 @@ export const examResultRoute: Routes = [
             examResult: ExamResultResolve
         },
         data: {
-            authorities: ['ROLE_USER'],
+            authorities: ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_TEACHER'],
+            pageTitle: 'ExamResults'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: 'exam-result-for-teacher',
+        component: ExamResultForTeacherComponent,
+        resolve: {
+            pagingParams: JhiResolvePagingParams
+        },
+        data: {
+            authorities: ['ROLE_ADMIN', 'ROLE_TEACHER'],
+            defaultSort: 'id,asc',
             pageTitle: 'ExamResults'
         },
         canActivate: [UserRouteAccessService]

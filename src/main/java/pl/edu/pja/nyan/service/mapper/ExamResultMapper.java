@@ -65,6 +65,7 @@ public class ExamResultMapper implements EntityMapper<ExamResultDTO, ExamResult>
             .date(entity.getDate())
             .result(entity.getResult())
             .studentId(entity.getStudent().getId())
+            .studentLogin(entity.getStudent().getLogin())
             .build();
     }
 

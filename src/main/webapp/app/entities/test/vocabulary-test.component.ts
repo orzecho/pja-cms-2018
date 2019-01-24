@@ -10,7 +10,6 @@ import { IVocabularyTestItem, VocabularyTestItem } from 'app/shared/model/vocabu
 import { Word } from 'app/shared/model/word.model';
 import { IExam } from 'app/shared/model/exam.model';
 import { ExamService } from 'app/entities/exam';
-import { IExamResult } from 'app/shared/model/exam-result.model';
 import { ExamResultService } from 'app/entities/exam-result';
 
 @Component({
@@ -64,12 +63,12 @@ export class VocabularyTestComponent implements OnInit {
                     (res: HttpResponse<IExam[]>) => (this.exam = res.body[0]),
                     (res: HttpErrorResponse) => this.onError(res.message)
                 );
-            this.examService
-                .generateWrittenTest(this.examCode)
-                .subscribe(
-                    (res: HttpResponse<IVocabularyTestItem[]>) => (this.vocabularyTestItems = res.body),
-                    (res: HttpErrorResponse) => this.onError(res.message)
-                );
+            this.examService.generateWrittenTest(this.examCode).subscribe(
+                (res: HttpResponse<IVocabularyTestItem[]>) => {
+                    this.vocabularyTestItems = res.body;
+                },
+                (res: HttpErrorResponse) => this.onError(res.message)
+            );
         } else {
             this.testService
                 .getVocabulary(this.testType, this.tags.split(','))
@@ -88,7 +87,12 @@ export class VocabularyTestComponent implements OnInit {
                 .query({
                     'studentId.equals': this.currentAccount.id
                 })
-                .subscribe(res => (this.examAlreadyPassed = res.body !== undefined), (res: HttpErrorResponse) => this.onError(res.message));
+                .subscribe(
+                    res => {
+                        this.examAlreadyPassed = res.body !== undefined && res.body.length !== 0;
+                    },
+                    (res: HttpErrorResponse) => this.onError(res.message)
+                );
         });
         this.principal.hasAnyAuthority(['ROLE_ADMIN', 'ROLE_TEACHER']).then(isAdminOrTeacher => (this.testNotAllowed = isAdminOrTeacher));
     }
@@ -132,6 +136,11 @@ export class VocabularyTestComponent implements OnInit {
 
     previousState() {
         window.history.back();
+    }
+
+    getItems(): IVocabularyTestItem[] {
+        console.log(this.vocabularyTestItems);
+        return this.vocabularyTestItems;
     }
 
     getJishoLink(word: Word) {

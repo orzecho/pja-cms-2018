@@ -13,7 +13,7 @@ type EntityArrayResponseType = HttpResponse<IExam[]>;
 @Injectable({ providedIn: 'root' })
 export class ExamService {
     private resourceUrl = SERVER_API_URL + 'api/exams';
-    private testGenerationUrl = SERVER_API_URL + 'api/generate-test/written/';
+    private testGenerationUrl = SERVER_API_URL + 'api/generate-test/written';
 
     constructor(private http: HttpClient) {}
 
