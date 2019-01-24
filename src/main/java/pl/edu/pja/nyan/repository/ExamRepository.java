@@ -34,6 +34,6 @@ public interface ExamRepository extends JpaRepository<Exam, Long>, JpaSpecificat
     Optional<Exam> findOneWithEagerRelationships(@Param("id") Long id);
 
     @Query("select exam from Exam exam left join fetch exam.words where exam.code =:code")
-    Optional<Exam> findOneByCodeWithEagerRelationships(String code);
+    Optional<Exam> findOneByCodeWithEagerRelationships(@Param("code")String code);
 
 }
