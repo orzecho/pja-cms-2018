@@ -4,7 +4,6 @@ import { ActivatedRoute } from '@angular/router';
 import { IExamResult } from 'app/shared/model/exam-result.model';
 import { IWrittenAnswer } from 'app/shared/model/written-answer.model';
 import { WordService } from 'app/entities/word';
-import { IWord } from 'app/shared/model/word.model';
 
 @Component({
     selector: 'jhi-exam-result-detail',

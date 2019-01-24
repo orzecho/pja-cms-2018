@@ -31,8 +31,8 @@
                 </dd>
                 <dt><span>Word</span></dt>
                 <dd>
-                    <div *ngIf="writtenAnswer.wordId">
-                        <a [routerLink]="['/word', writtenAnswer.wordId, 'view']">{{writtenAnswer.wordId}}</a>
+                    <div *ngIf="writtenAnswer.word">
+                        <a [routerLink]="['/word', writtenAnswer.word.id, 'view']">{{writtenAnswer.word.id}}</a>
                     </div>
                 </dd>
                 <dt><span>Exam</span></dt>

@@ -20,7 +20,7 @@
                 </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let answer of examResult.writtenAnswers ;trackBy: trackId">
+            <tr *ngFor="let answer of examResult.writtenAnswers;">
                 <td [ngClass]="{'source-language': isTranslationSource(answer)}">
                     {{answer.translation ? answer.translation: '...'}}
                 </td>
