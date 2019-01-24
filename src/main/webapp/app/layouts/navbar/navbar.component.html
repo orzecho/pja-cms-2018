@@ -15,6 +15,13 @@
                     <span>Lekcje</span>
                 </a>
             </li>
+            <li *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_TEACHER']"  class="nav-item" routerLinkActive="active"
+                [routerLinkActiveOptions]="{exact: true}">
+                <a class="nav-link" routerLink="lesson-file"  (click)="collapseNavbar()">
+                    <fa-icon [icon]="'save'" [fixedWidth]="true"></fa-icon>
+                    <span>Pliki</span>
+                </a>
+            </li>
             <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
                 <a class="nav-link" routerLink="word"  (click)="collapseNavbar()">
                     <span>Słownictwo</span>

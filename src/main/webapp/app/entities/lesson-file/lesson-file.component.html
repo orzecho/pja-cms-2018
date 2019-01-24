@@ -1,10 +1,10 @@
 <div>
     <h2 id="page-heading">
-        <span>Lesson Files</span>
+        <span>Pliki lekcji</span>
         <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-lesson-file" [routerLink]="['/lesson-file/new']">
             <fa-icon [icon]="'plus'"></fa-icon>
             <span >
-            Create new Lesson File
+            Dodaj plik lekcji
             </span>
         </button>
     </h2>
@@ -15,8 +15,8 @@
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
             <th jhiSortBy="id"><span>ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="name"><span>Name</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="lessonName"><span>Lesson</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="name"><span>Nazwa</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="lessonName"><span>Lekcja</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
             </thead>
@@ -35,21 +35,21 @@
                                 [routerLink]="['/lesson-file', lessonFile.id, 'view' ]"
                                 class="btn btn-info btn-sm">
                             <fa-icon [icon]="'eye'"></fa-icon>
-                            <span class="d-none d-md-inline">View</span>
+                            <span class="d-none d-md-inline">Szczegóły</span>
                         </button>
                         <button type="submit"
                                 [routerLink]="['/lesson-file', lessonFile.id, 'edit']"
                                 class="btn btn-primary btn-sm">
                             <fa-icon [icon]="'pencil-alt'"></fa-icon>
-                            <span class="d-none d-md-inline">Edit</span>
+                            <span class="d-none d-md-inline">Edytuj</span>
                         </button>
-                        <button type="submit"
+                        <button *jhiHasAnyAuthority="'ROLE_ADMIN'" type="submit"
                                 [routerLink]="['/', { outlets: { popup: 'lesson-file/'+ lessonFile.id + '/delete'} }]"
                                 replaceUrl="true"
                                 queryParamsHandling="merge"
                                 class="btn btn-danger btn-sm">
                             <fa-icon [icon]="'times'"></fa-icon>
-                            <span class="d-none d-md-inline">Delete</span>
+                            <span class="d-none d-md-inline">Usuń</span>
                         </button>
                     </div>
                 </td>

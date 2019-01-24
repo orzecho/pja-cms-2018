@@ -36,7 +36,7 @@ export const tagRoute: Routes = [
         data: {
             authorities: ['ROLE_USER'],
             defaultSort: 'id,asc',
-            pageTitle: 'Tags'
+            pageTitle: 'Tagi'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -48,7 +48,7 @@ export const tagRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'Tags'
+            pageTitle: 'Tagi'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -59,8 +59,8 @@ export const tagRoute: Routes = [
             tag: TagResolve
         },
         data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'Tags'
+            authorities: ['ROLE_ADMIN', 'ROLE_TEACHER'],
+            pageTitle: 'Tagi'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -71,8 +71,8 @@ export const tagRoute: Routes = [
             tag: TagResolve
         },
         data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'Tags'
+            authorities: ['ROLE_ADMIN', 'ROLE_TEACHER'],
+            pageTitle: 'Tagi'
         },
         canActivate: [UserRouteAccessService]
     }
@@ -86,8 +86,8 @@ export const tagPopupRoute: Routes = [
             tag: TagResolve
         },
         data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'Tags'
+            authorities: ['ROLE_ADMIN', 'ROLE_TEACHER'],
+            pageTitle: 'Tagi'
         },
         canActivate: [UserRouteAccessService],
         outlet: 'popup'

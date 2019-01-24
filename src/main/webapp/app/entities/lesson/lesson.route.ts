@@ -36,7 +36,7 @@ export const lessonRoute: Routes = [
         data: {
             authorities: ['ROLE_USER'],
             defaultSort: 'id,asc',
-            pageTitle: 'Lessons'
+            pageTitle: 'Lekcje'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -48,7 +48,7 @@ export const lessonRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'Lessons'
+            pageTitle: 'Lekcje'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -59,8 +59,8 @@ export const lessonRoute: Routes = [
             lesson: LessonResolve
         },
         data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'Lessons'
+            authorities: ['ROLE_ADMIN', 'ROLE_TEACHER'],
+            pageTitle: 'Lekcje'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -71,8 +71,8 @@ export const lessonRoute: Routes = [
             lesson: LessonResolve
         },
         data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'Lessons'
+            authorities: ['ROLE_ADMIN', 'ROLE_TEACHER'],
+            pageTitle: 'Lekcje'
         },
         canActivate: [UserRouteAccessService]
     }
@@ -86,8 +86,8 @@ export const lessonPopupRoute: Routes = [
             lesson: LessonResolve
         },
         data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'Lessons'
+            authorities: ['ROLE_ADMIN', 'ROLE_TEACHER'],
+            pageTitle: 'Lekcje'
         },
         canActivate: [UserRouteAccessService],
         outlet: 'popup'

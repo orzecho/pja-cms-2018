@@ -36,7 +36,7 @@ export const wordRoute: Routes = [
         data: {
             authorities: ['ROLE_USER'],
             defaultSort: 'id,asc',
-            pageTitle: 'Words'
+            pageTitle: 'Słownictwo'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -48,7 +48,7 @@ export const wordRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'Words'
+            pageTitle: 'Słownictwo'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -59,8 +59,8 @@ export const wordRoute: Routes = [
             word: WordResolve
         },
         data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'Words'
+            authorities: ['ROLE_ADMIN', 'ROLE_TEACHER'],
+            pageTitle: 'Słownictwo'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -71,8 +71,8 @@ export const wordRoute: Routes = [
             word: WordResolve
         },
         data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'Words'
+            authorities: ['ROLE_ADMIN', 'ROLE_TEACHER'],
+            pageTitle: 'Słownictwo'
         },
         canActivate: [UserRouteAccessService]
     }
@@ -86,8 +86,8 @@ export const wordPopupRoute: Routes = [
             word: WordResolve
         },
         data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'Words'
+            authorities: ['ROLE_ADMIN', 'ROLE_TEACHER'],
+            pageTitle: 'Słownictwo'
         },
         canActivate: [UserRouteAccessService],
         outlet: 'popup'

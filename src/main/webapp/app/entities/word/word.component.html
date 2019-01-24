@@ -52,14 +52,15 @@
                             <fa-icon [icon]="'eye'"></fa-icon>
                             <span class="d-none d-md-inline">Szczegóły</span>
                         </button>
-                        <div *jhiHasAnyAuthority="'ROLE_ADMIN'">
-                        <button type="submit"
+
+                        <button *jhiHasAnyAuthority="['ROLE_ADMIN','ROLE_TEACHER']" type="submit"
+
                                 [routerLink]="['/word', word.id, 'edit']"
                                 class="btn btn-primary btn-sm">
                             <fa-icon [icon]="'pencil-alt'"></fa-icon>
                             <span class="d-none d-md-inline">Edytuj</span>
                         </button>
-                        <button type="submit"
+                        <button *jhiHasAnyAuthority="['ROLE_ADMIN','ROLE_TEACHER']" type="submit"
                                 [routerLink]="['/', { outlets: { popup: 'word/'+ word.id + '/delete'} }]"
                                 replaceUrl="true"
                                 queryParamsHandling="merge"
