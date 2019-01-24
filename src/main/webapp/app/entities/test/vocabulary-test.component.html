@@ -4,12 +4,12 @@
     </h2>
     <jhi-alert></jhi-alert>
     <br/>
-    <div *jhiHasAnyAuthority="['ROLE_TEACHER', 'ROLE_ADMIN']" class="alert alert-info" role="alert">
+    <div *ngIf="isExam() && testNotAllowed" class="alert alert-info" role="alert">
         Tryb podgłądu.
         <br/>
         Ten test nie jest dostępny dla administratorów i nauczycieli.
     </div>
-    <div *ngIf="examAlreadyPassed" class="alert alert-info" role="alert">
+    <div *ngIf="isExam() && !testNotAllowed && examAlreadyPassed" class="alert alert-info" role="alert">
         Ten test już zostal przez ciebie skończony
     </div>
     <div *ngIf="!isExam()">
