@@ -136,7 +136,7 @@ export class LessonUpdateComponent implements OnInit {
         this.filesToUpload.splice(index, 1);
     }
     setFileData(event, entity, field, isImage) {
-        let file = event.target.files[0];
+        const file = event.target.files[0];
         this.lessonFile.name = file.name;
         this.dataUtils.setFileData(event, entity, field, isImage);
     }
