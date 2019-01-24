@@ -19,7 +19,7 @@
     <div *ngFor="let item of this.vocabularyTestItems" class="ui-g ui-fluid">
         <div class="ui-g-12 ui-md-3">
             <div class="ui-inputgroup">
-                <input type="text" name="translation"
+                <input type="text" name="translation" autocomplete="off"
                        class="ng-pristine ng-valid ui-inputtext ui-corner-all ui-state-default ui-widget"
                        [ngClass]="{
                         'good-answer' : item.translationCorrect && !isExam(),
@@ -38,7 +38,7 @@
 
         <div class="ui-g-12 ui-md-3">
             <div class="ui-inputgroup">
-                <input type="text" name="kana"
+                <input type="text" name="kana" autocomplete="off"
                        class="ng-pristine ng-valid ui-inputtext ui-corner-all ui-state-default ui-widget"
                        [ngClass]="{
                         'good-answer' : item.kanaCorrect && !isExam(),
@@ -57,7 +57,7 @@
 
         <div class="ui-g-12 ui-md-3">
             <div class="ui-inputgroup">
-                <input type="text" name="kanji"
+                <input type="text" name="kanji" autocomplete="off"
                        class="ng-pristine ng-valid ui-inputtext ui-corner-all ui-state-default ui-widget"
                        [ngClass]="{
                         'good-answer' : item.kanjiCorrect && !isExam(),
