@@ -42,6 +42,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
         });
         this.router.events.subscribe(event => this.registerChangeInAuthorisation());
         this.registerChangeInAuthorisation();
+        this.updateUserAuthorityInfo();
     }
 
     collapseNavbar() {

@@ -55,14 +55,6 @@ export class VocabularyTestComponent implements OnInit {
 
     loadAll() {
         if (this.isExam()) {
-            this.examService
-                .query({
-                    'code.equals': this.examCode
-                })
-                .subscribe(
-                    (res: HttpResponse<IExam[]>) => (this.exam = res.body[0]),
-                    (res: HttpErrorResponse) => this.onError(res.message)
-                );
             this.examService.generateWrittenTest(this.examCode).subscribe(
                 (res: HttpResponse<IVocabularyTestItem[]>) => {
                     this.vocabularyTestItems = res.body;
@@ -83,18 +75,35 @@ export class VocabularyTestComponent implements OnInit {
         this.loadAll();
         this.principal.identity().then(account => {
             this.currentAccount = account;
-            this.examResultService
-                .query({
-                    'studentId.equals': this.currentAccount.id
-                })
-                .subscribe(
-                    res => {
-                        this.examAlreadyPassed = res.body !== undefined && res.body.length !== 0;
-                    },
-                    (res: HttpErrorResponse) => this.onError(res.message)
-                );
+            this.initializeExam();
         });
         this.principal.hasAnyAuthority(['ROLE_ADMIN', 'ROLE_TEACHER']).then(isAdminOrTeacher => (this.testNotAllowed = isAdminOrTeacher));
+    }
+
+    private initializeExam() {
+        this.examService
+            .query({
+                'code.equals': this.examCode
+            })
+            .subscribe(
+                (res: HttpResponse<IExam[]>) => {
+                    this.exam = res.body[0];
+                    this.initializeExamAlreadyPassed();
+                },
+                (res: HttpErrorResponse) => this.onError(res.message)
+            );
+    }
+
+    private initializeExamAlreadyPassed() {
+        this.examResultService
+            .query({
+                'studentId.equals': this.currentAccount.id,
+                'examId.equals': this.exam.id
+            })
+            .subscribe(
+                res => (this.examAlreadyPassed = res.body !== undefined && res.body.length !== 0),
+                (res: HttpErrorResponse) => this.onError(res.message)
+            );
     }
 
     saveExamResult() {
