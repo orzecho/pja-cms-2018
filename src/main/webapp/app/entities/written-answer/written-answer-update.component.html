@@ -54,17 +54,6 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-control-label" for="field_romaji">Romaji</label>
-                    <input type="text" class="form-control" name="romaji" id="field_romaji"
-                        [(ngModel)]="writtenAnswer.romaji" required/>
-                    <div [hidden]="!(editForm.controls.romaji?.dirty && editForm.controls.romaji?.invalid)">
-                        <small class="form-text text-danger"
-                        [hidden]="!editForm.controls.romaji?.errors?.required">
-                        This field is required.
-                        </small>
-                    </div>
-                </div>
-                <div class="form-group">
                     <label class="form-control-label" for="field_isRightAnswer">Is Right Answer</label>
                     <input type="checkbox" class="form-control" name="isRightAnswer" id="field_isRightAnswer"
                         [(ngModel)]="writtenAnswer.isRightAnswer" />
@@ -78,7 +67,8 @@
 
                 <div class="form-group">
                     <label class="form-control-label" for="field_word">Word</label>
-                    <select class="form-control" id="field_word" name="word" [(ngModel)]="writtenAnswer.wordId"  required>
+                    <select class="form-control" id="field_word" name="word" [(ngModel)]="writtenAnswer.word.id"
+                            required>
                         <option *ngIf="!editForm.value.word" [ngValue]="null" selected></option>
                         <option [ngValue]="wordOption.id" *ngFor="let wordOption of words; trackBy: trackWordById">{{wordOption.id}}</option>
                     </select>
