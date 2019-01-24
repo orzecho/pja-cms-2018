@@ -1,41 +1,50 @@
 <div class="row justify-content-center">
     <div class="col-8">
-        <div *ngIf="examResult">
-            <h2><span>Exam Result</span> {{examResult.id}}</h2>
-            <hr>
-            <jhi-alert-error></jhi-alert-error>
-            <dl class="row-md jh-entity-details">
-                <dt><span>Date</span></dt>
-                <dd>
-                    <span>{{examResult.date}}</span>
-                </dd>
-                <dt><span>Result</span></dt>
-                <dd>
-                    <span>{{examResult.result}}</span>
-                </dd>
-                <dt><span>Student</span></dt>
-                <dd>
-                    {{examResult.studentLogin}}
-                </dd>
-                <dt><span>Exam</span></dt>
-                <dd>
-                    <div *ngIf="examResult.examId">
-                        <a [routerLink]="['/exam', examResult.examId, 'view']">{{examResult.examId}}</a>
-                    </div>
-                </dd>
-            </dl>
-
-            <button type="submit"
-                    (click)="previousState()"
-                    class="btn btn-info">
-                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Back</span>
-            </button>
-
-            <button type="button"
-                    [routerLink]="['/exam-result', examResult.id, 'edit']"
-                    class="btn btn-primary">
-                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span> Edit</span>
-            </button>
-        </div>
+        <h2><span>Twój wynik: </span> {{examResult.result}} z {{getMaxPoints(examResult)}}</h2>
+        <hr>
+        </dl>
     </div>
+</div>
+<div *ngIf="sourceWords !== undefined">
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Polski</th>
+                    <th>Prawidłowa odpowiedź</th>
+                    <th>Kana</th>
+                    <th>Prawidłowa odpowiedź</th>
+                    <th>Kanji</th>
+                    <th>Prawidłowa odpowiedź</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let answer of examResult.writtenAnswers ;trackBy: trackId">
+                <td [ngClass]="{'source-language': isTranslationSource(answer)}">
+                    {{answer.translation ? answer.translation: '...'}}
+                </td>
+                <td>{{answer.word.translation}}</td>
+                <td [ngClass]="{'source-language': isKanaSource(answer)}">
+                    {{answer.kana ? answer.kana : '...'}}
+                </td>
+                <td>{{answer.word.kana}}</td>
+                <td [ngClass]="{'source-language': isKanjiSource(answer)}">
+                    {{answer.kanji ? answer.kanji : '...'}}
+                </td>
+                <td>{{answer.word.kanji ? answer.word.kanji : '...'}}</td>
+                <td class="text-middle">
+                    <span [class]="answer.isRightAnswer ? 'right-answer' : 'wrong-answer'">
+                        {{answer.isRightAnswer ? '+1' : '0'}}
+                    </span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Wstecz</span>
+    </button>
 </div>

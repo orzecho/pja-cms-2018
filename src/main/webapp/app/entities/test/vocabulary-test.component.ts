@@ -40,7 +40,8 @@ export class VocabularyTestComponent implements OnInit {
         private parseLinks: JhiParseLinks,
         private jhiAlertService: JhiAlertService,
         private principal: Principal,
-        private activatedRoute: ActivatedRoute
+        private activatedRoute: ActivatedRoute,
+        private router: Router
     ) {
         this.activatedRoute.params.subscribe(params => {
             this.testType = params.type;
@@ -88,12 +89,12 @@ export class VocabularyTestComponent implements OnInit {
         const examResult = this.testService.converWrittenTestToExamResult(this.vocabularyTestItems, this.exam.id);
         this.examResultService
             .create(examResult)
-            .subscribe((res: HttpResponse<IExam>) => this.onSaveSuccess(), (res: HttpErrorResponse) => this.onSaveError());
+            .subscribe((res: HttpResponse<IExam>) => this.onSaveSuccess(res.body), (res: HttpErrorResponse) => this.onSaveError());
     }
 
-    private onSaveSuccess() {
+    private onSaveSuccess(exam: IExam) {
         this.isSaving = false;
-        this.previousState();
+        this.router.navigate(['/exam-result/', exam.id, 'view']);
     }
 
     private onSaveError() {

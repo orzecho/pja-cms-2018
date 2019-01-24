@@ -21,6 +21,7 @@ public class WrittenAnswerMapper implements EntityMapper<WrittenAnswerDTO, Writt
     public final WrittenAnswerRepository writtenAnswerRepository;
     public final ExamResultRepository examResultRepository;
     public final WordRepository wordRepository;
+    public final WordMapper wordMapper;
 
     @Override
     public WrittenAnswer toEntity(WrittenAnswerDTO dto) {
@@ -31,8 +32,11 @@ public class WrittenAnswerMapper implements EntityMapper<WrittenAnswerDTO, Writt
             entity = writtenAnswerRepository.findById(dto.getId())
                 .orElseThrow(EntityNotFoundException::new);
         }
-        entity.setWord(wordRepository.findById(dto.getWordId())
-                .orElseThrow(EntityNotFoundException::new));
+        if (dto.getWord().getId() == null) {
+            throw new IllegalArgumentException("Word doesn't exist");
+        }
+        entity.setWord(wordRepository.findById(dto.getWord().getId())
+            .orElseThrow(EntityNotFoundException::new));
         entity.setExam(examResultRepository.findById(dto.getExamId())
                 .orElseThrow(EntityNotFoundException::new));
         entity.setIsRightAnswer(dto.getIsRightAnswer());
@@ -47,7 +51,7 @@ public class WrittenAnswerMapper implements EntityMapper<WrittenAnswerDTO, Writt
     public WrittenAnswerDTO toDto(WrittenAnswer entity) {
         return WrittenAnswerDTO.builder()
             .id(entity.getId())
-            .wordId(entity.getWord().getId())
+            .word(wordMapper.toDto(entity.getWord()))
             .examId(entity.getExam().getId())
             .isRightAnswer(entity.isRightAnswer())
             .kana(entity.getKana())

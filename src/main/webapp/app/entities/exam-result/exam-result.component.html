@@ -1,12 +1,6 @@
 <div>
     <h2 id="page-heading">
-        <span>Exam Results</span>
-        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-exam-result" [routerLink]="['/exam-result/new']">
-            <fa-icon [icon]="'plus'"></fa-icon>
-            <span >
-            Create new Exam Result
-            </span>
-        </button>
+        <span>Twoje wyniki z egzaminów</span>
     </h2>
     <jhi-alert></jhi-alert>
     <br/>
@@ -14,27 +8,15 @@
         <table class="table table-striped">
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
-            <th jhiSortBy="id"><span>ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="date"><span>Date</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="result"><span>Result</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="studentLogin"><span>Student</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="examId"><span>Exam</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th></th>
+                <th jhiSortBy="date"><span>Data</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+                <th jhiSortBy="result"><span>Wynik</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let examResult of examResults ;trackBy: trackId">
-                <td><a [routerLink]="['/exam-result', examResult.id, 'view' ]">{{examResult.id}}</a></td>
                 <td>{{examResult.date | date:'medium'}}</td>
-                <td>{{examResult.result}}</td>
-                <td>
-                    {{examResult.studentLogin}}
-                </td>
-                <td>
-                    <div *ngIf="examResult.examId">
-                        <a [routerLink]="['../exam', examResult.examId , 'view' ]" >{{examResult.examId}}</a>
-                    </div>
-                </td>
+                <td>{{examResult.result}} z {{getMaxPoints(examResult)}}</td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
@@ -42,20 +24,6 @@
                                 class="btn btn-info btn-sm">
                             <fa-icon [icon]="'eye'"></fa-icon>
                             <span class="d-none d-md-inline">View</span>
-                        </button>
-                        <button type="submit"
-                                [routerLink]="['/exam-result', examResult.id, 'edit']"
-                                class="btn btn-primary btn-sm">
-                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
-                            <span class="d-none d-md-inline">Edit</span>
-                        </button>
-                        <button type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'exam-result/'+ examResult.id + '/delete'} }]"
-                                replaceUrl="true"
-                                queryParamsHandling="merge"
-                                class="btn btn-danger btn-sm">
-                            <fa-icon [icon]="'times'"></fa-icon>
-                            <span class="d-none d-md-inline">Delete</span>
                         </button>
                     </div>
                 </td>

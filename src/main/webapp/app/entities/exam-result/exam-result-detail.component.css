@@ -1,0 +1,14 @@
+.right-answer {
+    color: green;
+    font-weight: bold;
+}
+
+.wrong-answer {
+    color: red;
+    font-weight: bold;
+}
+
+.source-language {
+    color: #222222;
+    font-weight: bold;
+}

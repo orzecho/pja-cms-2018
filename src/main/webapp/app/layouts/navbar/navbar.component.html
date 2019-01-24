@@ -42,6 +42,11 @@
                     <span>Examiny</span>
                 </a>
             </li>
+            <li *jhiHasAnyAuthority="['ROLE_USER']" class="nav-item" >
+                <a class="nav-link" routerLink="exam-result" (click)="collapseNavbar()">
+                    <span>Wyniki z egaminów</span>
+                </a>
+            </li>
             <li *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_TEACHER']" class="nav-item" >
                 <a class="nav-link" routerLink="filling-gaps-test-item" routerLinkActive="active"
                    [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">

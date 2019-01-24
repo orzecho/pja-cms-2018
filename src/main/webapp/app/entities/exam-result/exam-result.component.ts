@@ -53,7 +53,8 @@ export class ExamResultComponent implements OnInit, OnDestroy {
             .query({
                 page: this.page - 1,
                 size: this.itemsPerPage,
-                sort: this.sort()
+                sort: this.sort(),
+                'studentId.equals': this.currentAccount.id
             })
             .subscribe(
                 (res: HttpResponse<IExamResult[]>) => this.paginateExamResults(res.body, res.headers),
@@ -73,7 +74,8 @@ export class ExamResultComponent implements OnInit, OnDestroy {
             queryParams: {
                 page: this.page,
                 size: this.itemsPerPage,
-                sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
+                sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc'),
+                'studentId.equals': this.currentAccount.id
             }
         });
         this.loadAll();
@@ -92,15 +94,17 @@ export class ExamResultComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.loadAll();
         this.principal.identity().then(account => {
             this.currentAccount = account;
+            this.loadAll();
         });
         this.registerChangeInExamResults();
     }
 
     ngOnDestroy() {
-        this.eventManager.destroy(this.eventSubscriber);
+        if (this.eventManager) {
+            this.eventManager.destroy(this.eventSubscriber);
+        }
     }
 
     trackId(index: number, item: IExamResult) {
@@ -124,6 +128,17 @@ export class ExamResultComponent implements OnInit, OnDestroy {
         this.totalItems = parseInt(headers.get('X-Total-Count'), 10);
         this.queryCount = this.totalItems;
         this.examResults = data;
+    }
+
+    getMaxPoints(examResult: IExamResult) {
+        let maxPoints = 0;
+        if (examResult.writtenAnswers) {
+            maxPoints = maxPoints + examResult.writtenAnswers.length;
+        }
+        if (examResult.trueFalseAnswers) {
+            maxPoints = maxPoints + examResult.trueFalseAnswers.length;
+        }
+        return maxPoints;
     }
 
     private onError(errorMessage: string) {

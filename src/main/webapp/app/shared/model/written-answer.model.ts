@@ -1,3 +1,5 @@
+import { IWord } from 'app/shared/model/word.model';
+
 export interface IWrittenAnswer {
     id?: number;
     translationFrom?: string;
@@ -5,7 +7,7 @@ export interface IWrittenAnswer {
     kana?: string;
     kanji?: string;
     isRightAnswer?: boolean;
-    wordId?: number;
+    word?: IWord;
     examId?: number;
 }
 
@@ -17,7 +19,7 @@ export class WrittenAnswer implements IWrittenAnswer {
         public kana?: string,
         public kanji?: string,
         public isRightAnswer?: boolean,
-        public wordId?: number,
+        public word?: IWord,
         public examId?: number
     ) {
         this.isRightAnswer = this.isRightAnswer || false;

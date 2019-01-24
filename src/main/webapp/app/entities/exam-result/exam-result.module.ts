@@ -3,28 +3,14 @@ import { RouterModule } from '@angular/router';
 
 import { NyanSharedModule } from 'app/shared';
 import { NyanAdminModule } from 'app/admin/admin.module';
-import {
-    ExamResultComponent,
-    ExamResultDetailComponent,
-    ExamResultUpdateComponent,
-    ExamResultDeletePopupComponent,
-    ExamResultDeleteDialogComponent,
-    examResultRoute,
-    examResultPopupRoute
-} from './';
+import { ExamResultComponent, ExamResultDetailComponent, examResultRoute } from './';
 
-const ENTITY_STATES = [...examResultRoute, ...examResultPopupRoute];
+const ENTITY_STATES = [...examResultRoute];
 
 @NgModule({
     imports: [NyanSharedModule, NyanAdminModule, RouterModule.forChild(ENTITY_STATES)],
-    declarations: [
-        ExamResultComponent,
-        ExamResultDetailComponent,
-        ExamResultUpdateComponent,
-        ExamResultDeleteDialogComponent,
-        ExamResultDeletePopupComponent
-    ],
-    entryComponents: [ExamResultComponent, ExamResultUpdateComponent, ExamResultDeleteDialogComponent, ExamResultDeletePopupComponent],
+    declarations: [ExamResultComponent, ExamResultDetailComponent],
+    entryComponents: [ExamResultComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class NyanExamResultModule {}

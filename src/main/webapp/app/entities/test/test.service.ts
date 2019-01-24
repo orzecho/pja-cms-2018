@@ -7,7 +7,6 @@ import { IVocabularyTestItem } from 'app/shared/model/vocabulary-test-item.model
 import { IFillingGapsTestItem } from 'app/shared/model/filling-gaps-test-item.model';
 import { ExamResult, IExamResult } from 'app/shared/model/exam-result.model';
 import { WrittenAnswer } from 'app/shared/model/written-answer.model';
-import { TestType } from 'app/shared/model/exam.model';
 
 type EntityArrayResponseType = HttpResponse<IVocabularyTestItem[]>;
 
@@ -41,7 +40,7 @@ export class TestService {
         writtenAnswer.kanji = testItem.kanjiFromUser;
         writtenAnswer.translation = testItem.translationFromUser;
         writtenAnswer.isRightAnswer = testItem.translationCorrect && testItem.kanaCorrect && testItem.kanjiCorrect;
-        writtenAnswer.wordId = testItem.word.id;
+        writtenAnswer.word = testItem.word;
         return writtenAnswer;
     }
 }

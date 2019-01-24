@@ -30,7 +30,7 @@ public class WrittenAnswerDTO implements Serializable {
     @NotNull
     private Boolean isRightAnswer;
 
-    private Long wordId;
+    private WordDTO word;
 
     private Long answerId;
 
