@@ -1,14 +1,23 @@
 <div>
     <h2 id="page-heading">
-        <span>{{isExam() ? exam.name : "Test słownictwa"}}</span>
+        <span>{{isExam() ? (exam ? exam.name : "") : "Test słownictwa"}}</span>
     </h2>
     <jhi-alert></jhi-alert>
     <br/>
+    <div *jhiHasAnyAuthority="['ROLE_TEACHER', 'ROLE_ADMIN']" class="alert alert-info" role="alert">
+        Tryb podgłądu.
+        <br/>
+        Ten test nie jest dostępny dla administratorów i nauczycieli.
+    </div>
+    <div *ngIf="examAlreadyPassed" class="alert alert-info" role="alert">
+        Ten test już zostal przez ciebie skończony
+    </div>
     <div *ngIf="!isExam()">
         Tagi: <span class="badge badge-pill badge-primary"
              *ngFor="let tag of this.tags.split(',')">{{tag}}</span>
     </div>
-    <form name="testForm" role="form" novalidate (ngSubmit)="saveExamResult()" #testForm="ngForm">
+    <form *ngIf="!examAlreadyPassed" name="testForm"
+          role="form" novalidate (ngSubmit)="saveExamResult()" #testForm="ngForm">
         <div *ngFor="let item of this.vocabularyTestItems" class="ui-g ui-fluid">
             <div class="ui-g-12 ui-md-3">
                 <div class="ui-inputgroup">
@@ -75,14 +84,15 @@
                 </span>
             </div>
         </div>
+        <br/>
         <div>
             <button type="button"
                     (click)="previousState()"
                     class="btn btn-info">
                 <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Powrót</span>
             </button>
-            <button type="submit" id="save-entity" *ngIf="isExam()" [disabled]="isSaving"
-                    class="btn btn-primary">
+            <button type="submit" id="save-entity" *ngIf="isExam() && !examAlreadyPassed"
+                    [disabled]="isSaving || testNotAllowed" class="btn btn-primary">
                 <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span>Zapisz</span>
             </button>
         </div>

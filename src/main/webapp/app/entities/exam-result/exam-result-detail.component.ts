@@ -13,7 +13,6 @@ import { IWord } from 'app/shared/model/word.model';
 })
 export class ExamResultDetailComponent implements OnInit {
     examResult: IExamResult;
-    sourceWords: IWord[];
 
     constructor(private activatedRoute: ActivatedRoute, private wordService: WordService) {}
 
@@ -48,13 +47,5 @@ export class ExamResultDetailComponent implements OnInit {
             maxPoints = maxPoints + examResult.trueFalseAnswers.length;
         }
         return maxPoints;
-    }
-
-    private sourceWordsNotInitialized() {
-        return this.sourceWords === undefined || this.sourceWords.length === 0;
-    }
-
-    findWordById(wordId: number): IWord {
-        return this.sourceWords.find(word => word.id === wordId);
     }
 }
