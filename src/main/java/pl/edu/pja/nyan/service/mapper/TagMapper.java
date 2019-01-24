@@ -59,13 +59,4 @@ public class TagMapper implements EntityMapper<TagDTO, Tag> {
         return minimalWordMapper.toDto(wordRepository.findByTagsContaining(entity));
     }
 
-    @Override
-    public List<Tag> toEntity(Collection<TagDTO> dtoList) {
-        return dtoList.stream().map(this::toEntity).collect(Collectors.toList());
-    }
-
-    @Override
-    public List<TagDTO> toDto(Collection<Tag> entityList) {
-        return entityList.stream().map(this::toDto).collect(Collectors.toList());
-    }
 }

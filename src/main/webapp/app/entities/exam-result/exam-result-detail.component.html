@@ -1,0 +1,54 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <h2><span>Twój wynik: </span> {{examResult.result}} z {{getMaxPoints(examResult)}} punktów</h2>
+        <hr>
+        </dl>
+    </div>
+</div>
+<div>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Polski</th>
+                    <th>Prawidłowa odpowiedź</th>
+                    <th>Kana</th>
+                    <th>Prawidłowa odpowiedź</th>
+                    <th>Kanji</th>
+                    <th>Prawidłowa odpowiedź</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let answer of examResult.writtenAnswers;">
+                <td [ngClass]="{'source-language': isTranslationSource(answer)}">
+                    {{answer.translation ? answer.translation: '...'}}
+                </td>
+                <td>{{answer.word.translation}}</td>
+                <td [ngClass]="{'source-language': isKanaSource(answer)}">
+                    {{answer.kana ? answer.kana : '...'}}
+                </td>
+                <td>{{answer.word.kana}}</td>
+                <td [ngClass]="{'source-language': isKanjiSource(answer)}">
+                    {{answer.kanji ? answer.kanji : '...'}}
+                </td>
+                <td>{{answer.word.kanji ? answer.word.kanji : '...'}}</td>
+                <td class="text-middle">
+                    <span [class]="answer.isRightAnswer ? 'right-answer' : 'wrong-answer'">
+                        {{answer.isRightAnswer ? '+1' : '0'}}
+                    </span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="alert alert-light" role="alert">
+        <fa-icon [icon]="'book'" [fixedWidth]="true"></fa-icon>
+        Na <span class="source-language">niebiesko</span> są oznaczone tłumaczenia żródłowe.
+    </div>
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Wstecz</span>
+    </button>
+</div>

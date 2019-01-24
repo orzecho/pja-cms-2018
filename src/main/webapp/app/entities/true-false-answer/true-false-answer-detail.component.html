@@ -1,0 +1,49 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="trueFalseAnswer">
+            <h2><span>True False Answer</span> {{trueFalseAnswer.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span>Translation From</span></dt>
+                <dd>
+                    <span>{{trueFalseAnswer.translationFrom}}</span>
+                </dd>
+                <dt><span>Is Right Answer</span></dt>
+                <dd>
+                    <span>{{trueFalseAnswer.isRightAnswer}}</span>
+                </dd>
+                <dt><span>Src Word</span></dt>
+                <dd>
+                    <div *ngIf="trueFalseAnswer.srcWordId">
+                        <a [routerLink]="['/word', trueFalseAnswer.srcWordId, 'view']">{{trueFalseAnswer.srcWordId}}</a>
+                    </div>
+                </dd>
+                <dt><span>Target Word</span></dt>
+                <dd>
+                    <div *ngIf="trueFalseAnswer.targetWordId">
+                        <a [routerLink]="['/word', trueFalseAnswer.targetWordId, 'view']">{{trueFalseAnswer.targetWordId}}</a>
+                    </div>
+                </dd>
+                <dt><span>Exam</span></dt>
+                <dd>
+                    <div *ngIf="trueFalseAnswer.examId">
+                        <a [routerLink]="['/exam-result', trueFalseAnswer.examId, 'view']">{{trueFalseAnswer.examId}}</a>
+                    </div>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/true-false-answer', trueFalseAnswer.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

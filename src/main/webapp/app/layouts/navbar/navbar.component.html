@@ -1,4 +1,5 @@
-<nav class="navbar navbar-dark navbar-expand-md jh-navbar">
+<nav *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_TEACHER', 'ROLE_USER']"
+     class="navbar navbar-dark navbar-expand-md jh-navbar">
     <div class="jh-logo-container float-left">
         <a class="jh-navbar-toggler d-lg-none float-right" href="javascript:void(0);" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation" (click)="toggleNavbar()">
             <fa-icon [icon]="'bars'"></fa-icon>
@@ -10,37 +11,83 @@
     </div>
     <div class="navbar-collapse collapse" id="navbarResponsive" [ngbCollapse]="isNavbarCollapsed" [ngSwitch]="isAuthenticated()">
         <ul class="navbar-nav ml-auto">
-            <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-                <a class="nav-link" routerLink="lesson"  (click)="collapseNavbar()">
-                    <span>Lekcje</span>
-                </a>
-            </li>
-            <li *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_TEACHER']"  class="nav-item" routerLinkActive="active"
+            <li ngbDropdown class="nav-item dropdown pointer" routerLinkActive="active"
                 [routerLinkActiveOptions]="{exact: true}">
-                <a class="nav-link" routerLink="lesson-file"  (click)="collapseNavbar()">
-                    <fa-icon [icon]="'save'" [fixedWidth]="true"></fa-icon>
-                    <span>Pliki</span>
+                <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="vocabulary-menu">
+                    <span>
+                        <fa-icon [icon]="'th-list'"></fa-icon>
+                        <span>
+                            Słownictwo
+                        </span>
+                    </span>
                 </a>
+
+                <ul class="dropdown-menu" ngbDropdownMenu>
+                    <li>
+                        <a class="dropdown-item" routerLink="lesson" routerLinkActive="active"
+                           [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
+                            <span>Lekcje</span>
+                        </a>
+                    </li>
+                    <li *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_TEACHER']">
+                        <a class="dropdown-item" routerLink="lesson-file"  (click)="collapseNavbar()">
+                            <!--<fa-icon [icon]="'save'" [fixedWidth]="true"></fa-icon>-->
+                            <span>Pliki lekcji</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" routerLink="tag" routerLinkActive="active"
+                           [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
+                            <span>Tagi</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" routerLink="word" routerLinkActive="active"
+                           [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
+                            <span>Słowa</span>
+                        </a>
+                    </li>
+                </ul>
             </li>
-            <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-                <a class="nav-link" routerLink="word"  (click)="collapseNavbar()">
-                    <span>Słownictwo</span>
+
+            <!-- DROPDOWN - testy -->
+            <li *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_TEACHER']" ngbDropdown
+                class="nav-item dropdown pointer" routerLinkActive="active"
+                [routerLinkActiveOptions]="{exact: true}">
+                <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="entity-menu">
+                    <span>
+                        <fa-icon [icon]="'th-list'"></fa-icon>
+                        <span>
+                            Egzaminy
+                        </span>
+                    </span>
                 </a>
+
+                <ul class="dropdown-menu" ngbDropdownMenu>
+                    <li>
+                        <a class="dropdown-item" routerLink="exam" routerLinkActive="active"
+                           [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
+                            <span>Zarządzanie egzaminami</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" routerLink="exam-result-for-teacher" routerLinkActive="active"
+                           [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
+                            <span>Oceny studentów</span>
+                        </a>
+                    </li>
+                </ul>
             </li>
-            <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-                <a class="nav-link" routerLink="tag"  (click)="collapseNavbar()">
-                    <span>Tagi</span>
-                </a>
-            </li>
-            <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+            <li class="nav-item" routerLinkActive="active"
+                [routerLinkActiveOptions]="{exact: true}">
                 <a class="nav-link" routerLink="test"  (click)="collapseNavbar()">
-                    <span>Testy</span>
+                    <span>Ćwiczenia</span>
                 </a>
             </li>
             <li *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_TEACHER']" class="nav-item" >
                 <a class="nav-link" routerLink="filling-gaps-test-item" routerLinkActive="active"
                    [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
-                    <fa-icon [icon]="'book'" [fixedWidth]="true"></fa-icon>
+                    <fa-icon [icon]="'eye'" [fixedWidth]="true"></fa-icon>
                     <span>Testy z wypełnianiem luk</span>
                 </a>
             </li>
@@ -111,7 +158,7 @@
                       Konto
                     </span>
                   </span>
-                  <span *ngIf="getImageUrl()">
+                    <span *ngIf="getImageUrl()">
                       <img [src]="getImageUrl()" class="profile-image img-circle" alt="Avatar">
                   </span>
                 </a>
@@ -132,6 +179,11 @@
                         <a class="dropdown-item" (click)="logout()" id="logout">
                             <fa-icon [icon]="'sign-out-alt'" [fixedWidth]="true"></fa-icon>
                             <span>Wyloguj</span>
+                        </a>
+                    </li>
+                    <li *ngSwitchCase="true">
+                        <a class="dropdown-item" routerLink="exam-result" (click)="collapseNavbar()">
+                            <span>Twoje oceny</span>
                         </a>
                     </li>
                     <li *ngSwitchCase="false">

@@ -1,24 +1,36 @@
 <div>
     <h2 id="page-heading">
-        <span>Test słownictwa</span>
+        <span>{{isExam() ? (exam ? exam.name : "") : "Test słownictwa"}}</span>
     </h2>
     <jhi-alert></jhi-alert>
     <br/>
-    Tagi: <span class="badge badge-pill badge-primary"
+    <div *ngIf="isExam() && testNotAllowed" class="alert alert-info" role="alert">
+        Tryb podgłądu.
+        <br/>
+        Ten test nie jest dostępny dla administratorów i nauczycieli.
+    </div>
+    <div *ngIf="isExam() && !testNotAllowed && examAlreadyPassed" class="alert alert-info" role="alert">
+        Ten test już zostal przez ciebie skończony
+    </div>
+    <div *ngIf="!isExam()">
+        Tagi: <span class="badge badge-pill badge-primary"
              *ngFor="let tag of this.tags.split(',')">{{tag}}</span>
-
+    </div>
     <div *ngFor="let item of this.vocabularyTestItems" class="ui-g ui-fluid">
         <div class="ui-g-12 ui-md-3">
             <div class="ui-inputgroup">
-                <input type="text"
-                       [class]="item.translationCorrect ? 'good-answer ng-pristine ng-valid ui-inputtext ui-corner-all ui-state-default ui-widget' :
-                       'bad-answer ng-pristine ng-valid ui-inputtext ui-corner-all ui-state-default ui-widget'" pInputText
-                       placeholder="tłumaczenie"
+                <input type="text" name="translation" autocomplete="off"
+                       class="ng-pristine ng-valid ui-inputtext ui-corner-all ui-state-default ui-widget"
+                       [ngClass]="{
+                        'good-answer' : item.translationCorrect && !isExam(),
+                        'bad-answer' : !item.translationCorrect && !isExam()
+                        }"
+                       pInputText placeholder="tłumaczenie"
                        [(ngModel)]="item.translationFromUser" (ngModelChange)="checkTranslation(item)">
-                <ng-template [ngIf]="item.translationCorrect" [ngIfElse]="translationNotCorrect">
+                <ng-template *ngIf="item.translationCorrect && !isExam()">
                     <fa-icon class="ui-inputgroup-addon" [icon]="'check'"></fa-icon>
                 </ng-template>
-                <ng-template #translationNotCorrect>
+                <ng-template *ngIf="!item.translationCorrect && !isExam()">
                     <fa-icon class="ui-inputgroup-addon" [icon]="'times'"></fa-icon>
                 </ng-template>
             </div>
@@ -26,13 +38,18 @@
 
         <div class="ui-g-12 ui-md-3">
             <div class="ui-inputgroup">
-                <input type="text" [class]="item.kanaCorrect ? 'good-answer ng-pristine ng-valid ui-inputtext ui-corner-all ui-state-default ui-widget' :
-                       'bad-answer ng-pristine ng-valid ui-inputtext ui-corner-all ui-state-default ui-widget'" pInputText placeholder="kana"
+                <input type="text" name="kana" autocomplete="off"
+                       class="ng-pristine ng-valid ui-inputtext ui-corner-all ui-state-default ui-widget"
+                       [ngClass]="{
+                        'good-answer' : item.kanaCorrect && !isExam(),
+                        'bad-answer' : !item.kanaCorrect && !isExam()
+                        }"
+                       pInputText placeholder="kana"
                        [(ngModel)]="item.kanaFromUser" (ngModelChange)="checkKana(item)">
-                <ng-template [ngIf]="item.kanaCorrect" [ngIfElse]="kanaNotCorrect">
+                <ng-template *ngIf="item.kanaCorrect && !isExam()">
                     <fa-icon class="ui-inputgroup-addon" [icon]="'check'"></fa-icon>
                 </ng-template>
-                <ng-template #kanaNotCorrect>
+                <ng-template *ngIf="!item.kanaCorrect && !isExam()">
                     <fa-icon class="ui-inputgroup-addon" [icon]="'times'"></fa-icon>
                 </ng-template>
             </div>
@@ -40,18 +57,23 @@
 
         <div class="ui-g-12 ui-md-3">
             <div class="ui-inputgroup">
-                <input type="text" [class]="item.kanjiCorrect ? 'good-answer ng-pristine ng-valid ui-inputtext ui-corner-all ui-state-default ui-widget' :
-                       'bad-answer ng-pristine ng-valid ui-inputtext ui-corner-all ui-state-default ui-widget'" pInputText placeholder="kanji"
+                <input type="text" name="kanji" autocomplete="off"
+                       class="ng-pristine ng-valid ui-inputtext ui-corner-all ui-state-default ui-widget"
+                       [ngClass]="{
+                        'good-answer' : item.kanjiCorrect && !isExam(),
+                        'bad-answer' : !item.kanjiCorrect && !isExam()
+                        }"
+                       pInputText placeholder="kanji"
                        [(ngModel)]="item.kanjiFromUser" (ngModelChange)="checkKanji(item)">
-                <ng-template [ngIf]="item.kanjiCorrect" [ngIfElse]="kanjiNotCorrect">
+                <ng-template *ngIf="item.kanjiCorrect && !isExam()">
                     <fa-icon class="ui-inputgroup-addon" [icon]="'check'"></fa-icon>
                 </ng-template>
-                <ng-template #kanjiNotCorrect>
+                <ng-template *ngIf="!item.kanjiCorrect && !isExam()">
                     <fa-icon class="ui-inputgroup-addon" [icon]="'times'"></fa-icon>
                 </ng-template>
             </div>
         </div>
-        <div class="ui-g-12 ui-md-3">
+        <div *ngIf="!isExam()" class="ui-g-12 ui-md-3">
             <span>
                 <a [routerLink]="['/word', item.word.id, 'view' ]">Słowo w Nyango</a> |
                 <a target="_blank"
@@ -60,10 +82,19 @@
             </span>
         </div>
     </div>
-
-    <button type="submit"
-            (click)="previousState()"
-            class="btn btn-info">
-        <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Powrót</span>
-    </button>
+    <br/>
+    <form *ngIf="!examAlreadyPassed" name="testForm"
+          role="form" novalidate (ngSubmit)="saveExamResult()" #testForm="ngForm">
+        <div>
+            <button type="button"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Powrót</span>
+            </button>
+            <button type="submit" id="save-entity" *ngIf="isExam() && !examAlreadyPassed"
+                    [disabled]="isSaving || testNotAllowed" class="btn btn-primary">
+                <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span>Zapisz</span>
+            </button>
+        </div>
+    </form>
 </div>

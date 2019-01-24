@@ -94,6 +94,9 @@ public class WordQueryService extends QueryService<Word> {
             if (criteria.getTagId() != null) {
                 specification = specification.and(buildReferringEntitySpecification(criteria.getTagId(), Word_.tags, Tag_.id));
             }
+            if (criteria.getExamId() != null) {
+                specification = specification.and(buildReferringEntitySpecification(criteria.getExamId(), Word_.exams, Exam_.id));
+            }
         }
         return specification;
     }

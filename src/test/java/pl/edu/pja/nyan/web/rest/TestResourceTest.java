@@ -44,7 +44,7 @@ public class TestResourceTest {
         wordRepository.save(word);
 
         //when
-        ResultActions resultActions = mockMvc.perform(get("/api/test/vocabulary/TRANSLATION/" + tag.getName())
+        ResultActions resultActions = mockMvc.perform(get("/api/test/vocabulary/WRITTEN_PL/" + tag.getName())
             .with(user("user").roles("USER")));
 
         //then
@@ -73,7 +73,7 @@ public class TestResourceTest {
         wordRepository.save(word);
 
         //when
-        ResultActions resultActions = mockMvc.perform(get("/api/test/vocabulary/KANA/" + tag.getName())
+        ResultActions resultActions = mockMvc.perform(get("/api/test/vocabulary/WRITTEN_KANA/" + tag.getName())
             .with(user("user").roles("USER")));
 
         //then
@@ -102,7 +102,7 @@ public class TestResourceTest {
         wordRepository.save(word);
 
         //when
-        ResultActions resultActions = mockMvc.perform(get("/api/test/vocabulary/KANJI/" + tag.getName())
+        ResultActions resultActions = mockMvc.perform(get("/api/test/vocabulary/WRITTEN_KANJI/" + tag.getName())
             .with(user("user").roles("USER")));
 
         //then

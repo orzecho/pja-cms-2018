@@ -65,4 +65,14 @@ public class WordMapper implements EntityMapper<WordDTO, Word> {
     public List<WordDTO> toDto(Collection<Word> entityList) {
         return entityList.stream().map(this::toDto).collect(Collectors.toList());
     }
+
+    public Word fromId(Long id) {
+        if (id == null) {
+            return null;
+        }
+        Word word = new Word();
+        word.setId(id);
+        return word;
+    }
+
 }

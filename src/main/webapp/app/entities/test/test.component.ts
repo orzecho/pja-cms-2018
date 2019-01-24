@@ -15,7 +15,7 @@ export class TestComponent implements OnInit {
     availableTags: ITag[];
     error: any;
     success: any;
-    testType = 'TRANSLATION';
+    testType = 'WRITTEN_MIXED';
 
     constructor(
         private parseLinks: JhiParseLinks,

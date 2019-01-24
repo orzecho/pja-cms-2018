@@ -52,6 +52,15 @@ public class CacheConfiguration {
             cm.createCache(pl.edu.pja.nyan.domain.FillingGapsTestItem.class.getName() + ".gapItems", jcacheConfiguration);
             cm.createCache(pl.edu.pja.nyan.domain.FillingGapsTestItem.class.getName() + ".tags", jcacheConfiguration);
             cm.createCache(pl.edu.pja.nyan.domain.GapItem.class.getName(), jcacheConfiguration);
+            cm.createCache(pl.edu.pja.nyan.domain.Word.class.getName() + ".exams", jcacheConfiguration);
+            cm.createCache(pl.edu.pja.nyan.domain.Exam.class.getName(), jcacheConfiguration);
+            cm.createCache(pl.edu.pja.nyan.domain.Exam.class.getName() + ".results", jcacheConfiguration);
+            cm.createCache(pl.edu.pja.nyan.domain.Exam.class.getName() + ".words", jcacheConfiguration);
+            cm.createCache(pl.edu.pja.nyan.domain.ExamResult.class.getName(), jcacheConfiguration);
+            cm.createCache(pl.edu.pja.nyan.domain.ExamResult.class.getName() + ".writtenAnswers", jcacheConfiguration);
+            cm.createCache(pl.edu.pja.nyan.domain.ExamResult.class.getName() + ".trueFalseAnswers", jcacheConfiguration);
+            cm.createCache(pl.edu.pja.nyan.domain.WrittenAnswer.class.getName(), jcacheConfiguration);
+            cm.createCache(pl.edu.pja.nyan.domain.TrueFalseAnswer.class.getName(), jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }

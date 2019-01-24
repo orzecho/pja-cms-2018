@@ -1,25 +1,25 @@
 package pl.edu.pja.nyan.service;
 
-import lombok.RequiredArgsConstructor;
-import pl.edu.pja.nyan.domain.Tag;
-import pl.edu.pja.nyan.domain.Word;
-import pl.edu.pja.nyan.repository.WordRepository;
-import pl.edu.pja.nyan.service.dto.WordDTO;
-import pl.edu.pja.nyan.service.mapper.WordMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import lombok.RequiredArgsConstructor;
+import pl.edu.pja.nyan.domain.Tag;
+import pl.edu.pja.nyan.domain.Word;
+import pl.edu.pja.nyan.repository.WordRepository;
+import pl.edu.pja.nyan.service.dto.WordDTO;
+import pl.edu.pja.nyan.service.mapper.WordMapper;
 
 /**
  * Service Implementation for managing Word.
@@ -84,6 +84,13 @@ public class WordService {
         log.debug("Request to get Word : {}", id);
         return wordRepository.findOneWithEagerRelationships(id)
             .map(wordMapper::toDto);
+    }
+
+    public List<WordDTO> findByTags(List<Tag> tags) {
+        return wordRepository.findAll().stream()
+            .filter(word -> word.getTags().stream().anyMatch(tags::contains))
+            .map(wordMapper::toDto)
+            .collect(Collectors.toList());
     }
 
     /**

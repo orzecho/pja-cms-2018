@@ -5,6 +5,7 @@ import pl.edu.pja.nyan.NyanApp;
 
 import pl.edu.pja.nyan.domain.Word;
 import pl.edu.pja.nyan.domain.Tag;
+import pl.edu.pja.nyan.domain.Exam;
 import pl.edu.pja.nyan.repository.WordRepository;
 import pl.edu.pja.nyan.service.WordService;
 import pl.edu.pja.nyan.service.dto.WordDTO;
@@ -19,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -28,13 +30,14 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-
+import java.util.ArrayList;
 import java.util.List;
 
 
 import static pl.edu.pja.nyan.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -69,6 +72,9 @@ public class WordResourceIntTest {
 
     @Autowired
     private WordMapper wordMapper;
+    
+    @Mock
+    private WordService wordServiceMock;
 
     @Autowired
     private WordService wordService;
@@ -222,6 +228,37 @@ public class WordResourceIntTest {
             .andExpect(jsonPath("$.[*].kanji").value(hasItem(DEFAULT_KANJI.toString())))
             .andExpect(jsonPath("$.[*].romaji").value(hasItem(DEFAULT_ROMAJI.toString())))
             .andExpect(jsonPath("$.[*].note").value(hasItem(DEFAULT_NOTE.toString())));
+    }
+    
+    public void getAllWordsWithEagerRelationshipsIsEnabled() throws Exception {
+        WordResource wordResource = new WordResource(wordServiceMock, wordQueryService);
+        when(wordServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        MockMvc restWordMockMvc = MockMvcBuilders.standaloneSetup(wordResource)
+            .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
+            .setMessageConverters(jacksonMessageConverter).build();
+
+        restWordMockMvc.perform(get("/api/words?eagerload=true"))
+        .andExpect(status().isOk());
+
+        verify(wordServiceMock, times(1)).findAllWithEagerRelationships(any());
+    }
+
+    public void getAllWordsWithEagerRelationshipsIsNotEnabled() throws Exception {
+        WordResource wordResource = new WordResource(wordServiceMock, wordQueryService);
+            when(wordServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+            MockMvc restWordMockMvc = MockMvcBuilders.standaloneSetup(wordResource)
+            .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
+            .setMessageConverters(jacksonMessageConverter).build();
+
+        restWordMockMvc.perform(get("/api/words?eagerload=true"))
+        .andExpect(status().isOk());
+
+            verify(wordServiceMock, times(1)).findAllWithEagerRelationships(any());
     }
 
     @Test
@@ -387,16 +424,6 @@ public class WordResourceIntTest {
 
     @Test
     @Transactional
-    public void getAllWordsByRomajiIsNullOrNotNull() throws Exception {
-        // Initialize the database
-        wordRepository.saveAndFlush(word);
-
-        // Get all the wordList where romaji is not null
-        defaultWordShouldBeFound("romaji.specified=true");
-    }
-
-    @Test
-    @Transactional
     public void getAllWordsByNoteIsEqualToSomething() throws Exception {
         // Initialize the database
         wordRepository.saveAndFlush(word);
@@ -423,16 +450,6 @@ public class WordResourceIntTest {
 
     @Test
     @Transactional
-    public void getAllWordsByNoteIsNullOrNotNull() throws Exception {
-        // Initialize the database
-        wordRepository.saveAndFlush(word);
-
-        // Get all the wordList where note is not null
-        defaultWordShouldBeFound("note.specified=true");
-    }
-
-    @Test
-    @Transactional
     public void getAllWordsByTagIsEqualToSomething() throws Exception {
         // Initialize the database
         Tag tag = TagResourceIntTest.createEntity(em);
@@ -447,6 +464,25 @@ public class WordResourceIntTest {
 
         // Get all the wordList where tag equals to tagId + 1
         defaultWordShouldNotBeFound("tagId.equals=" + (tagId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllWordsByExamIsEqualToSomething() throws Exception {
+        // Initialize the database
+        Exam exam = ExamResourceIntTest.createEntity(em);
+        em.persist(exam);
+        em.flush();
+        word.addExam(exam);
+        wordRepository.saveAndFlush(word);
+        Long examId = exam.getId();
+
+        // Get all the wordList where exam equals to examId
+        defaultWordShouldBeFound("examId.equals=" + examId);
+
+        // Get all the wordList where exam equals to examId + 1
+        defaultWordShouldNotBeFound("examId.equals=" + (examId + 1));
     }
 
     /**
@@ -585,5 +621,12 @@ public class WordResourceIntTest {
         assertThat(wordDTO1).isNotEqualTo(wordDTO2);
         wordDTO1.setId(null);
         assertThat(wordDTO1).isNotEqualTo(wordDTO2);
+    }
+
+    @Test
+    @Transactional
+    public void testEntityFromId() {
+        assertThat(wordMapper.fromId(42L).getId()).isEqualTo(42);
+        assertThat(wordMapper.fromId(null)).isNull();
     }
 }

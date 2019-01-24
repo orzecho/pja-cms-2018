@@ -13,6 +13,13 @@ if (project.hasProperty('no-liquibase')) {
     profiles += ',no-liquibase'
 }
 
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
+
 bootRun {
     args = []
 }

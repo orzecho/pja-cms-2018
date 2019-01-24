@@ -1,0 +1,56 @@
+{
+    "name": "ExamResult",
+    "fields": [
+        {
+            "fieldName": "date",
+            "fieldType": "Instant",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "result",
+            "fieldType": "Integer",
+            "fieldValidateRules": [
+                "required"
+            ]
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "writtenAnswers",
+            "otherEntityName": "writtenAnswer",
+            "otherEntityRelationshipName": "exam"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "trueFalseAnswers",
+            "otherEntityName": "trueFalseAnswer",
+            "otherEntityRelationshipName": "exam"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": "required",
+            "relationshipName": "student",
+            "otherEntityName": "user",
+            "otherEntityField": "login"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": "required",
+            "relationshipName": "exam",
+            "otherEntityName": "exam",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20190120160656",
+    "entityTableName": "exam_result",
+    "dto": "mapstruct",
+    "pagination": "pagination",
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": true,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
+}

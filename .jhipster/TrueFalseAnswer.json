@@ -1,0 +1,51 @@
+{
+    "name": "TrueFalseAnswer",
+    "fields": [
+        {
+            "fieldName": "translationFrom",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "isRightAnswer",
+            "fieldType": "Boolean",
+            "fieldValidateRules": [
+                "required"
+            ]
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": "required",
+            "relationshipName": "srcWord",
+            "otherEntityName": "word",
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": "required",
+            "relationshipName": "targetWord",
+            "otherEntityName": "word",
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": "required",
+            "relationshipName": "exam",
+            "otherEntityName": "examResult",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20190120160658",
+    "entityTableName": "true_false_answer",
+    "dto": "mapstruct",
+    "pagination": "pagination",
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": true,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
+}
