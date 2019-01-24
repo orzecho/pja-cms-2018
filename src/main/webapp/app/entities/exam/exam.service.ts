@@ -24,9 +24,7 @@ export class ExamService {
 
         return this.http.post<IExam>(this.resourceUrl, exam, {
             observe: 'response',
-            params: {
-                tags: tags
-            }
+            params: { tags }
         });
     }
 
@@ -37,9 +35,7 @@ export class ExamService {
 
         return this.http.put<IExam>(this.resourceUrl, exam, {
             observe: 'response',
-            params: {
-                tags: tags
-            }
+            params: { tags }
         });
     }
 
