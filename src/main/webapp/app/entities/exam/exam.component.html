@@ -1,10 +1,10 @@
 <div class="card jh-card">
     <h2 id="page-heading">
-        <span>Exams</span>
+        <span>Sprawdziany</span>
         <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-exam" [routerLink]="['/exam/new']">
             <fa-icon [icon]="'plus'"></fa-icon>
             <span >
-            Dodaj nowy egzamin
+            Dodaj nowy sprawdzian
             </span>
         </button>
     </h2>
@@ -14,11 +14,11 @@
         <table class="table table-striped">
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
-            <th jhiSortBy="name"><span>Name</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="type"><span>Type</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="code"><span>Code</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="creatorLogin"><span>Creator</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th> Exam page </th>
+            <th jhiSortBy="name"><span>Nazwa</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="type"><span>Typ</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="code"><span>Kod</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="creatorLogin"><span>Autor</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th> Strona sprawdzianu </th>
             <th></th>
             </tr>
             </thead>

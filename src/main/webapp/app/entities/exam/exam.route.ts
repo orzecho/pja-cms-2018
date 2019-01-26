@@ -36,7 +36,7 @@ export const examRoute: Routes = [
         data: {
             authorities: ['ROLE_USER'],
             defaultSort: 'id,asc',
-            pageTitle: 'Exams'
+            pageTitle: 'Sprawdziany'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -48,7 +48,7 @@ export const examRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'Exams'
+            pageTitle: 'Sprawdziany'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -59,8 +59,8 @@ export const examRoute: Routes = [
             exam: ExamResolve
         },
         data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'Exams'
+            authorities: ['ROLE_ADMIN', 'ROLE_TEACHER'],
+            pageTitle: 'Sprawdziany'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -71,8 +71,8 @@ export const examRoute: Routes = [
             exam: ExamResolve
         },
         data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'Exams'
+            authorities: ['ROLE_ADMIN', 'ROLE_TEACHER'],
+            pageTitle: 'Sprawdziany'
         },
         canActivate: [UserRouteAccessService]
     }
@@ -86,8 +86,8 @@ export const examPopupRoute: Routes = [
             exam: ExamResolve
         },
         data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'Exams'
+            authorities: ['ROLE_ADMIN', 'ROLE_TEACHER'],
+            pageTitle: 'Sprawdziany'
         },
         canActivate: [UserRouteAccessService],
         outlet: 'popup'

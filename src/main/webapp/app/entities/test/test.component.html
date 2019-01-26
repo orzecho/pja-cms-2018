@@ -11,7 +11,7 @@
                     <jhi-alert-error></jhi-alert-error>
                     <div class="form-group">
                         <label class="form-control-label" for="field_tags">Tagi dla których ma być wygenerowane
-                            ćwiczenie</label>
+                            ćwiczeniea</label>
                         <br>
                         <p-autoComplete [(ngModel)]="tags"
                                         [suggestions]="availableTags"
@@ -35,13 +35,14 @@
                             <div class="ui-g-12"><p-radioButton name="testType" value="WRITTEN_PL" label="Tłumaczenie z polskiego"
                                                                 [(ngModel)]="testType"></p-radioButton></div>
                             <div class="ui-g-12"><p-radioButton name="testType" value="WRITTEN_KANA"
-                                                                label="Túmaczenie z kany" [(ngModel)]="testType"></p-radioButton></div>
+                                                                label="Tłumaczenie z kany"
+                                                                [(ngModel)]="testType"></p-radioButton></div>
                             <div class="ui-g-12"><p-radioButton name="testType" value="WRITTEN_KANJI" label="Tłumaczenie z kanji"
                                                                 [(ngModel)]="testType"></p-radioButton></div>
                             <div class="ui-g-12"><p-radioButton name="testType" value="WRITTEN_MIXED"
                                                                 label="Mieszane"
                                                                 [(ngModel)]="testType"></p-radioButton></div>
-                            <div class="ui-g-12"><p-radioButton name="testType" value="FILLING_GAPS" label="Wypełnianie luk"
+                            <div class="ui-g-12"><p-radioButton name="testType" value="GAPS" label="Wypełnianie luk"
                                                                 [(ngModel)]="testType"></p-radioButton></div>
                         </div>
                     </div>
