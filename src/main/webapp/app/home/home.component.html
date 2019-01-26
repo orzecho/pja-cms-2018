@@ -1,0 +1,37 @@
+<header class="masthead text-center text-white d-flex">
+    <div class="container my-auto">
+        <div class="row">
+            <div class="col-lg-8 mx-auto"></div>
+            <div class="col-lg-4 mx-auto">
+                <span class="logo img-fluid rounded"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-8 mx-auto"></div>
+            <div class="col-lg-4 mx-auto">
+                <p class="text-faded mb-5">Nyango to aplikacja wspomagająca naukę języka japońskiego na Polsko
+                    Japońskiej Akademii Technik Komputerowych. Zawiera materiały z lekcji i potrafi generować testy
+                    powtórzeniowe dla zadanego materiału.</p>
+                <div [ngSwitch]="isAuthenticated()">
+                    <div *ngSwitchCase="true">
+                        <div *ngIf="account">
+                            <a class="btn btn-primary btn-xl" [routerLink]="['/lesson' ]">Zobacz lekcje</a>
+                            <a class="btn btn-primary btn-xl" [routerLink]="['/test' ]">Zobacz ćwiczenia</a>
+                        </div>
+                        <div *ngIf="account && account.authorities.includes('ROLE_TEACHER')">
+                            <hr>
+                            <a class="btn btn-success btn-xl" [routerLink]="['/exam' ]">Sprawdziany</a>
+                            <a class="btn btn-success btn-xl" [routerLink]="['/exam-result-for-teacher' ]">Oceny</a>
+                            <a class="btn btn-success btn-xl" [routerLink]="['/filling-gaps-test-item' ]">Wypełnianie luk</a>
+                        </div>
+                    </div>
+
+                    <div *ngSwitchCase="false">
+                        <a class="btn btn-primary btn-xl" (click)="login()">Zaloguj się</a>
+                        <a class="btn btn-primary btn-xl" routerLink="register">Zarejestruj się</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
