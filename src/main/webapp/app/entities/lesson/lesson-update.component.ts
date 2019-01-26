@@ -15,7 +15,8 @@ import { Word } from 'app/shared/model/word.model';
 
 @Component({
     selector: 'jhi-lesson-update',
-    templateUrl: './lesson-update.component.html'
+    templateUrl: './lesson-update.component.html',
+    styleUrls: ['./lesson-update.component.css']
 })
 export class LessonUpdateComponent implements OnInit {
     private _lesson: ILesson;
