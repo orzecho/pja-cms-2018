@@ -2,7 +2,7 @@ import { Component, forwardRef, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { JhiAlertService } from 'ng-jhipster';
+import { JhiAlertService, JhiDataUtils } from 'ng-jhipster';
 
 import { ILesson } from 'app/shared/model/lesson.model';
 import { LessonService } from './lesson.service';
@@ -15,10 +15,12 @@ import { Word } from 'app/shared/model/word.model';
 
 @Component({
     selector: 'jhi-lesson-update',
-    templateUrl: './lesson-update.component.html'
+    templateUrl: './lesson-update.component.html',
+    styleUrls: ['./lesson-update.component.css']
 })
 export class LessonUpdateComponent implements OnInit {
     private _lesson: ILesson;
+    private _lessonFile: ILessonFile;
     isSaving: boolean;
 
     tags: ITag[];
@@ -29,24 +31,28 @@ export class LessonUpdateComponent implements OnInit {
     selectedWord: Word;
     newWord: boolean;
 
+    addNewLessonFlie: boolean;
+    addExistingFile: boolean;
+
     foundTags: string[];
 
-    cols: [
-        { field: 'translation'; header: 'Vin' },
-        { field: 'kana'; header: 'Year' },
-        { field: 'kanji'; header: 'Brand' },
-        { field: 'romaji'; header: 'Color' },
-        { field: 'note'; header: 'Color' },
-        { field: 'tags'; header: 'Tagi' }
-    ];
+    filesToUpload: Array<ILessonFile> = [];
 
     constructor(
         private jhiAlertService: JhiAlertService,
+        private dataUtils: JhiDataUtils,
         private lessonService: LessonService,
         private tagService: TagService,
         private activatedRoute: ActivatedRoute,
         private lessonFileService: LessonFileService
-    ) {}
+    ) {
+        this.lessonFile = {
+            name: '',
+            content: '',
+            contentContentType: '',
+            lessonId: null
+        };
+    }
 
     ngOnInit() {
         this.isSaving = false;
@@ -77,13 +83,65 @@ export class LessonUpdateComponent implements OnInit {
         window.history.back();
     }
 
+    upload() {
+        this.filesToUpload.push({
+            name: this.lessonFile.name,
+            content: this.lessonFile.content,
+            contentContentType: this.lessonFile.contentContentType
+        });
+    }
+
     save() {
         this.isSaving = true;
         if (this.lesson.id !== undefined) {
-            this.subscribeToSaveResponse(this.lessonService.update(this.lesson));
+            this.subscribeToSaveResponseLesson(this.lessonService.update(this.lesson));
         } else {
-            this.subscribeToSaveResponse(this.lessonService.create(this.lesson));
+            this.subscribeToSaveResponseLesson(this.lessonService.create(this.lesson));
         }
+    }
+
+    private subscribeToSaveResponseLesson(result: Observable<HttpResponse<ILesson>>) {
+        result.subscribe(
+            (res: HttpResponse<ILesson>) => {
+                this.filesToUpload.forEach(file => (file.lessonId = res.body.id));
+                this.onSaveSuccessLesson();
+            },
+            (res: HttpErrorResponse) => this.onSaveError()
+        );
+    }
+
+    private subscribeToSaveResponseFile(result: Observable<HttpResponse<ILessonFile>>) {
+        this.isSaving = true;
+        result.subscribe((res: HttpResponse<ILesson>) => this.onSaveSuccessFile(), (res: HttpErrorResponse) => this.onSaveError());
+    }
+
+    private onSaveSuccessLesson() {
+        if (this.filesToUpload.length !== 0) {
+            this.filesToUpload.forEach(file => this.subscribeToSaveResponseFile(this.lessonFileService.create(file)));
+            this.isSaving = false;
+        } else {
+            this.isSaving = false;
+            this.previousState();
+        }
+    }
+
+    private onSaveSuccessFile() {
+        this.isSaving = false;
+    }
+    delete(f, index) {
+        this.filesToUpload.splice(index, 1);
+    }
+    setFileData(event, entity, field, isImage) {
+        const file = event.target.files[0];
+        this.lessonFile.name = file.name;
+        this.dataUtils.setFileData(event, entity, field, isImage);
+    }
+    get lessonFile() {
+        return this._lessonFile;
+    }
+
+    set lessonFile(lessonFile: ILessonFile) {
+        this._lessonFile = lessonFile;
     }
 
     private subscribeToSaveResponse(result: Observable<HttpResponse<ILesson>>) {

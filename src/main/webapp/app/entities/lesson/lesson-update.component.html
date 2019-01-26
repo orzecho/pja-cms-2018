@@ -1,1 +1,225 @@
-`
+<div class="row justify-content-center">
+    <div class="col-8">
+        <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm"
+              (keydown.enter)="$event.target.tagName == 'TEXTAREA'">
+            <h2 id="jhi-lesson-heading">Utwórz lud edytuj lekcję</h2>
+            <div>
+                <jhi-alert-error></jhi-alert-error>
+                <p-card title="Szczgóły lekcji">
+                    <div class="form-group" [hidden]="!lesson.id">
+                        <label for="id">ID</label>
+                        <input type="text" class="form-control" id="id" name="id"
+                            [(ngModel)]="lesson.id" readonly />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-control-label" for="field_name">Nazwa</label>
+                        <input type="text" class="form-control" name="name" id="field_name"
+                            [(ngModel)]="lesson.name" required/>
+                        <div [hidden]="!(editForm.controls.name?.dirty && editForm.controls.name?.invalid)">
+                            <small class="form-text text-danger"
+                            [hidden]="!editForm.controls.name?.errors?.required">
+                            To pole jest wymagane.
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-control-label" for="field_description">Opis</label>
+                        <input type="text" class="form-control" name="description" id="field_description"
+                            [(ngModel)]="lesson.description" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-control-label" for="field_description">Tagi</label><br>
+                        <p-autoComplete [(ngModel)]="lesson.rawTags"
+                                        [suggestions]="foundTags"
+                                        name="lesson_tags"
+                                        (completeMethod)="searchForTags($event)"
+                                        [multiple]="true"
+                                        (onKeyUp)="onTagInputKeyUp($event)">
+                        </p-autoComplete>
+                    </div>
+                </p-card>
+                <p-card title="Pliki">
+                    <div class="form-group">
+                            <mat-checkbox
+                            [checked]="addNewLessonFlie"
+                            (change)="addNewLessonFlie = !addNewLessonFlie">Dodaj nowy plik do lekcji</mat-checkbox>
+                            <mat-card *ngIf="addNewLessonFlie">
+                                    <input id="cin" name="cin" type="file" (change)="setFileData($event, lessonFile, 'content', false)" placeholder="Upload a file..." />
+                                    <button type="button" class="btn btn-success btn-s" (click)="upload()">
+                                            <i class="glyphicon glyphicon-open-file"></i>&nbsp;Upload
+                                     </button>
+                                     <div class="row col-sm">
+                                            <mat-list>
+                                                <mat-list-item *ngFor="let f of filesToUpload; let i = index">
+                                                        <button mat-button (click)="delete(f,i)">
+                                                                <mat-icon>delete</mat-icon>
+                                                            </button>
+                                                    {{f.name}}
+                                                    <mat-list-item *ngFor="let f of filesToUpload">
+                                            </mat-list>
+                                     </div>
+                            </mat-card>
+                     </div>
+                     <div class="form-group">
+                            <mat-checkbox
+                            [checked]="addExistingFile"
+                            (change)="addExistingFile = !addExistingFile">Dodaj istniejący plik do lekcji</mat-checkbox>
+                            <mat-card *ngIf="addExistingFile">
+                                    <p-listbox [options]="availableFiles"
+                                       optionLabel="name"
+                                       name="lessonFiles"
+                                       [(ngModel)]="lesson.lessonFiles"
+                                       id="field_lesson_files"
+                                       [filter]="true"
+                                       dataKey="id"
+                                       [checkbox]="true"
+                                       [multiple]="true"
+                            ></p-listbox>
+                            </mat-card>
+                     </div>
+                </p-card>
+                <p-card title="Słownictwo">
+                    <div *ngIf="lesson.words && lesson.words.length !== 0; else noWords">
+                        <p-table [value]="lesson.words" selectionMode="single" [(selection)]="selectedWord"
+                                 (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="15">
+                            <ng-template pTemplate="caption">
+                                Słownictwo
+                            </ng-template>
+                            <ng-template pTemplate="header" let-columns>
+                                <tr>
+                                    <th pSortableColumn="translation">
+                                        Tłumaczenie <p-sortIcon field="translation"></p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="kana">
+                                        Kana <p-sortIcon field="kana"></p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="kanji">
+                                        Kanji <p-sortIcon field="kanji"></p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="romaji">
+                                        Romaji <p-sortIcon field="romaji"></p-sortIcon>
+                                    </th>
+                                    <th>
+                                        Tagi
+                                    </th>
+                                    <th>
+                                        Uwagi
+                                    </th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-rowData let-columns="columns">
+                                <tr [pSelectableRow]="rowData">
+                                    <td>
+                                        {{rowData.translation}}
+                                    </td>
+                                    <td>
+                                        {{rowData.kana}}
+                                    </td>
+                                    <td>
+                                        {{rowData.kanji}}
+                                    </td>
+                                    <td>
+                                        {{rowData.romaji}}
+                                    </td>
+                                    <td>
+                                        {{rowData.rawTags}}
+                                    </td>
+                                    <td>
+                                        {{rowData.note}}
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                    <ng-template class="form-text text-warning" #noWords>
+                        Brak słów dodanych do lekcji.
+                    </ng-template>
+
+                    <div style="text-align:left">
+                        <button type="button" (click)="showDialogToAdd()" class="btn btn-success">
+                            <fa-icon [icon]="'plus'"></fa-icon>&nbsp;<span>Dodaj słowo</span>
+                        </button>
+                    </div>
+                </p-card>
+                <p-dialog header="Słowo" [(visible)]="displayDialog"
+                          [responsive]="true"
+                          showEffect="fade"
+                          [modal]="true"
+                          [width]="300" (onHide)="clearSelection()">
+                    <div class="ui-g ui-fluid" *ngIf="word">
+                        <div class="ui-g-12">
+                            <div class="ui-g-4">
+                                <label for="translation">Tłumaczenie</label>
+                            </div>
+                            <div class="ui-g-8">
+                                <input pInputText id="translation" [ngModelOptions]="{standalone: true}" [(ngModel)]="word.translation" />
+                            </div>
+                        </div>
+                        <div class="ui-g-12">
+                            <div class="ui-g-4">
+                                <label for="kana">Kana</label>
+                            </div>
+                            <div class="ui-g-8">
+                                <input pInputText id="kana" [ngModelOptions]="{standalone: true}" [(ngModel)]="word.kana" />
+                            </div>
+                        </div>
+                        <div class="ui-g-12">
+                            <div class="ui-g-4">
+                                <label for="kanji">Kanji</label>
+                            </div>
+                            <div class="ui-g-8">
+                                <input pInputText id="kanji" [ngModelOptions]="{standalone: true}"
+                                       [(ngModel)]="word.kanji" />
+                            </div>
+                        </div>
+                        <div class="ui-g-12">
+                            <div class="ui-g-4">
+                                <label for="romaji">Romaji</label>
+                            </div>
+                            <div class="ui-g-8">
+                                <input pInputText id="romaji" [ngModelOptions]="{standalone: true}"
+                                       [(ngModel)]="word.romaji" />
+                            </div>
+                        </div>
+                        <div class="ui-g-12">
+                            <div class="ui-g-4">
+                                <label for="note">Uwagi</label>
+                            </div>
+                            <div class="ui-g-8">
+                                <input pInputText id="note" [ngModelOptions]="{standalone: true}"
+                                       [(ngModel)]="word.note" />
+                            </div>
+                        </div>
+                        <div class="ui-g-12">
+                            <div class="ui-g-4">
+                                <label for="tags">Tagi</label>
+                            </div>
+                            <div class="ui-g-8">
+                                <input pInputText id="tags" [ngModelOptions]="{standalone: true}" [(ngModel)]="word.rawTags" />
+                            </div>
+                        </div>
+                    </div>
+                    <p-footer>
+                        <div class="ui-dialog-buttonpane ui-helper-clearfix">
+                            <button *ngIf="!this.newWord" type="button" icon="fa fa-close" (click)="deleteWord()"
+                                    class="btn btn-secondary">
+                                <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span>Usuń</span>
+                            </button>
+                            <button type="button" icon="fa fa-check" (click)="saveWord()" class="btn btn-primary">
+                                <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span>Zapisz</span>
+                            </button>
+                        </div>
+                    </p-footer>
+                </p-dialog>
+            </div>
+            <div>
+                <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
+                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span>Anuluj</span>
+                </button>
+                <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span>Zapisz</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,11 @@
+:host ::ng-deep .ui-autocomplete-multiple {
+    width: 100% !important;
+}
+
+:host ::ng-deep .ui-autocomplete-multiple-container {
+    width: 100% !important;
+}
+
+:host ::ng-deep .ui-listbox {
+    width: 100% !important;
+}
