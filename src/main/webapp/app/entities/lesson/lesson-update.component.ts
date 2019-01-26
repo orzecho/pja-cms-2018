@@ -37,15 +37,6 @@ export class LessonUpdateComponent implements OnInit {
 
     filesToUpload: Array<ILessonFile> = [];
 
-    cols: [
-        { field: 'translation'; header: 'Vin' },
-        { field: 'kana'; header: 'Year' },
-        { field: 'kanji'; header: 'Brand' },
-        { field: 'romaji'; header: 'Color' },
-        { field: 'note'; header: 'Color' },
-        { field: 'tags'; header: 'Tagi' }
-    ];
-
     constructor(
         private jhiAlertService: JhiAlertService,
         private dataUtils: JhiDataUtils,
@@ -124,13 +115,17 @@ export class LessonUpdateComponent implements OnInit {
     }
 
     private onSaveSuccessLesson() {
-        this.filesToUpload.forEach(file => this.subscribeToSaveResponseFile(this.lessonFileService.create(file)));
-        this.isSaving = false;
+        if (this.filesToUpload.length !== 0) {
+            this.filesToUpload.forEach(file => this.subscribeToSaveResponseFile(this.lessonFileService.create(file)));
+            this.isSaving = false;
+        } else {
+            this.isSaving = false;
+            this.previousState();
+        }
     }
 
     private onSaveSuccessFile() {
         this.isSaving = false;
-        this.previousState();
     }
     delete(f, index) {
         this.filesToUpload.splice(index, 1);
