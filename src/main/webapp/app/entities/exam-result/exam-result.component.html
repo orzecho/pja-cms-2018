@@ -15,7 +15,7 @@
             </thead>
             <tbody>
             <tr *ngFor="let examResult of examResults ;trackBy: trackId">
-                <td>{{examResult.date | date:'medium'}}</td>
+                <td>{{examResult.date | date:'dd/MM/yyyy'}}</td>
                 <td>{{examResult.result}} z {{getMaxPoints(examResult)}}</td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
