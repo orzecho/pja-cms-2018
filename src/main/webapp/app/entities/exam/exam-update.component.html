@@ -2,7 +2,7 @@
 <div class="row justify-content-center">
     <div class="col-8">
         <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
-            <h2 id="jhi-exam-heading">Utworz lub edytuj egzamin</h2>
+            <h2 id="jhi-exam-heading">Utwórz lub edytuj sprawdzian</h2>
             <div>
                 <jhi-alert-error></jhi-alert-error>
                 <div class="form-group" [hidden]="!exam.id">
@@ -11,7 +11,7 @@
                         [(ngModel)]="exam.id" readonly />
                 </div>
                 <div class="form-group">
-                    <label class="form-control-label" for="field_name">Nazwa egzaminu</label>
+                    <label class="form-control-label" for="field_name">Nazwa sprawdzianu</label>
                     <input type="text" class="form-control" name="name" id="field_name"
                         [(ngModel)]="exam.name" required/>
                     <div [hidden]="!(editForm.controls.name?.dirty && editForm.controls.name?.invalid)">
@@ -21,7 +21,7 @@
                         </small>
                     </div>
                 </div>
-                <label class="form-control-label" for="field_tags">Tagi do generowania egzaminu</label>
+                <label class="form-control-label" for="field_tags">Tagi do generowania sprawdzianu</label>
                 <br>
                 <div class="form-group">
                     <p-autoComplete [(ngModel)]="tags"
@@ -39,7 +39,7 @@
                     </div>
                     </div>
                 <div class="form-group">
-                    <label class="form-control-label" for="field_type">Typ examinu</label>
+                    <label class="form-control-label" for="field_type">Typ sprawdzianu</label>
                     <select class="form-control" name="type" [(ngModel)]="exam.type" id="field_type"  required>
                         <option value="WRITTEN_MIXED">Test pisemny - mieszany</option>
                         <option value="WRITTEN_PL">Test pisemny - polski</option>

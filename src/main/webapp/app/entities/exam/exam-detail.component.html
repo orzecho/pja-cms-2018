@@ -2,27 +2,27 @@
 <div class="row justify-content-center">
     <div class="col-8">
         <div *ngIf="exam">
-            <h2><span>Exam</span> {{exam.id}}</h2>
+            <h2><span>Sprawdzian</span> {{exam.id}}</h2>
             <hr>
             <jhi-alert-error></jhi-alert-error>
             <dl class="row-md jh-entity-details">
-                <dt><span>Name</span></dt>
+                <dt><span>Nazwa</span></dt>
                 <dd>
                     <span>{{exam.name}}</span>
                 </dd>
-                <dt><span>Type</span></dt>
+                <dt><span>Typ</span></dt>
                 <dd>
                     <span>{{exam.type}}</span>
                 </dd>
-                <dt><span>Code</span></dt>
+                <dt><span>Kod</span></dt>
                 <dd>
                     <span>{{exam.code}}</span>
                 </dd>
-                <dt><span>Creator</span></dt>
+                <dt><span>Autor</span></dt>
                 <dd>
                     {{exam.creatorLogin}}
                 </dd>
-                <dt><span>Word</span></dt>
+                <dt><span>Słowa</span></dt>
                 <dd>
                     <span *ngFor="let word of exam.words; let last = last">
                         <a [routerLink]="['/word', word?.id, 'view' ]">{{word.translation}}</a>{{last ? '' : ', '}}
@@ -33,13 +33,13 @@
             <button type="submit"
                     (click)="previousState()"
                     class="btn btn-info">
-                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Back</span>
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Cofnij</span>
             </button>
 
             <button type="button"
                     [routerLink]="['/exam', exam.id, 'edit']"
                     class="btn btn-primary">
-                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span> Edit</span>
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span> Edytuj</span>
             </button>
         </div>
     </div>
