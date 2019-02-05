@@ -31,7 +31,7 @@ export class LessonUpdateComponent implements OnInit {
     selectedWord: Word;
     newWord: boolean;
 
-    addNewLessonFlie: boolean;
+    addNewLessonFile: boolean;
     addExistingFile: boolean;
 
     foundTags: string[];
@@ -46,6 +46,10 @@ export class LessonUpdateComponent implements OnInit {
         private activatedRoute: ActivatedRoute,
         private lessonFileService: LessonFileService
     ) {
+        this.clearLessonFileToAdd();
+    }
+
+    private clearLessonFileToAdd() {
         this.lessonFile = {
             name: '',
             content: '',
@@ -89,6 +93,7 @@ export class LessonUpdateComponent implements OnInit {
             content: this.lessonFile.content,
             contentContentType: this.lessonFile.contentContentType
         });
+        this.clearLessonFileToAdd();
     }
 
     save() {
@@ -118,11 +123,9 @@ export class LessonUpdateComponent implements OnInit {
     private onSaveSuccessLesson() {
         if (this.filesToUpload.length !== 0) {
             this.filesToUpload.forEach(file => this.subscribeToSaveResponseFile(this.lessonFileService.create(file)));
-            this.isSaving = false;
-        } else {
-            this.isSaving = false;
-            this.previousState();
         }
+        this.isSaving = false;
+        this.previousState();
     }
 
     private onSaveSuccessFile() {

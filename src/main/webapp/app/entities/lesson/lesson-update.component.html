@@ -6,7 +6,7 @@
             <h2 id="jhi-lesson-heading">Utwórz lud edytuj lekcję</h2>
             <div>
                 <jhi-alert-error></jhi-alert-error>
-                <p-card title="Szczgóły lekcji">
+                <p-card title="Szczegóły lekcji">
                     <div class="form-group" [hidden]="!lesson.id">
                         <label for="id">ID</label>
                         <input type="text" class="form-control" id="id" name="id"
@@ -42,12 +42,13 @@
                 <p-card title="Pliki">
                     <div class="form-group">
                             <mat-checkbox
-                            [checked]="addNewLessonFlie"
-                            (change)="addNewLessonFlie = !addNewLessonFlie">Dodaj nowy plik do lekcji</mat-checkbox>
-                            <mat-card *ngIf="addNewLessonFlie">
+                            [checked]="addNewLessonFile"
+                            (change)="addNewLessonFile = !addNewLessonFile">Dodaj nowy plik do lekcji</mat-checkbox>
+                            <mat-card *ngIf="addNewLessonFile">
                                     <input id="cin" name="cin" type="file" (change)="setFileData($event, lessonFile, 'content', false)" placeholder="Upload a file..." />
-                                    <button type="button" class="btn btn-success btn-s" (click)="upload()">
-                                            <i class="glyphicon glyphicon-open-file"></i>&nbsp;Upload
+                                    <button *ngIf="lessonFile.content" type="button" class="btn btn-success btn-s"
+                                            (click)="upload()">
+                                        <fa-icon [icon]="'plus'"></fa-icon>&nbsp;<span>Dodaj do lekcji</span>
                                      </button>
                                      <div class="row col-sm">
                                             <mat-list>
