@@ -10,7 +10,7 @@
     </h2>
     <jhi-alert></jhi-alert>
     <br/>
-    <div class="table-responsive" *ngIf="tags">
+    <div class="table-responsive" *ngIf="tags && tags.length">
         <table class="table table-striped">
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
@@ -44,11 +44,15 @@
                             <span class="d-none d-md-inline">Usuń</span>
                         </button>
                     </div>
-                    </div>
                 </td>
             </tr>
             </tbody>
         </table>
+    </div>
+    <div *ngIf="!tags || !tags.length">
+        <div class="alert alert-primary" role="alert">
+            Brak tagów do wyświetlania
+        </div>
     </div>
     <div *ngIf="tags && tags.length">
         <div class="row justify-content-center">

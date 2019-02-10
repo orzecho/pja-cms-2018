@@ -1,10 +1,10 @@
 <div class="card jh-card">
     <h2 id="page-heading">
-        <span>Twoje wyniki ze sprawdzianów</span>
+        <span>Wyniki studentów</span>
     </h2>
     <jhi-alert></jhi-alert>
     <br/>
-    <div class="table-responsive" *ngIf="examResults">
+    <div class="table-responsive" *ngIf="examResults && examResults.length">
         <table class="table table-striped">
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
@@ -32,6 +32,11 @@
             </tr>
             </tbody>
         </table>
+    </div>
+    <div *ngIf="!examResults || !examResults.length">
+        <div class="alert alert-primary" role="alert">
+            Brak wyników ze sprawdzianów do wyświetłania
+        </div>
     </div>
     <div *ngIf="examResults && examResults.length">
         <div class="row justify-content-center">

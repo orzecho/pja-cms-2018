@@ -13,7 +13,7 @@ import { ExamService } from 'app/entities/exam';
 import { IExam } from 'app/shared/model/exam.model';
 
 @Component({
-    selector: 'jhi-exam-result',
+    selector: 'jhi-exam-result-for-teacher',
     templateUrl: './exam-result-for-teacher.component.html'
 })
 export class ExamResultForTeacherComponent implements OnInit, OnDestroy {

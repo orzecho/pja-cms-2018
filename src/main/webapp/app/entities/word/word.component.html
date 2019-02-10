@@ -17,7 +17,7 @@
     </div>
     <jhi-alert></jhi-alert>
     <br/>
-    <div class="table-responsive" *ngIf="words">
+    <div class="table-responsive" *ngIf="words && words.length">
         <table class="table table-striped">
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
@@ -67,11 +67,15 @@
                             <span class="d-none d-md-inline">Usuń</span>
                         </button>
                     </div>
-                    </div>
                 </td>
             </tr>
             </tbody>
         </table>
+    </div>
+    <div *ngIf="!words || !words.length">
+        <div class="alert alert-primary" role="alert">
+            Brak słówek do wyświetlania
+        </div>
     </div>
     <div *ngIf="words && words.length">
         <div class="row justify-content-center">

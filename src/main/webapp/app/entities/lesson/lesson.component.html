@@ -1,7 +1,9 @@
 <div class="card jh-card">
     <h2 id="page-heading">
         <span>Lekcje</span>
-        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-lesson" [routerLink]="['/lesson/new']">
+        <button *jhiHasAnyAuthority="['ADMIN']" id="jh-create-entity"
+                class="btn btn-primary float-right jh-create-entity create-lesson"
+                [routerLink]="['/lesson/new']">
             <fa-icon [icon]="'plus'"></fa-icon>
             <span >
             Utwórz nową lekcję
@@ -17,7 +19,7 @@
     </div>
     <jhi-alert></jhi-alert>
     <br/>
-    <div class="table-responsive" *ngIf="lessons">
+    <div class="table-responsive" *ngIf="lessons && lessons.length">
         <table class="table table-striped">
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
@@ -57,11 +59,15 @@
                             <span class="d-none d-md-inline">Usuń</span>
                         </button>
                     </div>
-                    </div>
                 </td>
             </tr>
             </tbody>
         </table>
+    </div>
+    <div *ngIf="!lessons || !lessons.length">
+        <div class="alert alert-primary" role="alert">
+            Brak lekcji do wyświetlania
+        </div>
     </div>
     <div *ngIf="lessons && lessons.length">
         <div class="row justify-content-center">
