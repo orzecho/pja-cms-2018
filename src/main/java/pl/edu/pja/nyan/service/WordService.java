@@ -14,7 +14,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.collect.Sets;
+
 import lombok.RequiredArgsConstructor;
+import pl.edu.pja.nyan.domain.ProposedWord;
 import pl.edu.pja.nyan.domain.Tag;
 import pl.edu.pja.nyan.domain.Word;
 import pl.edu.pja.nyan.repository.WordRepository;
@@ -46,6 +49,20 @@ public class WordService {
     public WordDTO save(WordDTO wordDTO) {
         log.debug("Request to save Word : {}", wordDTO);
         Word word = wordMapper.toEntity(wordDTO);
+        word = wordRepository.save(word);
+        Set<Tag> tags = tagService.findOrCreateTagsByName(wordDTO.getRawTags(), word);
+        word = deleteOldTags(word, tags);
+        return wordMapper.toDto(word);
+    }
+
+    public WordDTO save(ProposedWord proposedWord) {
+        Word word = new Word();
+        word.setTranslation(proposedWord.getTranslation());
+        word.setRomaji(proposedWord.getRomaji());
+        word.setNote(proposedWord.getNote());
+        word.setKanji(proposedWord.getKanji());
+        word.setKana(proposedWord.getKana());
+        word.setTags(Sets.newHashSet(proposedWord.getTags()));
         word = wordRepository.save(word);
         return wordMapper.toDto(word);
     }
@@ -139,5 +156,17 @@ public class WordService {
             .collect(Collectors.toList());
         deletedTags.forEach(e -> e.removeWord(word));
         return word;
+    }
+
+    public Optional<Word> findParallel(ProposedWord proposedWord) {
+        return wordRepository.findByTranslationAndKanaAndKanji(
+            proposedWord.getTranslation(),
+            proposedWord.getKana(),
+            proposedWord.getKanji());
+    }
+
+    public WordDTO addTags(Word word, Set<Tag> tags) {
+        tags.forEach(word::addTag);
+        return wordMapper.toDto(wordRepository.save(word));
     }
 }

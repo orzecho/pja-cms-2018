@@ -1,12 +1,15 @@
 package pl.edu.pja.nyan.web.rest;
 
 import static org.assertj.core.api.Assertions.not;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import pl.edu.pja.nyan.NyanApp;
 
 import pl.edu.pja.nyan.domain.Word;
 import pl.edu.pja.nyan.domain.Tag;
 import pl.edu.pja.nyan.domain.Exam;
 import pl.edu.pja.nyan.repository.WordRepository;
+import pl.edu.pja.nyan.service.ProposedWordService;
+import pl.edu.pja.nyan.service.UserService;
 import pl.edu.pja.nyan.service.WordService;
 import pl.edu.pja.nyan.service.dto.WordDTO;
 import pl.edu.pja.nyan.service.mapper.WordMapper;
@@ -19,6 +22,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
@@ -48,6 +52,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = NyanApp.class)
+@AutoConfigureMockMvc
 public class WordResourceIntTest {
 
     private static final String DEFAULT_TRANSLATION = "AAAAAAAAAA";
@@ -72,9 +77,15 @@ public class WordResourceIntTest {
 
     @Autowired
     private WordMapper wordMapper;
-    
+
     @Mock
     private WordService wordServiceMock;
+
+    @Mock
+    private ProposedWordService proposedWordService;
+
+    @Mock
+    private UserService userService;
 
     @Autowired
     private WordService wordService;
@@ -94,19 +105,15 @@ public class WordResourceIntTest {
     @Autowired
     private EntityManager em;
 
-    private MockMvc restWordMockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
     private Word word;
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final WordResource wordResource = new WordResource(wordService, wordQueryService);
-        this.restWordMockMvc = MockMvcBuilders.standaloneSetup(wordResource)
-            .setCustomArgumentResolvers(pageableArgumentResolver)
-            .setControllerAdvice(exceptionTranslator)
-            .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+        final WordResource wordResource = new WordResource(wordService, wordQueryService, userService, proposedWordService);
     }
 
     /**
@@ -138,7 +145,8 @@ public class WordResourceIntTest {
         // Create the Word
         WordDTO wordDTO = wordMapper.toDto(word);
         wordDTO.setTranslation(wordDTO.getTranslation() + "1234");
-        restWordMockMvc.perform(post("/api/words")
+        mockMvc.perform(post("/api/words")
+            .with(user("admin"))
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(wordDTO)))
             .andExpect(status().isCreated());
@@ -164,7 +172,8 @@ public class WordResourceIntTest {
         WordDTO wordDTO = wordMapper.toDto(word);
 
         // An entity with an existing ID cannot be created, so this API call must fail
-        restWordMockMvc.perform(post("/api/words")
+        mockMvc.perform(post("/api/words")
+            .with(user("admin"))
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(wordDTO)))
             .andExpect(status().isBadRequest());
@@ -184,7 +193,8 @@ public class WordResourceIntTest {
         // Create the Word, which fails.
         WordDTO wordDTO = wordMapper.toDto(word);
 
-        restWordMockMvc.perform(post("/api/words")
+        mockMvc.perform(post("/api/words")
+            .with(user("admin"))
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(wordDTO)))
             .andExpect(status().isBadRequest());
@@ -203,7 +213,8 @@ public class WordResourceIntTest {
         // Create the Word, which fails.
         WordDTO wordDTO = wordMapper.toDto(word);
 
-        restWordMockMvc.perform(post("/api/words")
+        mockMvc.perform(post("/api/words")
+            .with(user("admin"))
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(wordDTO)))
             .andExpect(status().isBadRequest());
@@ -219,7 +230,7 @@ public class WordResourceIntTest {
         wordRepository.saveAndFlush(word);
 
         // Get all the wordList
-        restWordMockMvc.perform(get("/api/words?sort=id,desc"))
+        mockMvc.perform(get("/api/words?sort=id,desc").with(user("admin")))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(word.getId().intValue())))
@@ -229,9 +240,9 @@ public class WordResourceIntTest {
             .andExpect(jsonPath("$.[*].romaji").value(hasItem(DEFAULT_ROMAJI.toString())))
             .andExpect(jsonPath("$.[*].note").value(hasItem(DEFAULT_NOTE.toString())));
     }
-    
+
     public void getAllWordsWithEagerRelationshipsIsEnabled() throws Exception {
-        WordResource wordResource = new WordResource(wordServiceMock, wordQueryService);
+        WordResource wordResource = new WordResource(wordServiceMock, wordQueryService, userService, proposedWordService);
         when(wordServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
 
         MockMvc restWordMockMvc = MockMvcBuilders.standaloneSetup(wordResource)
@@ -247,7 +258,7 @@ public class WordResourceIntTest {
     }
 
     public void getAllWordsWithEagerRelationshipsIsNotEnabled() throws Exception {
-        WordResource wordResource = new WordResource(wordServiceMock, wordQueryService);
+        WordResource wordResource = new WordResource(wordServiceMock, wordQueryService, userService, proposedWordService);
             when(wordServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
             MockMvc restWordMockMvc = MockMvcBuilders.standaloneSetup(wordResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
@@ -268,7 +279,7 @@ public class WordResourceIntTest {
         wordRepository.saveAndFlush(word);
 
         // Get the word
-        restWordMockMvc.perform(get("/api/words/{id}", word.getId()))
+        mockMvc.perform(get("/api/words/{id}", word.getId()).with(user("admin")))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(word.getId().intValue()))
@@ -489,7 +500,7 @@ public class WordResourceIntTest {
      * Executes the search, and checks that the default entity is returned
      */
     private void defaultWordShouldBeFound(String filter) throws Exception {
-        restWordMockMvc.perform(get("/api/words?sort=id,desc&" + filter))
+        mockMvc.perform(get("/api/words?sort=id,desc&" + filter).with(user("admin")))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(word.getId().intValue())))
@@ -504,7 +515,7 @@ public class WordResourceIntTest {
      * Executes the search, and checks that the default entity is not returned
      */
     private void defaultWordShouldNotBeFound(String filter) throws Exception {
-        restWordMockMvc.perform(get("/api/words?sort=id,desc&" + filter))
+        mockMvc.perform(get("/api/words?sort=id,desc&" + filter).with(user("admin")))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$").isArray())
@@ -515,7 +526,7 @@ public class WordResourceIntTest {
     @Transactional
     public void getNonExistingWord() throws Exception {
         // Get the word
-        restWordMockMvc.perform(get("/api/words/{id}", Long.MAX_VALUE))
+        mockMvc.perform(get("/api/words/{id}", Long.MAX_VALUE).with(user("admin")))
             .andExpect(status().isNotFound());
     }
 
@@ -539,7 +550,8 @@ public class WordResourceIntTest {
             .note(UPDATED_NOTE);
         WordDTO wordDTO = wordMapper.toDto(updatedWord);
 
-        restWordMockMvc.perform(put("/api/words")
+        mockMvc.perform(put("/api/words")
+            .with(user("admin").roles("ADMIN"))
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(wordDTO)))
             .andExpect(status().isOk());
@@ -564,7 +576,8 @@ public class WordResourceIntTest {
         WordDTO wordDTO = wordMapper.toDto(word);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
-        restWordMockMvc.perform(put("/api/words")
+        mockMvc.perform(put("/api/words")
+            .with(user("admin").roles("ADMIN"))
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(wordDTO)))
             .andExpect(status().isBadRequest());
@@ -583,7 +596,8 @@ public class WordResourceIntTest {
         int databaseSizeBeforeDelete = wordRepository.findAll().size();
 
         // Get the word
-        restWordMockMvc.perform(delete("/api/words/{id}", word.getId())
+        mockMvc.perform(delete("/api/words/{id}", word.getId())
+            .with(user("admin").roles("ADMIN"))
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 

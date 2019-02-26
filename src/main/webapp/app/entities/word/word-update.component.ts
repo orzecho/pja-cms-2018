@@ -8,6 +8,7 @@ import { IWord } from 'app/shared/model/word.model';
 import { WordService } from './word.service';
 import { ITag } from 'app/shared/model/tag.model';
 import { TagService } from 'app/entities/tag';
+import { Principal } from 'app/core';
 
 @Component({
     selector: 'jhi-word-update',
@@ -16,6 +17,9 @@ import { TagService } from 'app/entities/tag';
 export class WordUpdateComponent implements OnInit {
     private _word: IWord;
     isSaving: boolean;
+    currentAccount;
+
+    foundTags: string[];
 
     tags: ITag[];
 
@@ -23,7 +27,8 @@ export class WordUpdateComponent implements OnInit {
         private jhiAlertService: JhiAlertService,
         private wordService: WordService,
         private tagService: TagService,
-        private activatedRoute: ActivatedRoute
+        private activatedRoute: ActivatedRoute,
+        private principal: Principal
     ) {}
 
     ngOnInit() {
@@ -37,6 +42,9 @@ export class WordUpdateComponent implements OnInit {
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
+        this.principal.identity().then(account => {
+            this.currentAccount = account;
+        });
     }
 
     previousState() {
@@ -89,5 +97,31 @@ export class WordUpdateComponent implements OnInit {
 
     set word(word: IWord) {
         this._word = word;
+    }
+
+    searchForTags(event) {
+        this.tagService
+            .findByNameContaining(event.query)
+            .subscribe(
+                (res: HttpResponse<ITag[]>) => (this.foundTags = res.body.map(tag => tag.name)),
+                (res: HttpErrorResponse) => this.onError(res.message)
+            );
+    }
+
+    /**
+     * custom implementation of adding new elements to the p-autocomplete
+     * component, as currently it doesn't support this behavior by default
+     */
+    onTagInputKeyUp(event: KeyboardEvent) {
+        console.log(event);
+        if (event.key === 'Enter') {
+            const tokenInput = event.srcElement as any;
+            const inputValue = tokenInput.value;
+
+            if (inputValue && !this.word.rawTags.includes(inputValue)) {
+                this.word.rawTags.push(inputValue);
+                tokenInput.value = '';
+            }
+        }
     }
 }

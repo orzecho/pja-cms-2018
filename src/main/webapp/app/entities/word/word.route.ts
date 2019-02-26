@@ -59,7 +59,7 @@ export const wordRoute: Routes = [
             word: WordResolve
         },
         data: {
-            authorities: ['ROLE_ADMIN', 'ROLE_TEACHER'],
+            authorities: ['ROLE_USER'],
             pageTitle: 'Słownictwo'
         },
         canActivate: [UserRouteAccessService]

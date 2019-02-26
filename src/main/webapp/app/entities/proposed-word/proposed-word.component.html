@@ -1,23 +1,10 @@
 <div class="card jh-card">
     <h2 id="page-heading">
-        <span>Słowa</span>
-        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-word" [routerLink]="['/word/new']">
-            <fa-icon [icon]="'plus'"></fa-icon>
-            <span >
-            Dodaj nowe słowo
-            </span>
-        </button>
+        <span>Proponowane słowa</span>
     </h2>
-    <div>
-        <p-autoComplete [(ngModel)]="tagsFilter" [suggestions]="foundTags"
-                        (completeMethod)="searchForTags($event)" [multiple]="true"
-                        placeholder="Wyszukaj po tagu" [forceSelection]="true" field="name"
-                        (onSelect)="clear()" (onUnselect)="clear()">
-        </p-autoComplete>
-    </div>
     <jhi-alert></jhi-alert>
     <br/>
-    <div class="table-responsive" *ngIf="words">
+    <div class="table-responsive" *ngIf="proposedWords">
         <table class="table table-striped">
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
@@ -27,39 +14,39 @@
             <th jhiSortBy="romaji"><span>Romaji</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="note"><span>Uwagi</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th><span>Tagi</span></th>
-            <th><span>Jisho.org</span></th>
+            <th jhiSortBy="addedByLogin"><span>Dodane przez</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let word of words ;trackBy: trackId">
-                <td>{{word.translation}}</td>
-                <td>{{word.kana}}</td>
-                <td>{{word.kanji}}</td>
-                <td>{{word.romaji}}</td>
-                <td>{{word.note}}</td>
-                <td>
-                    <a [routerLink]="['/tag', tag?.id, 'view' ]"
+            <tr *ngFor="let proposedWord of proposedWords ;trackBy: trackId">
+                <td>{{proposedWord.translation}}</td>
+                <td>{{proposedWord.kana}}</td>
+                <td>{{proposedWord.kanji}}</td>
+                <td>{{proposedWord.romaji}}</td>
+                <td>{{proposedWord.note}}</td>
+                <td><a [routerLink]="['/tag', tag?.id, 'view' ]"
                        class="badge badge-pill badge-primary"
-                       *ngFor="let tag of word.tags">{{tag.name}}</a></td>
+                       *ngFor="let tag of proposedWord.tags">{{tag.name}}</a></td>
+                <td>
+                    {{proposedWord.addedByLogin}}
                 </td>
-                <td> <a [href]="getJishoLink(word)" target="_blank">{{word.kanji ? word.kanji : word.kana}} na jisho.org</a></td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
-                        <button type="submit"
-                                [routerLink]="['/word', word.id, 'view' ]"
-                                class="btn btn-info btn-sm">
+                        <button *jhiHasAnyAuthority="['ROLE_TEACHER', 'ROLE_ADMIN']" type="submit"
+                                (click)="acceptWord(proposedWord)"
+                                class="btn btn-success btn-sm">
                             <fa-icon [icon]="'eye'"></fa-icon>
-                            <span class="d-none d-md-inline">Szczegóły</span>
+                            <span class="d-none d-md-inline">Akceptuj</span>
                         </button>
-                        <button *jhiHasAnyAuthority="['ROLE_ADMIN','ROLE_TEACHER']" type="submit"
-                                [routerLink]="['/word', word.id, 'edit']"
+                        <button *jhiHasAnyAuthority="['ROLE_ADMIN']" type="submit"
+                                [routerLink]="['/proposed-word', proposedWord.id, 'edit']"
                                 class="btn btn-primary btn-sm">
                             <fa-icon [icon]="'pencil-alt'"></fa-icon>
                             <span class="d-none d-md-inline">Edytuj</span>
                         </button>
-                        <button *jhiHasAnyAuthority="['ROLE_ADMIN','ROLE_TEACHER']" type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'word/'+ word.id + '/delete'} }]"
+                        <button *jhiHasAnyAuthority="['ROLE_TEACHER', 'ROLE_ADMIN']" type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'proposed-word/'+ proposedWord.id + '/delete'} }]"
                                 replaceUrl="true"
                                 queryParamsHandling="merge"
                                 class="btn btn-danger btn-sm">
@@ -67,13 +54,12 @@
                             <span class="d-none d-md-inline">Usuń</span>
                         </button>
                     </div>
-                    </div>
                 </td>
             </tr>
             </tbody>
         </table>
     </div>
-    <div *ngIf="words && words.length">
+    <div *ngIf="proposedWords && proposedWords.length">
         <div class="row justify-content-center">
             <jhi-item-count [page]="page" [total]="queryCount" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
         </div>

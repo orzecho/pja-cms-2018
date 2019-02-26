@@ -121,25 +121,24 @@ public class TagService {
         return tags;
     }
 
-    public Set<Tag> findOrCreateTagsByName(String rawTags, Word word) {
+    public Set<Tag> findOrCreateTagsByName(List<String> rawTags, Word word) {
         Set<Tag> tags = new HashSet<>();
         if (rawTags == null || word == null) {
             return tags;
         }
-        try (Scanner scanner = new Scanner(rawTags).useDelimiter(",")) {
-            while (scanner.hasNext()) {
-                String token = scanner.next().trim();
-                Optional<Tag> tag = tagRepository.findByName(token);
-                if (!tag.isPresent()) {
-                    tags.add(tagRepository.save(new Tag(token, word)));
-                } else {
-                    if (tag.get().getWords().stream().noneMatch(e -> e.getId().equals(word.getId()))) {
-                        tag.get().addWord(word);
-                    }
-                    tags.add(tag.get());
+
+        rawTags.forEach(rawTag -> {
+            Optional<Tag> tag = tagRepository.findByName(rawTag);
+            if (!tag.isPresent()) {
+                tags.add(tagRepository.save(new Tag(rawTag, word)));
+            } else {
+                if (tag.get().getWords().stream().noneMatch(e -> e.getId().equals(word.getId()))) {
+                    tag.get().addWord(word);
                 }
+                tags.add(tag.get());
             }
-        }
+        });
+
         return tags;
     }
 

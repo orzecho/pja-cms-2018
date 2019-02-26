@@ -39,7 +39,7 @@ public class WordDTO implements Serializable {
     @Singular
     private List<TagDTO> tags;
 
-    private String rawTags;
+    private List<String> rawTags;
 
     @Override
     public boolean equals(Object o) {

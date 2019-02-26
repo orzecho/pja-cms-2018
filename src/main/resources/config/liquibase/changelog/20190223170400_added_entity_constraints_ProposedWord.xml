@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <!--
+        Added the constraints for entity ProposedWord.
+    -->
+    <changeSet id="20190223170400-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="proposed_words_id"
+                                 baseTableName="proposed_word_tag"
+                                 constraintName="fk_proposed_word_tag_proposed_words_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="proposed_word"/>
+        <addForeignKeyConstraint baseColumnNames="tags_id"
+                                 baseTableName="proposed_word_tag"
+                                 constraintName="fk_proposed_word_tag_tags_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="tag"/>
+        
+        <addForeignKeyConstraint baseColumnNames="added_by_id"
+                                 baseTableName="proposed_word"
+                                 constraintName="fk_proposed_word_added_by_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="jhi_user"/>
+
+    </changeSet>
+</databaseChangeLog>

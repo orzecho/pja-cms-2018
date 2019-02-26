@@ -52,7 +52,7 @@ public class WordMapper implements EntityMapper<WordDTO, Word> {
             .kana(entity.getKana())
             .translation(entity.getTranslation())
             .tags(tagMapper.toDto(entity.getTags()))
-            .rawTags(String.join(",", entity.getTags().stream().map(Tag::getName).collect(Collectors.toList())))
+            .rawTags(entity.getTags().stream().map(Tag::getName).collect(Collectors.toList()))
             .build();
     }
 

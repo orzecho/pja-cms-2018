@@ -11,6 +11,7 @@ import { NyanExamModule } from './exam/exam.module';
 import { NyanExamResultModule } from './exam-result/exam-result.module';
 import { NyanWrittenAnswerModule } from './written-answer/written-answer.module';
 import { NyanTrueFalseAnswerModule } from './true-false-answer/true-false-answer.module';
+import { NyanProposedWordModule } from './proposed-word/proposed-word.module';
 /* jhipster-needle-add-entity-module-import - JHipster will add entity modules imports here */
 
 @NgModule({
@@ -27,6 +28,7 @@ import { NyanTrueFalseAnswerModule } from './true-false-answer/true-false-answer
         NyanExamResultModule,
         NyanWrittenAnswerModule,
         NyanTrueFalseAnswerModule,
+        NyanProposedWordModule,
         /* jhipster-needle-add-entity-module - JHipster will add entity modules here */
     ],
     declarations: [],

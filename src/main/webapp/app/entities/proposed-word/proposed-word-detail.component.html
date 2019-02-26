@@ -1,0 +1,53 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="proposedWord">
+            <h2><span>Proposed Word</span> {{proposedWord.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span>Translation</span></dt>
+                <dd>
+                    <span>{{proposedWord.translation}}</span>
+                </dd>
+                <dt><span>Kana</span></dt>
+                <dd>
+                    <span>{{proposedWord.kana}}</span>
+                </dd>
+                <dt><span>Kanji</span></dt>
+                <dd>
+                    <span>{{proposedWord.kanji}}</span>
+                </dd>
+                <dt><span>Romaji</span></dt>
+                <dd>
+                    <span>{{proposedWord.romaji}}</span>
+                </dd>
+                <dt><span>Note</span></dt>
+                <dd>
+                    <span>{{proposedWord.note}}</span>
+                </dd>
+                <dt><span>Tag</span></dt>
+                <dd>
+                    <span *ngFor="let tag of proposedWord.tags; let last = last">
+                        <a [routerLink]="['/tag', tag?.id, 'view' ]">{{tag.id}}</a>{{last ? '' : ', '}}
+                    </span>
+                </dd>
+                <dt><span>Added By</span></dt>
+                <dd>
+                    {{proposedWord.addedByLogin}}
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/proposed-word', proposedWord.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

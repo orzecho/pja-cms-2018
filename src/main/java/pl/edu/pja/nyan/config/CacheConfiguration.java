@@ -61,6 +61,8 @@ public class CacheConfiguration {
             cm.createCache(pl.edu.pja.nyan.domain.ExamResult.class.getName() + ".trueFalseAnswers", jcacheConfiguration);
             cm.createCache(pl.edu.pja.nyan.domain.WrittenAnswer.class.getName(), jcacheConfiguration);
             cm.createCache(pl.edu.pja.nyan.domain.TrueFalseAnswer.class.getName(), jcacheConfiguration);
+            cm.createCache(pl.edu.pja.nyan.domain.ProposedWord.class.getName(), jcacheConfiguration);
+            cm.createCache(pl.edu.pja.nyan.domain.ProposedWord.class.getName() + ".tags", jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }

@@ -2,8 +2,13 @@ package pl.edu.pja.nyan.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 
+import lombok.RequiredArgsConstructor;
+import pl.edu.pja.nyan.domain.User;
 import pl.edu.pja.nyan.security.AuthoritiesConstants;
+import pl.edu.pja.nyan.service.ProposedWordService;
+import pl.edu.pja.nyan.service.UserService;
 import pl.edu.pja.nyan.service.WordService;
+import pl.edu.pja.nyan.service.dto.ProposedWordDTO;
 import pl.edu.pja.nyan.web.rest.errors.BadRequestAlertException;
 import pl.edu.pja.nyan.web.rest.util.HeaderUtil;
 import pl.edu.pja.nyan.web.rest.util.PaginationUtil;
@@ -18,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,20 +39,21 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class WordResource {
 
     private final Logger log = LoggerFactory.getLogger(WordResource.class);
 
     private static final String ENTITY_NAME = "word";
+    private static final String ALT_ENTITY_NAME = "proposed word";
 
     private final WordService wordService;
 
     private final WordQueryService wordQueryService;
 
-    public WordResource(WordService wordService, WordQueryService wordQueryService) {
-        this.wordService = wordService;
-        this.wordQueryService = wordQueryService;
-    }
+    private final UserService userService;
+
+    private final ProposedWordService proposedWordService;
 
     /**
      * POST  /words : Create a new word.
@@ -57,16 +64,30 @@ public class WordResource {
      */
     @PostMapping("/words")
     @Timed
-    @Secured({ AuthoritiesConstants.ADMIN, AuthoritiesConstants.TEACHER})
-    public ResponseEntity<WordDTO> createWord(@Valid @RequestBody WordDTO wordDTO) throws URISyntaxException {
+    @Secured({ AuthoritiesConstants.ADMIN, AuthoritiesConstants.TEACHER, AuthoritiesConstants.USER})
+    public ResponseEntity createWord(@Valid @RequestBody WordDTO wordDTO) throws URISyntaxException {
         log.debug("REST request to save Word : {}", wordDTO);
         if (wordDTO.getId() != null) {
             throw new BadRequestAlertException("A new word cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        WordDTO result = wordService.save(wordDTO);
-        return ResponseEntity.created(new URI("/api/words/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
-            .body(result);
+        User user = userService.getUserWithAuthorities().orElseThrow(() -> new AccessDeniedException("User not found"));
+        if (isAdminOrTeacher(user)) {
+            WordDTO result = wordService.save(wordDTO);
+            return ResponseEntity.created(new URI("/api/words/" + result.getId()))
+                .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+                .body(result);
+        } else {
+            ProposedWordDTO result = proposedWordService.save(wordDTO, user);
+            return ResponseEntity.created(new URI("/api/proposed-words/" + result.getId()))
+                .headers(HeaderUtil.createAlert("Propozycja dodana! Zostanie rozpatrzona przez nauczyciela.",
+                    result.getId().toString()))
+                .body(result);
+        }
+    }
+
+    private boolean isAdminOrTeacher(User user) {
+        return user.getAuthorities().stream().anyMatch(e -> e.getName().equals(AuthoritiesConstants.TEACHER) ||
+            e.getName().equals(AuthoritiesConstants.ADMIN));
     }
 
     /**

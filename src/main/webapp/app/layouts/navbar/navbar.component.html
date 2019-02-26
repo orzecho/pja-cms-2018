@@ -31,7 +31,6 @@
                     </li>
                     <li *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_TEACHER']">
                         <a class="dropdown-item" routerLink="lesson-file"  (click)="collapseNavbar()">
-                            <!--<fa-icon [icon]="'save'" [fixedWidth]="true"></fa-icon>-->
                             <span>Pliki lekcji</span>
                         </a>
                     </li>
@@ -45,6 +44,12 @@
                         <a class="dropdown-item" routerLink="word" routerLinkActive="active"
                            [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
                             <span>Słowa</span>
+                        </a>
+                    </li>
+                    <li *jhiHasAnyAuthority="['ROLE_TEACHER', 'ROLE_ADMIN']">
+                        <a class="dropdown-item" routerLink="proposed-word" routerLinkActive="active"
+                           [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
+                            <span>Proponowane słowa</span>
                         </a>
                     </li>
                 </ul>
